@@ -1,0 +1,41 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Main.master.cs" Inherits="Presentation.Main" %>
+
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+        <h1>Bienvenido</h1>
+
+        <a href="Login.aspx">Login</a>
+
+        <a href="WFAcercaDe.aspx">Acerca de</a>
+        
+        <a href="WFUserRegistration.aspx">Registrate</a>
+        <a href="WFUserManagement.aspx">Gestion de usuarios</a>
+
+        <a href="WFAnswer.aspx">Registro de Respuestas</a>
+        <a href="WFAnswerManagement.aspx">Gestión de respuestas</a>
+
+
+        <a href="WFSurvey.aspx">Encuesta</a>
+
+        <a href="WFPurchaseRequest.aspx">Registro Solicitud de compra</a>
+        <a href="WFPurchaseRequestManagement.aspx">Gestión de solicitud de compra</a>
+
+        <a href="WFVisits.aspx">Registro de visitas</a>
+        <a href="WFStatisticReport.aspx">Reporte estadístico</a>
+
+    </form>
+</body>
+</html>
