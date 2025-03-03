@@ -1,22 +1,18 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\User\\Desktop\\Bibliotecavm-app\\",
+  "WorkspaceRootPath": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\bibliotecavm-app\\presentation\\wfusermanagement.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\wfusermanagement.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\logout.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\logout.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|C:\\Users\\User\\Desktop\\Bibliotecavm-app\\presentation\\wfusermanagement.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
-      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\wfusermanagement.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
+      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\default.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
+      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\default.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|C:\\Users\\User\\Desktop\\Bibliotecavm-app\\presentation\\wfuserregistration.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\wfuserregistration.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|C:\\Users\\User\\Desktop\\Bibliotecavm-app\\presentation\\wfuserregistration.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
-      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\wfuserregistration.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
+      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\default.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\default.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -35,51 +31,41 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "WFUserManagement.aspx.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Desktop\\Bibliotecavm-app\\Presentation\\WFUserManagement.aspx.cs",
-              "RelativeDocumentMoniker": "Presentation\\WFUserManagement.aspx.cs",
-              "ToolTip": "C:\\Users\\User\\Desktop\\Bibliotecavm-app\\Presentation\\WFUserManagement.aspx.cs",
-              "RelativeToolTip": "Presentation\\WFUserManagement.aspx.cs",
-              "ViewState": "AQIAAJwAAAAAAAAAAAAcwLEAAAAAAAAA",
+              "Title": "Logout.aspx.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\Logout.aspx.cs",
+              "RelativeDocumentMoniker": "Presentation\\Logout.aspx.cs",
+              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\Logout.aspx.cs",
+              "RelativeToolTip": "Presentation\\Logout.aspx.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABUAAAABAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-28T16:22:50.096Z",
+              "WhenOpened": "2025-03-03T15:16:06.511Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Default.aspx.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\Default.aspx.cs",
+              "RelativeDocumentMoniker": "Presentation\\Default.aspx.cs",
+              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\Default.aspx.cs",
+              "RelativeToolTip": "Presentation\\Default.aspx.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAEgAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-03T15:14:51.339Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "WFUserManagement.aspx",
-              "DocumentMoniker": "C:\\Users\\User\\Desktop\\Bibliotecavm-app\\Presentation\\WFUserManagement.aspx",
-              "RelativeDocumentMoniker": "Presentation\\WFUserManagement.aspx",
-              "ToolTip": "C:\\Users\\User\\Desktop\\Bibliotecavm-app\\Presentation\\WFUserManagement.aspx",
-              "RelativeToolTip": "Presentation\\WFUserManagement.aspx",
+              "Title": "Default.aspx",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\Default.aspx",
+              "RelativeDocumentMoniker": "Presentation\\Default.aspx",
+              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\Default.aspx",
+              "RelativeToolTip": "Presentation\\Default.aspx",
               "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
-              "WhenOpened": "2025-02-28T16:22:18.285Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "WFUserRegistration.aspx.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Desktop\\Bibliotecavm-app\\Presentation\\WFUserRegistration.aspx.cs",
-              "RelativeDocumentMoniker": "Presentation\\WFUserRegistration.aspx.cs",
-              "ToolTip": "C:\\Users\\User\\Desktop\\Bibliotecavm-app\\Presentation\\WFUserRegistration.aspx.cs",
-              "RelativeToolTip": "Presentation\\WFUserRegistration.aspx.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAE8AAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-28T16:19:20.903Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "WFUserRegistration.aspx",
-              "DocumentMoniker": "C:\\Users\\User\\Desktop\\Bibliotecavm-app\\Presentation\\WFUserRegistration.aspx",
-              "RelativeDocumentMoniker": "Presentation\\WFUserRegistration.aspx",
-              "ToolTip": "C:\\Users\\User\\Desktop\\Bibliotecavm-app\\Presentation\\WFUserRegistration.aspx",
-              "RelativeToolTip": "Presentation\\WFUserRegistration.aspx",
-              "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
-              "WhenOpened": "2025-02-28T16:17:15.474Z"
+              "WhenOpened": "2025-03-03T14:52:02.155Z",
+              "EditorCaption": ""
             }
           ]
         }

@@ -1,41 +1,74 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Main.master.cs" Inherits="Presentation.Main" %>
 
 <!DOCTYPE html>
-
 <html>
 <head runat="server">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title></title>
-    <asp:ContentPlaceHolder ID="head" runat="server">
-    </asp:ContentPlaceHolder>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title><asp:ContentPlaceHolder ID="head" runat="server" /></title>
+    <link href="styles/main.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <form id="form1" runat="server">
-        <div>
-            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
-            </asp:ContentPlaceHolder>
+        <div class="container">
+            <!-- Header -->
+            <header>
+                <div class="logo">
+                    <h1>Sistema de Gestión</h1>
+                </div>
+                <div class="user-info">
+                    <asp:Label ID="lblUsername" runat="server" Text="Bienvenido, Invitado"></asp:Label>
+                    <asp:LinkButton ID="lnkLogout" runat="server" OnClick="lnkLogout_Click" Visible="false">Cerrar Sesión</asp:LinkButton>
+                </div>
+            </header>
+
+            <!-- Navigation -->
+            <nav>
+                <ul>
+    <li><a href="Index.aspx">Inicio</a></li>
+<%--    <li><a href="WFUserRegistration.aspx">Registrate</a></li>--%>
+    <li><a href="WFAcercaDe.aspx">Acerca de</a></li>
+
+    <!-- Paneles para roles específicos -->
+    <asp:Panel ID="pnlAdmin" runat="server" Visible="false">
+      <%--  <li><a href="WFAuthors.aspx">Registro de autores</a></li>
+        <li><a href="WFEditorial.aspx">Registro de editoriales</a></li>
+        <li><a href="WFCategory.aspx">Registro de categorías</a></li>
+        <li><a href="WFMaterialEducativo.aspx">Registro de material educativo</a></li>--%>
+        <li><a href="WFUserManagement.aspx">Gestión de usuarios</a></li>
+        <li><a href="WFSurvey.aspx">Registro de encuesta</a></li>
+        <li><a href="WFAnswer.aspx">Respuestas</a></li>
+        <li><a href="WFStatisticReport.aspx">Reporte estadístico</a></li>
+
+
+    </asp:Panel>
+
+    <asp:Panel ID="pnlDocente" runat="server" Visible="false">
+        <li><a href="WFAnswer.aspx">Respuestas</a></li>
+        <%--<li><a href="WFPresentationMaterial.aspx">Ver Material</a></li>--%>
+        <li><a href="WFPurchaseRequest.aspx">Solicitud de compra</a></li>
+        <li><a href="WFVisits.aspx">Registro de visitas</a></li>
+        <li><a href="WFStatisticReport.aspx">Reporte estadístico</a></li>
+    </asp:Panel>
+
+    <asp:Panel ID="pnlEstudiante" runat="server" Visible="false">
+        <li><a href="WFAnswer.aspx">Respuestas</a></li>
+        <%--<li><a href="WFPresentationMaterial.aspx">Ver Material</a></li>--%>
+        <li><a href="WFPurchaseRequest.aspx">Solicitud de compra</a></li>
+        <li><a href="WFVisits.aspx">Registro de visitas</a></li>
+    </asp:Panel>
+    </ul>
+            </nav>
+
+            <!-- Main Content -->
+            <main>
+                <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
+            </main>
+
+            <!-- Footer -->
+            <footer>
+                <p>© 2024 Sistema de Gestión - Todos los derechos reservados</p>
+            </footer>
         </div>
-        <h1>Bienvenido</h1>
-
-        <a href="Login.aspx">Login</a>
-
-        <a href="WFAcercaDe.aspx">Acerca de</a>
-        
-        <a href="WFUserRegistration.aspx">Registrate</a>
-        <a href="WFUserManagement.aspx">Gestion de usuarios</a>
-
-        <a href="WFAnswer.aspx">Registro de Respuestas</a>
-        <a href="WFAnswerManagement.aspx">Gestión de respuestas</a>
-
-
-        <a href="WFSurvey.aspx">Encuesta</a>
-
-        <a href="WFPurchaseRequest.aspx">Registro Solicitud de compra</a>
-        <a href="WFPurchaseRequestManagement.aspx">Gestión de solicitud de compra</a>
-
-        <a href="WFVisits.aspx">Registro de visitas</a>
-        <a href="WFStatisticReport.aspx">Reporte estadístico</a>
-
     </form>
 </body>
 </html>

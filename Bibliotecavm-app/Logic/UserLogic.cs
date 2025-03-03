@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web;
-
+using Model;
 
 namespace Logic
 {
@@ -43,10 +43,15 @@ namespace Logic
         }
 
         // Método para validar el login de usuario
-        public DataSet validateUserLogin(string correo, string contrasena)
+        public User validateUserLogin(string correo, string contrasena)
         {
-            return objUserDat.validateUserLogin(correo, contrasena);
+            // Llamar al método de la capa de datos para obtener el usuario por correo
+            User objUser = objUserDat.showUsersMail(correo);
+
+            // Devolver el objeto User obtenido (sin validaciones adicionales)
+            return objUser;
         }
+
 
         // Método para verificar si un correo ya está registrado
         public bool isEmailRegistered(string correo)
