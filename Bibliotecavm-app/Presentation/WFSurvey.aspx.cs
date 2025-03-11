@@ -1,17 +1,148 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿
+using Logic;
+using System;
+using System.Data;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Model;
 
 namespace Presentation
 {
     public partial class WFSurvey : System.Web.UI.Page
     {
+        SurveyLogic surveyLogic = new SurveyLogic();
+
+        string descripcionPregunta;
+        int surveyId;
+
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack)
+            {
+                showSurveys();   // Cargar encuestas en el GridView
+            }
+        }
 
+        private void showSurveys()
+        {
+            try
+            {
+                gvSurveys.DataSource = surveyLogic.showSurveys(); // Obtener las encuestas
+                gvSurveys.DataBind(); // Enlazar los datos al GridView
+            }
+            catch (Exception ex)
+            {
+                lblMessage.Text = $"Error al cargar las encuestas: {ex.Message}";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+            }
+        }
+
+        protected void btnGuardarEncuesta_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                descripcionPregunta = txtDescripcionPregunta.Text;
+                int usuId = Convert.ToInt32(Session["UserId"]); // Obtener el ID del usuario autenticado
+
+                // Guardar la encuesta
+                if (surveyLogic.saveSurvey(descripcionPregunta, usuId))
+                {
+                    lblMessage.Text = "Encuesta guardada exitosamente.";
+                    lblMessage.ForeColor = System.Drawing.Color.Green;
+                    clearForm();
+                    showSurveys();  // Recargar las encuestas
+                }
+                else
+                {
+                    lblMessage.Text = "Error al guardar la encuesta.";
+                    lblMessage.ForeColor = System.Drawing.Color.Red;
+                }
+            }
+            catch (Exception ex)
+            {
+                lblMessage.Text = $"Error: {ex.Message}";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+            }
+        }
+
+        protected void btnActualizarEncuesta_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                surveyId = int.Parse(TBCode.Value); // Obtener el ID de la encuesta seleccionada
+                descripcionPregunta = txtDescripcionPregunta.Text;
+                int usuId = Convert.ToInt32(Session["UserId"]); // Obtener el ID del usuario autenticado
+
+                // Actualizar la encuesta
+                if (surveyLogic.updateSurvey(surveyId, descripcionPregunta, usuId))
+                {
+                    lblMessage.Text = "Encuesta actualizada exitosamente.";
+                    lblMessage.ForeColor = System.Drawing.Color.Green;
+                    clearForm();
+                    showSurveys();  // Recargar las encuestas
+                }
+                else
+                {
+                    lblMessage.Text = "Error al actualizar la encuesta.";
+                    lblMessage.ForeColor = System.Drawing.Color.Red;
+                }
+            }
+            catch (Exception ex)
+            {
+                lblMessage.Text = $"Error: {ex.Message}";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+            }
+        }
+
+        protected void btnEliminarEncuesta_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                surveyId = int.Parse(TBCode.Value); // Obtener el ID de la encuesta seleccionada
+
+                // Eliminar la encuesta
+                if (surveyId > 0 && surveyLogic.deleteSurvey(surveyId))
+                {
+                    lblMessage.Text = "Encuesta eliminada exitosamente.";
+                    lblMessage.ForeColor = System.Drawing.Color.Green;
+                    clearForm();
+                    showSurveys();  // Recargar las encuestas
+                }
+                else
+                {
+                    lblMessage.Text = "Error al eliminar la encuesta.";
+                    lblMessage.ForeColor = System.Drawing.Color.Red;
+                }
+            }
+            catch (Exception ex)
+            {
+                lblMessage.Text = $"Error: {ex.Message}";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+            }
+        }
+
+        private void clearForm()
+        {
+            TBCode.Value = string.Empty; // Limpiar el ID de la encuesta
+            txtDescripcionPregunta.Text = string.Empty; // Limpiar la descripción
+        }
+
+        protected void gvSurveys_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                GridViewRow selectedRow = gvSurveys.SelectedRow;
+
+                // Asignar los valores de la fila seleccionada al formulario
+                TBCode.Value = selectedRow.Cells[0].Text; // ID de la encuesta
+                txtDescripcionPregunta.Text = HttpUtility.HtmlDecode(selectedRow.Cells[1].Text); // Descripción
+            }
+            catch (Exception ex)
+            {
+                lblMessage.Text = $"Error: {ex.Message}";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+            }
         }
     }
 }

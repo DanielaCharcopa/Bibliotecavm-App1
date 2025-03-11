@@ -11,7 +11,7 @@ namespace Presentation
 {
 
 
-    public partial class Logout
+    public partial class Home
     {
     }
 }

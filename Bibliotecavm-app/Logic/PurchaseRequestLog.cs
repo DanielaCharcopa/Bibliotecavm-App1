@@ -24,21 +24,21 @@ namespace Logic
         }
 
         // Método para guardar una nueva solicitud de compra
-        public bool savePurchaseRequest(string ticket, DateTime fecha, int userId, int cantidad, int matId)
+        public bool savePurchaseRequest(string ticket, DateTime fecha, int userId, int cantidad, int matId, out string errorMessage)
         {
-            return objPur.savePurchaseRequest(ticket, fecha, userId, cantidad, matId); // Llamamos al método correcto en la capa de datos
+            return objPur.savePurchaseRequest(ticket, fecha, userId, cantidad, matId, out errorMessage);
         }
 
         // Método para actualizar una solicitud de compra
         public bool updatePurchaseRequest(int requestId, string ticket, DateTime fecha, int userId, int cantidad, int matId)
         {
-            return objPur.updatePurchaseRequest(requestId, ticket, fecha, userId, cantidad, matId); // Llamamos al método correcto en la capa de datos
+            return objPur.updatePurchaseRequest(requestId, ticket, fecha, userId, cantidad, matId);
         }
 
         // Método para eliminar una solicitud de compra
         public bool deletePurchaseRequest(int requestId)
         {
-            return objPur.deletePurchaseRequest(requestId); // Llamamos al método correcto en la capa de datos
+            return objPur.deletePurchaseRequest(requestId);
         }
 
         // Método para contar las solicitudes de compra
@@ -51,6 +51,13 @@ namespace Logic
         public DataSet showPurchaseRequestsByUser(int userId)
         {
             return objPur.showPurchaseRequestsByUser(userId);
+        }
+
+
+        // Método para obtener la lista de materiales educativos con su precio
+        public DataSet showMaterialEducativos()
+        {
+            return objPur.showMaterialEducativos();
         }
     }
 }

@@ -124,14 +124,10 @@ C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Presentation\bin\G
 C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Presentation\bin\ZstdSharp.dll
 C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Presentation\bin\K4os.Compression.LZ4.Streams.dll
 C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Presentation\bin\BouncyCastle.Cryptography.dll
-C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Presentation\bin\System.Memory.dll
 C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Presentation\bin\System.Threading.Tasks.Extensions.dll
-C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Presentation\bin\System.Buffers.dll
 C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Presentation\bin\K4os.Compression.LZ4.dll
 C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Presentation\bin\System.IO.Pipelines.dll
 C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Presentation\bin\K4os.Hash.xxHash.dll
-C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Presentation\bin\System.Runtime.CompilerServices.Unsafe.dll
-C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Presentation\bin\System.Numerics.Vectors.dll
 C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Presentation\bin\Logic.pdb
 C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Presentation\bin\Logic.dll.config
 C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Presentation\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
@@ -166,4 +162,3 @@ C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Presentation\bin\r
 C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Presentation\bin\roslyn\System.Memory.dll
 C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Presentation\bin\roslyn\System.Numerics.Vectors.dll
 C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Presentation\bin\roslyn\System.Runtime.CompilerServices.Unsafe.dll
-C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Presentation\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll

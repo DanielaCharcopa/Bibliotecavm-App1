@@ -1,41 +1,28 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="Presentation.Default" %>
+﻿<%@ Page Title="Iniciar Sesión" Language="C#" MasterPageFile="~/Main.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="Presentation.Default" %>
 
-<!DOCTYPE html>
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+  
+</asp:Content>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Iniciar Sesión</title>
-</head>
-<body>
-    <form id="form1" runat="server">
-        <div>
-            <!-- Título de la página -->
-            <asp:Label ID="Label2" runat="server" Text="Iniciar Sesión" Font-Bold="true" Font-Size="Large"></asp:Label>
-            <br /><br />
-
-            <!-- Campo para el correo -->
-            <asp:Label ID="Label1" runat="server" Text="Correo:"></asp:Label>
-            <asp:TextBox ID="TBCorreo" runat="server"></asp:TextBox>
-            <br /><br />
-
-            <!-- Campo para la contraseña -->
-            <asp:Label ID="Label3" runat="server" Text="Contraseña:"></asp:Label>
-            <asp:TextBox ID="TBContrasena" runat="server" TextMode="Password"></asp:TextBox>
-            <br /><br />
-
-            <!-- Botón para iniciar sesión -->
-            <asp:Button ID="BtGuardar" runat="server" Text="Iniciar Sesión" OnClick="BtGuardar_Click" />
-            <br /><br />
-
-            <!-- Mensaje de retroalimentación -->
-            <asp:Label ID="LblMsg" runat="server" Text="" ForeColor="Red"></asp:Label>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <div class="login-container">
+        <h2>Iniciar Sesión</h2>
+        <asp:Label ID="LblMsg" runat="server" CssClass="error-message" />
+        
+        <div class="form-group">
+            <label for="TBCorreo">Correo:</label>
+            <asp:TextBox ID="TBCorreo" runat="server" CssClass="form-control" placeholder="Ingrese su correo" />
         </div>
-
-
-
-        <asp:LinkButton ID="LnkLogout" runat="server" OnClick="LnkLogout_Click">Cerrar Sesión</asp:LinkButton>
-
-    </form>
-</body>
-</html>
+        
+        <div class="form-group">
+            <label for="TBContrasena">Contraseña:</label>
+            <asp:TextBox ID="TBContrasena" runat="server" CssClass="form-control" TextMode="Password" placeholder="Ingrese su contraseña" />
+        </div>
+        
+        <asp:Button ID="BtGuardar" runat="server" CssClass="btn" Text="Iniciar Sesión" OnClick="BtGuardar_Click" />
+        
+        <div class="form-links">
+            <a href="WFUserRegistration.aspx">Registrate</a>
+        </div>
+    </div>
+</asp:Content>

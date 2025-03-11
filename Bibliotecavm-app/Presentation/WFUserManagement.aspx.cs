@@ -1,9 +1,11 @@
 ﻿using System;
-using System.Data;
 using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using Logic;
+using Model;
+using SimpleCrypto;
+using System.Text.RegularExpressions;
+using System.Data;
+using System.Web.UI.WebControls;
 
 namespace Presentation
 {
@@ -13,12 +15,36 @@ namespace Presentation
         UserLogic objUser = new UserLogic();
         string nombre, apellido, correo, contrasena, salt, rol, nivelEstudios;
         int userId;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
                 LoadUsers(); // Carga inicial de usuarios
+                CargarRoles(); // Cargar roles dinámicamente
             }
+        }
+
+        private void CargarRoles()
+        {
+            // Verificar si ya existe un administrador
+            bool existeAdministrador = objUser.CheckAdminExists();
+
+            // Limpiar el DropDownList de roles
+            DDLRole.Items.Clear();
+
+            // Agregar la opción por defecto
+            DDLRole.Items.Add(new ListItem("Seleccione un rol", ""));
+
+            // Agregar roles según la existencia de un administrador
+            if (!existeAdministrador)
+            {
+                DDLRole.Items.Add(new ListItem("Administrador", "Administrador"));
+            }
+
+            // Agregar los demás roles
+            DDLRole.Items.Add(new ListItem("Docente", "Docente"));
+            DDLRole.Items.Add(new ListItem("Estudiante", "Estudiante"));
         }
 
         private void LoadUsers()
@@ -36,21 +62,57 @@ namespace Presentation
             }
         }
 
-
         protected void BtnSave_Click(object sender, EventArgs e)
         {
-            // Decodificar los datos ingresados antes de procesarlos
+            // Obtener los valores del formulario
             nombre = HttpUtility.HtmlDecode(TBFirstName.Text.Trim());
             apellido = HttpUtility.HtmlDecode(TBLastName.Text.Trim());
             correo = HttpUtility.HtmlDecode(TBEmail.Text.Trim());
             contrasena = TBPassword.Text.Trim();
-            salt = TBSalt.Text.Trim();
             rol = DDLRole.SelectedValue;
             nivelEstudios = DDLEducationLevel.SelectedValue;
+
+            // Validar campos obligatorios
+            if (string.IsNullOrEmpty(nombre))
+            {
+                LblMessage.Text = "El campo 'Nombre' es obligatorio.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
+
+            if (string.IsNullOrEmpty(apellido))
+            {
+                LblMessage.Text = "El campo 'Apellido' es obligatorio.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
+
+            if (string.IsNullOrEmpty(correo))
+            {
+                LblMessage.Text = "El campo 'Correo Electrónico' es obligatorio.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
+
+            // Validar que el correo sea de Gmail
+            if (!IsGmailEmail(correo))
+            {
+                LblMessage.Text = "Por favor, ingrese un correo electrónico válido de Gmail (ejemplo@gmail.com).";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
+
+            if (string.IsNullOrEmpty(contrasena))
+            {
+                LblMessage.Text = "El campo 'Contraseña' es obligatorio.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
 
             if (string.IsNullOrEmpty(rol) || string.IsNullOrEmpty(nivelEstudios))
             {
                 LblMessage.Text = "Por favor seleccione un rol y un nivel educativo.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
                 return;
             }
 
@@ -58,45 +120,127 @@ namespace Presentation
             if (rol == "Administrador" && objUser.CheckAdminExists())
             {
                 LblMessage.Text = "Ya existe un Administrador. Por favor, designe otro rol o elimine el actual administrador.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
                 return;
             }
 
-            // Guardar usuario con los datos decodificados
-            bool success = objUser.saveUser(nombre, apellido, correo, contrasena, salt, rol, nivelEstudios);
+            // Verificar si el correo ya está registrado
+            if (objUser.isEmailRegistered(correo))
+            {
+                LblMessage.Text = "El correo electrónico ya está registrado. Por favor, use otro correo.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
 
-            LblMessage.Text = success ? "Usuario guardado exitosamente." : "Error al guardar el usuario.";
-            ClearForm();
-            LoadUsers();
+            // Generar el salt y encriptar la contraseña
+            ICryptoService cryptoService = new PBKDF2(); // Asume que tienes una clase PBKDF2 para encriptación
+            salt = cryptoService.GenerateSalt();
+            string encryptedPassword = cryptoService.Compute(contrasena, salt);
+
+            // Guardar usuario con los datos decodificados
+            bool success = objUser.saveUser(nombre, apellido, correo, encryptedPassword, salt, rol, nivelEstudios);
+
+            if (success)
+            {
+                LblMessage.Text = "Usuario guardado exitosamente.";
+                LblMessage.ForeColor = System.Drawing.Color.Green;
+                ClearForm(); // Limpiar el formulario después de guardar
+                LoadUsers(); // Recargar la lista de usuarios
+                CargarRoles(); // Recargar roles dinámicamente
+            }
+            else
+            {
+                LblMessage.Text = "Error al guardar el usuario.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+            }
         }
 
         protected void BtnUpdate_Click(object sender, EventArgs e)
         {
+            // Obtener el ID del usuario
             userId = int.Parse(HFUserId.Value);
-            nombre = TBFirstName.Text.Trim();
-            apellido = TBLastName.Text.Trim();
-            correo = TBEmail.Text.Trim();
+
+            // Obtener los valores del formulario
+            nombre = HttpUtility.HtmlDecode(TBFirstName.Text.Trim());
+            apellido = HttpUtility.HtmlDecode(TBLastName.Text.Trim());
+            correo = HttpUtility.HtmlDecode(TBEmail.Text.Trim());
             contrasena = TBPassword.Text.Trim();
-            salt = TBSalt.Text.Trim();
             rol = DDLRole.SelectedValue;
             nivelEstudios = DDLEducationLevel.SelectedValue;
+
+            // Validar campos obligatorios
+            if (string.IsNullOrEmpty(nombre))
+            {
+                LblMessage.Text = "El campo 'Nombre' es obligatorio.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
+
+            if (string.IsNullOrEmpty(apellido))
+            {
+                LblMessage.Text = "El campo 'Apellido' es obligatorio.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
+
+            if (string.IsNullOrEmpty(correo))
+            {
+                LblMessage.Text = "El campo 'Correo Electrónico' es obligatorio.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
+
+            // Validar que el correo sea de Gmail
+            if (!IsGmailEmail(correo))
+            {
+                LblMessage.Text = "Por favor, ingrese un correo electrónico válido de Gmail (ejemplo@gmail.com).";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
+
+            if (string.IsNullOrEmpty(contrasena))
+            {
+                LblMessage.Text = "El campo 'Contraseña' es obligatorio.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
 
             if (string.IsNullOrEmpty(rol) || string.IsNullOrEmpty(nivelEstudios))
             {
                 LblMessage.Text = "Por favor seleccione un rol y un nivel educativo.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
                 return;
             }
 
-            // Verificar si ya existe un administrador (excepto si el usuario actual es el administrador)
-            if (rol == "Administrador" && objUser.CheckAdminExists() && rol != "Administrador del usuario actual")
+            // Verificar si el correo ya está registrado en otro usuario
+            if (objUser.isEmailRegistered(correo) && !IsCurrentUserEmail(correo))
             {
-                LblMessage.Text = "Ya existe un Administrador. Por favor, designe otro rol o elimine el actual administrador.";
+                LblMessage.Text = "El correo electrónico ya está registrado en otro usuario.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
                 return;
             }
 
-            bool success = objUser.updateUser(userId, nombre, apellido, correo, contrasena, salt, rol, nivelEstudios);
-            LblMessage.Text = success ? "Usuario actualizado con éxito." : "Error al actualizar el usuario.";
-            ClearForm();
-            LoadUsers();
+            // Generar el salt y encriptar la contraseña
+            ICryptoService cryptoService = new PBKDF2(); // Asume que tienes una clase PBKDF2 para encriptación
+            salt = cryptoService.GenerateSalt();
+            string encryptedPassword = cryptoService.Compute(contrasena, salt);
+
+            // Actualizar el usuario con los datos decodificados
+            bool success = objUser.updateUser(userId, nombre, apellido, correo, encryptedPassword, salt, rol, nivelEstudios);
+
+            if (success)
+            {
+                LblMessage.Text = "Usuario actualizado con éxito.";
+                LblMessage.ForeColor = System.Drawing.Color.Green;
+                ClearForm(); // Limpiar el formulario después de actualizar
+                LoadUsers(); // Recargar la lista de usuarios
+                CargarRoles(); // Recargar roles dinámicamente
+            }
+            else
+            {
+                LblMessage.Text = "Error al actualizar el usuario.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+            }
         }
 
         protected void BtnDelete_Click(object sender, EventArgs e)
@@ -106,10 +250,13 @@ namespace Presentation
 
             bool success = objUser.deleteUser(userId);
             LblMessage.Text = success ? "Usuario eliminado con éxito." : "Error al eliminar el usuario.";
+            LblMessage.ForeColor = success ? System.Drawing.Color.Green : System.Drawing.Color.Red;
 
             ClearForm();
-            LoadUsers();
+            LoadUsers(); // Recargar la lista de usuarios
+            CargarRoles(); // Recargar roles dinámicamente
         }
+
         private void ClearForm()
         {
             // Limpiar los campos del formulario
@@ -118,60 +265,78 @@ namespace Presentation
             TBLastName.Text = string.Empty;
             TBEmail.Text = string.Empty;
             TBPassword.Text = string.Empty;
-            TBSalt.Text = string.Empty;
             DDLRole.SelectedIndex = 0;
             DDLEducationLevel.SelectedIndex = 0;
+            TxtBuscarCorreo.Text = string.Empty; // Limpiar el campo de búsqueda
             LblMessage.Text = string.Empty;
         }
 
         protected void GVUsers_SelectedIndexChanged1(object sender, EventArgs e)
         {
-            // Obtener la fila seleccionada
-            GridViewRow selectedRow = GVUsers.SelectedRow;
-
-            // Obtener el ID del usuario desde DataKeyNames
-            HFUserId.Value = GVUsers.DataKeys[selectedRow.RowIndex].Value.ToString();
-
-            // Decodificar valores antes de asignarlos
-            TBFirstName.Text = HttpUtility.HtmlDecode(selectedRow.Cells[1].Text.Trim()); // Nombre
-            TBLastName.Text = HttpUtility.HtmlDecode(selectedRow.Cells[2].Text.Trim());  // Apellido
-            TBEmail.Text = HttpUtility.HtmlDecode(selectedRow.Cells[3].Text.Trim());     // Correo Electrónico
-
-            // Validar y asignar el Rol
-            string selectedRole = HttpUtility.HtmlDecode(selectedRow.Cells[4].Text.Trim());
-            if (!string.IsNullOrEmpty(selectedRole) && DDLRole.Items.FindByValue(selectedRole) != null)
+            try
             {
-                DDLRole.SelectedValue = selectedRole;
-            }
-            else
-            {
-                DDLRole.SelectedIndex = 0; // Seleccionar "Seleccione un rol" si no coincide
-            }
+                // Obtener la fila seleccionada
+                GridViewRow selectedRow = GVUsers.SelectedRow;
 
-            // Validar y asignar el Nivel Educativo
-            string selectedEducationLevel = HttpUtility.HtmlDecode(selectedRow.Cells[5].Text.Trim());
-            if (!string.IsNullOrEmpty(selectedEducationLevel) && DDLEducationLevel.Items.FindByValue(selectedEducationLevel) != null)
-            {
-                DDLEducationLevel.SelectedValue = selectedEducationLevel;
-            }
-            else
-            {
-                DDLEducationLevel.SelectedIndex = 0; // Seleccionar "Seleccione un nivel" si no coincide
-            }
+                // Obtener el ID del usuario desde DataKeyNames
+                HFUserId.Value = GVUsers.DataKeys[selectedRow.RowIndex].Value.ToString();
 
-            // Mensaje de confirmación (opcional)
-            LblMessage.Text = $"Usuario {TBFirstName.Text} seleccionado para edición.";
-        }
-        protected void GVUsers_RowDataBound(object sender, GridViewRowEventArgs e)
-        {
-            if (e.Row.RowType == DataControlRowType.DataRow)
-            {
-                for (int i = 0; i < e.Row.Cells.Count; i++)
+                // Decodificar valores antes de asignarlos
+                TBFirstName.Text = HttpUtility.HtmlDecode(selectedRow.Cells[1].Text.Trim()); // Nombre
+                TBLastName.Text = HttpUtility.HtmlDecode(selectedRow.Cells[2].Text.Trim());  // Apellido
+                TBEmail.Text = HttpUtility.HtmlDecode(selectedRow.Cells[3].Text.Trim());     // Correo Electrónico
+
+                // Mostrar el correo en el campo de búsqueda
+                TxtBuscarCorreo.Text = HttpUtility.HtmlDecode(selectedRow.Cells[3].Text.Trim());
+
+                // Validar y asignar el Rol
+                string selectedRole = HttpUtility.HtmlDecode(selectedRow.Cells[4].Text.Trim());
+                if (!string.IsNullOrEmpty(selectedRole) && DDLRole.Items.FindByValue(selectedRole) != null)
                 {
-                    e.Row.Cells[i].Text = HttpUtility.HtmlDecode(e.Row.Cells[i].Text);
+                    DDLRole.SelectedValue = selectedRole;
                 }
+                else
+                {
+                    DDLRole.SelectedIndex = 0; // Seleccionar "Seleccione un rol" si no coincide
+                }
+
+                // Validar y asignar el Nivel Educativo
+                string selectedEducationLevel = HttpUtility.HtmlDecode(selectedRow.Cells[5].Text.Trim());
+                if (!string.IsNullOrEmpty(selectedEducationLevel) && DDLEducationLevel.Items.FindByValue(selectedEducationLevel) != null)
+                {
+                    DDLEducationLevel.SelectedValue = selectedEducationLevel;
+                }
+                else
+                {
+                    DDLEducationLevel.SelectedIndex = 0; // Seleccionar "Seleccione un nivel" si no coincide
+                }
+
+                // Mensaje de confirmación (opcional)
+                LblMessage.Text = $"Usuario {TBFirstName.Text} seleccionado para edición.";
+            }
+            catch (Exception ex)
+            {
+                LblMessage.Text = "Error al seleccionar el usuario: " + ex.Message;
             }
         }
 
+        // Método para validar si el correo es de Gmail
+        private bool IsGmailEmail(string email)
+        {
+            // Expresión regular para validar correos de Gmail
+            string pattern = @"^[a-zA-Z0-9._%+-]+@gmail\.com$";
+            return Regex.IsMatch(email, pattern);
+        }
+
+        // Método para verificar si el correo pertenece al usuario actual
+        private bool IsCurrentUserEmail(string email)
+        {
+            if (string.IsNullOrEmpty(HFUserId.Value))
+                return false;
+
+            // Obtener el correo del usuario actual
+            string currentEmail = HttpUtility.HtmlDecode(TBEmail.Text.Trim());
+            return email.Equals(currentEmail, StringComparison.OrdinalIgnoreCase);
+        }
     }
 }

@@ -24,7 +24,7 @@
             <!-- Navigation -->
             <nav>
                 <ul>
-    <li><a href="Index.aspx">Inicio</a></li>
+    <li><a href="Home.aspx">Inicio</a></li>
 <%--    <li><a href="WFUserRegistration.aspx">Registrate</a></li>--%>
     <li><a href="WFAcercaDe.aspx">Acerca de</a></li>
 
