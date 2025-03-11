@@ -3,16 +3,56 @@
   "WorkspaceRootPath": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\logout.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\logout.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\main.master||{B30AFBFF-D992-43B7-B62D-2642580A2883}",
+      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\main.master||{B30AFBFF-D992-43B7-B62D-2642580A2883}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\default.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
-      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\default.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
+      "AbsoluteMoniker": "D:0:0:{A1629BAA-5293-437B-B823-36768FB70DF7}|Logic\\Logic.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\logic\\purchaserequestlog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1629BAA-5293-437B-B823-36768FB70DF7}|Logic\\Logic.csproj|solutionrelative:logic\\purchaserequestlog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\default.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\default.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CC891C30-717A-4001-B8B2-687E5558E465}|Data\\Data.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\data\\purchaserequestdat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CC891C30-717A-4001-B8B2-687E5558E465}|Data\\Data.csproj|solutionrelative:data\\purchaserequestdat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\wfvisits.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\wfvisits.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\wfvisits.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
+      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\wfvisits.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\wfuserregistration.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\wfuserregistration.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\wfuserregistration.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
+      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\wfuserregistration.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\wfusermanagement.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\wfusermanagement.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\wfusermanagement.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
+      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\wfusermanagement.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\wfsurvey.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\wfsurvey.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\wfsurvey.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
+      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\wfsurvey.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\wfstatisticreport.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
+      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\wfstatisticreport.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\wfpurchaserequestmanagement.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
+      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\wfpurchaserequestmanagement.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,49 +62,179 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Main.Master",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\Main.Master",
+              "RelativeDocumentMoniker": "Presentation\\Main.Master",
+              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\Main.Master*",
+              "RelativeToolTip": "Presentation\\Main.Master*",
+              "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
+              "WhenOpened": "2025-03-11T03:18:49.65Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Logout.aspx.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\Logout.aspx.cs",
-              "RelativeDocumentMoniker": "Presentation\\Logout.aspx.cs",
-              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\Logout.aspx.cs",
-              "RelativeToolTip": "Presentation\\Logout.aspx.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABUAAAABAAAA",
+              "DocumentIndex": 1,
+              "Title": "PurchaseRequestLog.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Logic\\PurchaseRequestLog.cs",
+              "RelativeDocumentMoniker": "Logic\\PurchaseRequestLog.cs",
+              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Logic\\PurchaseRequestLog.cs",
+              "RelativeToolTip": "Logic\\PurchaseRequestLog.cs",
+              "ViewState": "AQIAAC4AAAAAAAAAAAAYwD8AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-03T15:16:06.511Z",
+              "WhenOpened": "2025-03-11T03:13:44.429Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "Default.aspx.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\Default.aspx.cs",
-              "RelativeDocumentMoniker": "Presentation\\Default.aspx.cs",
-              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\Default.aspx.cs",
-              "RelativeToolTip": "Presentation\\Default.aspx.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAEgAAAABAAAA",
+              "Title": "PurchaseRequestDat.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Data\\PurchaseRequestDat.cs",
+              "RelativeDocumentMoniker": "Data\\PurchaseRequestDat.cs",
+              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Data\\PurchaseRequestDat.cs",
+              "RelativeToolTip": "Data\\PurchaseRequestDat.cs",
+              "ViewState": "AQIAAJIAAAAAAAAAAAAcwNAAAAABAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-03T15:14:51.339Z",
+              "WhenOpened": "2025-03-11T03:13:21.719Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Default.aspx",
-              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\Default.aspx",
-              "RelativeDocumentMoniker": "Presentation\\Default.aspx",
-              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\Default.aspx",
-              "RelativeToolTip": "Presentation\\Default.aspx",
+              "DocumentIndex": 3,
+              "Title": "WFVisits.aspx.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFVisits.aspx.cs",
+              "RelativeDocumentMoniker": "Presentation\\WFVisits.aspx.cs",
+              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFVisits.aspx.cs",
+              "RelativeToolTip": "Presentation\\WFVisits.aspx.cs",
+              "ViewState": "AQIAANAAAAAAAAAAAAA4wPEAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-11T03:13:05.073Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "WFVisits.aspx",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFVisits.aspx",
+              "RelativeDocumentMoniker": "Presentation\\WFVisits.aspx",
+              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFVisits.aspx",
+              "RelativeToolTip": "Presentation\\WFVisits.aspx",
               "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
-              "WhenOpened": "2025-03-03T14:52:02.155Z",
+              "WhenOpened": "2025-03-11T03:12:54.65Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "WFUserRegistration.aspx.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFUserRegistration.aspx.cs",
+              "RelativeDocumentMoniker": "Presentation\\WFUserRegistration.aspx.cs",
+              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFUserRegistration.aspx.cs",
+              "RelativeToolTip": "Presentation\\WFUserRegistration.aspx.cs",
+              "ViewState": "AQIAAHoAAAAAAAAAAAAAAJwAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-11T03:12:10.961Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "WFUserRegistration.aspx",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFUserRegistration.aspx",
+              "RelativeDocumentMoniker": "Presentation\\WFUserRegistration.aspx",
+              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFUserRegistration.aspx",
+              "RelativeToolTip": "Presentation\\WFUserRegistration.aspx",
+              "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
+              "WhenOpened": "2025-03-11T03:11:57.15Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "WFUserManagement.aspx.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFUserManagement.aspx.cs",
+              "RelativeDocumentMoniker": "Presentation\\WFUserManagement.aspx.cs",
+              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFUserManagement.aspx.cs",
+              "RelativeToolTip": "Presentation\\WFUserManagement.aspx.cs",
+              "ViewState": "AQIAADMBAAAAAAAAAAAAAFUBAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-11T03:11:09.548Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "WFUserManagement.aspx",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFUserManagement.aspx",
+              "RelativeDocumentMoniker": "Presentation\\WFUserManagement.aspx",
+              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFUserManagement.aspx",
+              "RelativeToolTip": "Presentation\\WFUserManagement.aspx",
+              "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
+              "WhenOpened": "2025-03-11T03:10:39.33Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "WFSurvey.aspx.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFSurvey.aspx.cs",
+              "RelativeDocumentMoniker": "Presentation\\WFSurvey.aspx.cs",
+              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFSurvey.aspx.cs",
+              "RelativeToolTip": "Presentation\\WFSurvey.aspx.cs",
+              "ViewState": "AQIAAG8AAAAAAAAAAAAUwIIAAABAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-11T03:09:52.662Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "WFSurvey.aspx",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFSurvey.aspx",
+              "RelativeDocumentMoniker": "Presentation\\WFSurvey.aspx",
+              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFSurvey.aspx",
+              "RelativeToolTip": "Presentation\\WFSurvey.aspx",
+              "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
+              "WhenOpened": "2025-03-11T03:09:39.157Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "WFStatisticReport.aspx",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFStatisticReport.aspx",
+              "RelativeDocumentMoniker": "Presentation\\WFStatisticReport.aspx",
+              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFStatisticReport.aspx",
+              "RelativeToolTip": "Presentation\\WFStatisticReport.aspx",
+              "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
+              "WhenOpened": "2025-03-11T03:09:19.755Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "WFPurchaseRequestManagement.aspx",
+              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFPurchaseRequestManagement.aspx",
+              "RelativeDocumentMoniker": "Presentation\\WFPurchaseRequestManagement.aspx",
+              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFPurchaseRequestManagement.aspx",
+              "RelativeToolTip": "Presentation\\WFPurchaseRequestManagement.aspx",
+              "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
+              "WhenOpened": "2025-03-11T03:08:55.588Z",
               "EditorCaption": ""
             }
           ]

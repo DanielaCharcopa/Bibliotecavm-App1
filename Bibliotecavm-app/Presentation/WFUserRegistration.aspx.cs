@@ -1,77 +1,155 @@
 ﻿using System;
+using System.Web;
 using Logic;
-using System.Collections.Generic;
+using Model;
+using SimpleCrypto;
+using System.Text.RegularExpressions;
+using System.Web.UI.WebControls;
 
 namespace Presentation
 {
     public partial class WFUserRegistration : System.Web.UI.Page
     {
-        UserLogic objUserLogic = new UserLogic();
+        // Instancia de la clase de lógica de usuarios
+        UserLogic objUser = new UserLogic();
+        string nombre, apellido, correo, contrasena, salt, rol, nivelEstudios;
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                bool adminExists = objUserLogic.CheckAdminExists(); // Llamamos a la capa lógica
-
-                // Si ya existe un administrador, deshabilitamos la opción de "Administrador"
-                if (adminExists)
-                {
-                    DDLRole.Items.FindByValue("Administrador").Enabled = false;
-                }
+                CargarRoles(); // Cargar roles dinámicamente
             }
         }
 
-        // Método que se ejecuta al hacer clic en el botón "Guardar"
+        private void CargarRoles()
+        {
+            // Verificar si ya existe un administrador
+            bool existeAdministrador = objUser.CheckAdminExists();
+
+            // Limpiar el DropDownList de roles
+            DDLRole.Items.Clear();
+
+            // Agregar la opción por defecto
+            DDLRole.Items.Add(new ListItem("Seleccione un rol", ""));
+
+            // Agregar roles según la existencia de un administrador
+            if (!existeAdministrador)
+            {
+                DDLRole.Items.Add(new ListItem("Administrador", "Administrador"));
+            }
+
+            // Agregar los demás roles
+            DDLRole.Items.Add(new ListItem("Docente", "Docente"));
+            DDLRole.Items.Add(new ListItem("Estudiante", "Estudiante"));
+        }
+
         protected void BtnSave_Click(object sender, EventArgs e)
         {
-            string nombre = TBFirstName.Text.Trim();
-            string apellido = TBLastName.Text.Trim();
-            string correo = TBEmail.Text.Trim();
-            string contrasena = TBPassword.Text.Trim();
-            string salt = TBSalt.Text.Trim();
-            string rol = DDLRole.SelectedValue;
-            string nivelEstudios = DDLEducationLevel.SelectedValue;
+            // Decodificar los datos ingresados antes de procesarlos
+            nombre = HttpUtility.HtmlDecode(TBFirstName.Text.Trim());
+            apellido = HttpUtility.HtmlDecode(TBLastName.Text.Trim());
+            correo = HttpUtility.HtmlDecode(TBEmail.Text.Trim());
+            contrasena = TBPassword.Text.Trim();
+            rol = DDLRole.SelectedValue;
+            nivelEstudios = DDLEducationLevel.SelectedValue;
 
-            // Verificar si ya existe un administrador antes de permitir la selección de ese rol
-            bool adminExists = objUserLogic.CheckAdminExists();
-            if (rol == "Administrador" && adminExists)
+            // Validar campos obligatorios
+            if (string.IsNullOrEmpty(nombre))
             {
-                LblMessage.Text = "Ya existe un administrador. Solo puede haber uno.";
+                LblMessage.Text = "El campo 'Nombre' es obligatorio.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
                 return;
             }
 
-            // Validación básica de los campos
-            if (string.IsNullOrEmpty(nombre) || string.IsNullOrEmpty(apellido) || string.IsNullOrEmpty(correo) ||
-                string.IsNullOrEmpty(contrasena) || string.IsNullOrEmpty(salt) || string.IsNullOrEmpty(rol) ||
-                string.IsNullOrEmpty(nivelEstudios))
+            if (string.IsNullOrEmpty(apellido))
             {
-                LblMessage.Text = "Por favor, complete todos los campos.";
+                LblMessage.Text = "El campo 'Apellido' es obligatorio.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
                 return;
             }
 
-            // Llamada al método para guardar el usuario
-            bool resultado = objUserLogic.saveUser(nombre, apellido, correo, contrasena, salt, rol, nivelEstudios);
-            if (resultado)
+            if (string.IsNullOrEmpty(correo))
             {
-                LblMessage.Text = "Usuario registrado exitosamente.";
-                clearFields();
+                LblMessage.Text = "El campo 'Correo Electrónico' es obligatorio.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
+
+            // Validar que el correo sea de Gmail
+            if (!IsGmailEmail(correo))
+            {
+                LblMessage.Text = "Por favor, ingrese un correo electrónico válido de Gmail (ejemplo@gmail.com).";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
+
+            if (string.IsNullOrEmpty(contrasena))
+            {
+                LblMessage.Text = "El campo 'Contraseña' es obligatorio.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
+
+            if (string.IsNullOrEmpty(rol) || string.IsNullOrEmpty(nivelEstudios))
+            {
+                LblMessage.Text = "Por favor seleccione un rol y un nivel educativo.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
+
+            // Verificar si ya existe un administrador
+            if (rol == "Administrador" && objUser.CheckAdminExists())
+            {
+                LblMessage.Text = "Ya existe un Administrador. Por favor, designe otro rol o elimine el actual administrador.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
+
+            // Verificar si el correo ya está registrado
+            if (objUser.isEmailRegistered(correo))
+            {
+                LblMessage.Text = "El correo electrónico ya está registrado. Por favor, use otro correo.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
+
+            // Generar el salt y encriptar la contraseña
+            ICryptoService cryptoService = new PBKDF2(); // Asume que tienes una clase PBKDF2 para encriptación
+            salt = cryptoService.GenerateSalt();
+            string encryptedPassword = cryptoService.Compute(contrasena, salt);
+
+            // Guardar usuario con los datos decodificados
+            bool success = objUser.saveUser(nombre, apellido, correo, encryptedPassword, salt, rol, nivelEstudios);
+
+            if (success)
+            {
+                LblMessage.Text = "Usuario guardado exitosamente.";
+                LblMessage.ForeColor = System.Drawing.Color.Green;
+                ClearForm(); // Limpiar el formulario después de guardar
             }
             else
             {
-                LblMessage.Text = "Error al registrar el usuario.";
+                LblMessage.Text = "Error al guardar el usuario.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
             }
         }
 
-
-        // Método para limpiar campos
-        private void clearFields()
+        // Método para validar si el correo es de Gmail
+        private bool IsGmailEmail(string email)
         {
-            TBFirstName.Text = "";
-            TBLastName.Text = "";
-            TBEmail.Text = "";
-            TBPassword.Text = "";
-            TBSalt.Text = "";
+            // Expresión regular para validar correos de Gmail
+            string pattern = @"^[a-zA-Z0-9._%+-]+@gmail\.com$";
+            return Regex.IsMatch(email, pattern);
+        }
+
+        private void ClearForm()
+        {
+            // Limpiar los campos del formulario
+            TBFirstName.Text = string.Empty;
+            TBLastName.Text = string.Empty;
+            TBEmail.Text = string.Empty;
+            TBPassword.Text = string.Empty;
             DDLRole.SelectedIndex = 0;
             DDLEducationLevel.SelectedIndex = 0;
         }

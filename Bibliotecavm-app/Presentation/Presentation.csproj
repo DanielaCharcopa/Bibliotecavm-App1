@@ -284,8 +284,9 @@
     <Content Include="bin\System.Threading.Tasks.Extensions.xml" />
     <Content Include="bin\ZstdSharp.dll" />
     <Content Include="Default.aspx" />
+    <Content Include="Home.aspx" />
+    <Content Include="Home2.aspx" />
     <Content Include="ILLink\ILLink.Descriptors.LibraryBuild.xml" />
-    <Content Include="Index.aspx" />
     <Content Include="Logout.aspx" />
     <Content Include="obj\Debug\Presentation.csproj.FileListAbsolute.txt" />
     <Content Include="obj\Debug\Presentation.dll" />
@@ -294,6 +295,7 @@
     <Content Include="WFAcercaDe.aspx" />
     <Content Include="WFAnswer.aspx" />
     <Content Include="WFAnswerManagement.aspx" />
+    <Content Include="WFPresentationMaterial.aspx" />
     <Content Include="WFPurchaseRequest.aspx" />
     <Content Include="WFPurchaseRequestManagement.aspx" />
     <Content Include="WFStatisticReport.aspx" />
@@ -310,12 +312,19 @@
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Index.aspx.cs">
-      <DependentUpon>Index.aspx</DependentUpon>
+    <Compile Include="Home.aspx.cs">
+      <DependentUpon>Home.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Index.aspx.designer.cs">
-      <DependentUpon>Index.aspx</DependentUpon>
+    <Compile Include="Home.aspx.designer.cs">
+      <DependentUpon>Home.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Home2.aspx.cs">
+      <DependentUpon>Home2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Home2.aspx.designer.cs">
+      <DependentUpon>Home2.aspx</DependentUpon>
     </Compile>
     <Compile Include="Logout.aspx.cs">
       <DependentUpon>Logout.aspx</DependentUpon>
@@ -330,6 +339,13 @@
     </Compile>
     <Compile Include="Main.Master.designer.cs">
       <DependentUpon>Main.Master</DependentUpon>
+    </Compile>
+    <Compile Include="MainUsuario.Master.cs">
+      <DependentUpon>MainUsuario.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MainUsuario.Master.designer.cs">
+      <DependentUpon>MainUsuario.Master</DependentUpon>
     </Compile>
     <Compile Include="obj\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -353,6 +369,13 @@
     </Compile>
     <Compile Include="WFAnswerManagement.aspx.designer.cs">
       <DependentUpon>WFAnswerManagement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="WFPresentationMaterial.aspx.cs">
+      <DependentUpon>WFPresentationMaterial.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WFPresentationMaterial.aspx.designer.cs">
+      <DependentUpon>WFPresentationMaterial.aspx</DependentUpon>
     </Compile>
     <Compile Include="WFPurchaseRequest.aspx.cs">
       <DependentUpon>WFPurchaseRequest.aspx</DependentUpon>
@@ -424,6 +447,7 @@
     <Content Include="obj\Debug\Presenta.BC777DBE.Up2Date" />
     <Content Include="obj\Debug\Presentation.csproj.AssemblyReference.cache" />
     <Content Include="obj\Debug\Presentation.csproj.CoreCompileInputs.cache" />
+    <Content Include="MainUsuario.Master" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

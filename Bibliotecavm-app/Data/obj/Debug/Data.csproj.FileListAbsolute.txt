@@ -131,15 +131,3 @@ C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Data\bin\roslyn\Sy
 C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Data\bin\roslyn\System.Memory.dll
 C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Data\bin\roslyn\System.Numerics.Vectors.dll
 C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Data\bin\roslyn\System.Runtime.CompilerServices.Unsafe.dll
-C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Data\bin\Google.Protobuf.dll
-C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Data\bin\Microsoft.Bcl.AsyncInterfaces.dll
-C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Data\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
-C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Data\bin\System.Buffers.dll
-C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Data\bin\System.Configuration.ConfigurationManager.dll
-C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Data\bin\System.Diagnostics.DiagnosticSource.dll
-C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Data\bin\System.IO.Pipelines.dll
-C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Data\bin\System.Memory.dll
-C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Data\bin\System.Numerics.Vectors.dll
-C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Data\bin\System.Runtime.CompilerServices.Unsafe.dll
-C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Data\bin\System.Threading.Tasks.Extensions.dll
-C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Data\bin\ZstdSharp.dll

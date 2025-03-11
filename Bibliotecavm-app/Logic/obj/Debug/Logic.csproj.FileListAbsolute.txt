@@ -157,4 +157,3 @@ C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Logic\bin\roslyn\S
 C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Logic\bin\roslyn\System.Memory.dll
 C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Logic\bin\roslyn\System.Numerics.Vectors.dll
 C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Logic\bin\roslyn\System.Runtime.CompilerServices.Unsafe.dll
-C:\Users\User\Desktop\clon\Bibliotecavm-App1\Bibliotecavm-app\Logic\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll

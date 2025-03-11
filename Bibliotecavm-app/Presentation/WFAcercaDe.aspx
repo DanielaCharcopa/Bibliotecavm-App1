@@ -1,5 +1,4 @@
-﻿<%@ Page Title="Acerca de" Language="C#" MasterPageFile="~/Main.Master" AutoEventWireup="true" CodeBehind="WFAcercaDe.aspx.cs" Inherits="Presentation.WFAcercaDe" %>
-<asp:Content ID="Content3" ContentPlaceHolderID="head" runat="server">
+﻿<%@ Page Title="Acerca de" Language="C#" MasterPageFile="~/Main.Master" AutoEventWireup="true" CodeBehind="WFAcercaDe.aspx.cs" Inherits="Presentation.WFAcercaDe" %><asp:Content ID="Content3" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content4" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <h1>Acerca de</h1>

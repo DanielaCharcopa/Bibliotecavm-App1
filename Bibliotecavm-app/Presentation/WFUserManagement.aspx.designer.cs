@@ -42,6 +42,15 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.TextBox TBFirstName;
 
         /// <summary>
+        /// Control LblNombreMessage.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblNombreMessage;
+
+        /// <summary>
         /// Control TBLastName.
         /// </summary>
         /// <remarks>
@@ -49,6 +58,15 @@ namespace Presentation
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox TBLastName;
+
+        /// <summary>
+        /// Control LblApellidoMessage.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblApellidoMessage;
 
         /// <summary>
         /// Control TBEmail.
@@ -60,6 +78,15 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.TextBox TBEmail;
 
         /// <summary>
+        /// Control LblCorreoMessage.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblCorreoMessage;
+
+        /// <summary>
         /// Control TBPassword.
         /// </summary>
         /// <remarks>
@@ -69,13 +96,13 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.TextBox TBPassword;
 
         /// <summary>
-        /// Control TBSalt.
+        /// Control LblPasswordMessage.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TBSalt;
+        protected global::System.Web.UI.WebControls.Label LblPasswordMessage;
 
         /// <summary>
         /// Control DDLRole.
@@ -130,6 +157,15 @@ namespace Presentation
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button BtnClear;
+
+        /// <summary>
+        /// Control TxtBuscarCorreo.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TxtBuscarCorreo;
 
         /// <summary>
         /// Control GVUsers.

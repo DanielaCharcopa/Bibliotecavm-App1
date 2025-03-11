@@ -1,0 +1,64 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="MainUsuario.master.cs" Inherits="Presentation.MainUsuario" %>
+
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title><asp:ContentPlaceHolder ID="head" runat="server" /></title>
+    <link href="styles/main.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div class="container">
+            <!-- Header -->
+            <header>
+                <div class="logo">
+                    <h1>Sistema de Gestión</h1>
+                </div>
+                <div class="user-info">
+                    <asp:Label ID="lblUsername" runat="server" Text="Bienvenido, Usuario"></asp:Label>
+                    <asp:LinkButton ID="lnkLogout" runat="server" OnClick="lnkLogout_Click">Cerrar Sesión</asp:LinkButton>
+                </div>
+            </header>
+
+            <!-- Navigation -->
+            <nav>
+                <ul>
+                    <li><a href="Home2.aspx">Inicio</a></li>
+                    <!-- Paneles para roles específicos -->
+                    <asp:Panel ID="pnlAdmin" runat="server" Visible="false">
+                        <li><a href="WFUserManagement.aspx">Gestión de usuarios</a></li>
+                        <li><a href="WFSurvey.aspx">Registro de encuesta</a></li>
+                        <li><a href="WFStatisticReport.aspx">Reporte estadístico</a></li>
+                    </asp:Panel>
+
+                    <asp:Panel ID="pnlDocente" runat="server" Visible="false">
+                        <li><a href="WFPresentationMaterial.aspx">Materiales Educativos</a></li>
+                        <li><a href="WFAnswer.aspx">Respuestas</a></li>
+                        <li><a href="WFPurchaseRequest.aspx">Solicitud de compra</a></li>
+                        <li><a href="WFVisits.aspx">Registro de visitas</a></li>
+                        <li><a href="WFStatisticReport.aspx">Reporte estadístico</a></li>
+                    </asp:Panel>
+
+                    <asp:Panel ID="pnlEstudiante" runat="server" Visible="false">
+                          <li><a href="WFPresentationMaterial.aspx">Materiales Educativos</a></li>
+                        <li><a href="WFAnswer.aspx">Respuestas</a></li>
+                        <li><a href="WFPurchaseRequest.aspx">Solicitud de compra</a></li>
+                        <li><a href="WFVisits.aspx">Registro de visitas</a></li>
+                    </asp:Panel>
+                </ul>
+            </nav>
+
+            <!-- Main Content -->
+            <main>
+                <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
+            </main>
+
+            <!-- Footer -->
+            <footer>
+                <p>© 2024 Sistema de Gestión - Todos los derechos reservados</p>
+            </footer>
+        </div>
+    </form>
+</body>
+</html>
