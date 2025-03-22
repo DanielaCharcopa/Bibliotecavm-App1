@@ -18,7 +18,7 @@ namespace Logic
         }
 
         // Insertar un nuevo material educativo
-        public bool saveMaterialEducativo(string _titulo, DateTime _anoPublicacion, string _urlDescarga, decimal _precio,
+        public bool saveMaterialEducativo(string _titulo, int _anoPublicacion, string _urlDescarga, decimal _precio,
                                  string _keywords, string _formato, int _editorialId, int _categoriaId)
         {
 
@@ -27,7 +27,7 @@ namespace Logic
         }
 
         // Actualizar un material educativo
-        public bool updateMaterialEducativo(int _idMaterial, string _titulo, DateTime _anoPublicacion, string _urlDescarga,
+        public bool updateMaterialEducativo(int _idMaterial, string _titulo, int _anoPublicacion, string _urlDescarga,
                                    decimal _precio, string _keywords, string _formato, int _editorialId,
                                    int _categoriaId)
         {

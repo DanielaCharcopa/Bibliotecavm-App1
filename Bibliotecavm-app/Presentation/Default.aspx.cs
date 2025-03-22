@@ -75,7 +75,7 @@ namespace Presentation
                     LblMsg.ForeColor = System.Drawing.Color.Red;
                 }
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                 LblMsg.Text = "Ocurrió un error al iniciar sesión. Por favor, inténtelo de nuevo.";
                 LblMsg.ForeColor = System.Drawing.Color.Red;

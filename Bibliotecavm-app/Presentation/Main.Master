@@ -25,8 +25,14 @@
             <nav>
                 <ul>
     <li><a href="Home.aspx">Inicio</a></li>
-<%--    <li><a href="WFUserRegistration.aspx">Registrate</a></li>--%>
-    <li><a href="WFAcercaDe.aspx">Acerca de</a></li>
+ <%--<li><a href="WFUserRegistration.aspx">Registrate</a></li>--%>
+    <%--<li><a href="Default.aspx">Inicio de Sesión</a></li>--%>
+    <li><a href="WFCategory.aspx">Categoria</a></li>
+      <li><a href="WFAuthors.aspx">Autors</a></li>
+       <li><a href="WFEditorial.aspx">Editorial</a></li>
+    <li><a href="WFMatEducativo.aspx">Material Educativo</a></li>
+    <li><a href="WFMatEducativoSecondary.aspx">Material Educativo Secu</a></li>
+      <li><a href="WFAcercaDe.aspx">Acerca de</a></li>
 
     <!-- Paneles para roles específicos -->
     <asp:Panel ID="pnlAdmin" runat="server" Visible="false">

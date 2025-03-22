@@ -19,7 +19,7 @@ namespace Data
 
             MySqlCommand objSelectCmd = new MySqlCommand();
             objSelectCmd.Connection = objPer.openConnection();
-            objSelectCmd.CommandText = "procSelectMaterialEducativo"; // Nombre del procedimiento almacenado
+            objSelectCmd.CommandText = "proSelectMaterialEducativo"; // Nombre del procedimiento almacenado
             objSelectCmd.CommandType = CommandType.StoredProcedure;
 
             objAdapter.SelectCommand = objSelectCmd;
@@ -29,7 +29,7 @@ namespace Data
             return objData;
         }
 
-        public bool saveMaterialEducativo(string _titulo, DateTime _anoPublicacion, string _urlDescarga, decimal _precio,
+        public bool saveMaterialEducativo(string _titulo, int _anoPublicacion, string _urlDescarga, decimal _precio,
                                 string _keywords, string _formato, int _editorialId, int _categoriaId)
         {
             bool executed = false;
@@ -39,14 +39,14 @@ namespace Data
             objInsertCmd.CommandType = CommandType.StoredProcedure;
 
             // Parámetros del procedimiento almacenado
-            objInsertCmd.Parameters.Add("p_titulo", MySqlDbType.VarChar).Value = _titulo;
-            objInsertCmd.Parameters.Add("p_ano_publicacion", MySqlDbType.Date).Value = _anoPublicacion;
-            objInsertCmd.Parameters.Add("p_url_descarga", MySqlDbType.Text).Value = _urlDescarga;
-            objInsertCmd.Parameters.Add("p_precio", MySqlDbType.Decimal).Value = _precio;
-            objInsertCmd.Parameters.Add("p_keywords", MySqlDbType.Text).Value = _keywords ?? (object)DBNull.Value;
-            objInsertCmd.Parameters.Add("p_formato", MySqlDbType.VarChar).Value = _formato ?? (object)DBNull.Value;
-            objInsertCmd.Parameters.Add("p_editorial_edi_id", MySqlDbType.Int32).Value = _editorialId;
-            objInsertCmd.Parameters.Add("p_categorias_cat_id", MySqlDbType.Int32).Value = _categoriaId;
+            objInsertCmd.Parameters.Add("titulo", MySqlDbType.VarChar).Value = _titulo;
+            objInsertCmd.Parameters.Add("ano_publicacion", MySqlDbType.Int32).Value = _anoPublicacion;
+            objInsertCmd.Parameters.Add("url_descarga", MySqlDbType.Text).Value = _urlDescarga;
+            objInsertCmd.Parameters.Add("precio", MySqlDbType.Decimal).Value = _precio;
+            objInsertCmd.Parameters.Add("keywords", MySqlDbType.Text).Value = _keywords ?? (object)DBNull.Value;
+            objInsertCmd.Parameters.Add("formato", MySqlDbType.VarChar).Value = _formato ?? (object)DBNull.Value;
+            objInsertCmd.Parameters.Add("editorial_id", MySqlDbType.Int32).Value = _editorialId;
+            objInsertCmd.Parameters.Add("categoria_id", MySqlDbType.Int32).Value = _categoriaId;
 
 
             try
@@ -66,7 +66,7 @@ namespace Data
             return executed; // Devuelve true si se ejecutó correctamente
         }
 
-        public bool updateMaterialEducativo(int _idMaterial, string _titulo, DateTime _anoPublicacion, string _urlDescarga,
+        public bool updateMaterialEducativo(int _idMaterial, string _titulo, int _anoPublicacion, string _urlDescarga,
                                    decimal _precio, string _keywords, string _formato, int _editorialId,
                                    int _categoriaId)
         {
@@ -77,15 +77,15 @@ namespace Data
             objUpdateCmd.CommandType = CommandType.StoredProcedure;
 
             // Parámetros del procedimiento almacenado
-            objUpdateCmd.Parameters.Add("mat_id", MySqlDbType.Int32).Value = _idMaterial;
-            objUpdateCmd.Parameters.Add("mat_titulo", MySqlDbType.VarChar).Value = _titulo;
-            objUpdateCmd.Parameters.Add("mat_ano_publicacion", MySqlDbType.Date).Value = _anoPublicacion;
-            objUpdateCmd.Parameters.Add("mat_url_descarga", MySqlDbType.Text).Value = _urlDescarga;
-            objUpdateCmd.Parameters.Add("mat_precio", MySqlDbType.Decimal).Value = _precio;
-            objUpdateCmd.Parameters.Add("mat_keywords", MySqlDbType.Text).Value = _keywords ?? (object)DBNull.Value;
-            objUpdateCmd.Parameters.Add("mat_formato", MySqlDbType.VarChar).Value = _formato ?? (object)DBNull.Value;
-            objUpdateCmd.Parameters.Add("tbl_editorial_edi_id", MySqlDbType.Int32).Value = _editorialId;
-            objUpdateCmd.Parameters.Add("tbl_categorias_cat_id", MySqlDbType.Int32).Value = _categoriaId;
+            objUpdateCmd.Parameters.Add("id", MySqlDbType.Int32).Value = _idMaterial;
+            objUpdateCmd.Parameters.Add("titulo", MySqlDbType.VarChar).Value = _titulo;
+            objUpdateCmd.Parameters.Add("ano_publicacion", MySqlDbType.Int32).Value = _anoPublicacion;
+            objUpdateCmd.Parameters.Add("url_descarga", MySqlDbType.Text).Value = _urlDescarga;
+            objUpdateCmd.Parameters.Add("precio", MySqlDbType.Decimal).Value = _precio;
+            objUpdateCmd.Parameters.Add("keywords", MySqlDbType.Text).Value = _keywords ?? (object)DBNull.Value;
+            objUpdateCmd.Parameters.Add("formato", MySqlDbType.VarChar).Value = _formato ?? (object)DBNull.Value;
+            objUpdateCmd.Parameters.Add("editorial_id", MySqlDbType.Int32).Value = _editorialId;
+            objUpdateCmd.Parameters.Add("categoria_id", MySqlDbType.Int32).Value = _categoriaId;
 
 
             try
@@ -113,7 +113,7 @@ namespace Data
             objDeleteCmd.Connection = objPer.openConnection();
             objDeleteCmd.CommandText = "proDeleteMaterialEducativo"; // Procedimiento almacenado
             objDeleteCmd.CommandType = CommandType.StoredProcedure;
-            objDeleteCmd.Parameters.Add("mat_id", MySqlDbType.Int32).Value = _idMaterial;
+            objDeleteCmd.Parameters.Add("id", MySqlDbType.Int32).Value = _idMaterial;
 
 
             try
