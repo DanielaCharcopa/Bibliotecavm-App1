@@ -17,9 +17,14 @@ using System.Web;
             {
                 return objPub.showEditorials();
             }
+        public DataSet showEditorialsDDL()
+        {
+            return objPub.showEditorialsDDL();
+        }
 
-            // Método para guardar una nueva Editorial
-            public bool saveEditorial(string _nombre, string _ciudad, string _telefono, string _correo)
+
+        // Método para guardar una nueva Editorial
+        public bool saveEditorial(string _nombre, string _ciudad, string _telefono, string _correo)
             {
                 return objPub.saveEditorial(_nombre, _ciudad, _telefono, _correo);
             }

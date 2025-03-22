@@ -295,6 +295,11 @@
     <Content Include="WFAcercaDe.aspx" />
     <Content Include="WFAnswer.aspx" />
     <Content Include="WFAnswerManagement.aspx" />
+    <Content Include="WFAuthors.aspx" />
+    <Content Include="WFCategory.aspx" />
+    <Content Include="WFEditorial.aspx" />
+    <Content Include="WFMatEducativo.aspx" />
+    <Content Include="WFMatEducativoSecondary.aspx" />
     <Content Include="WFPresentationMaterial.aspx" />
     <Content Include="WFPurchaseRequest.aspx" />
     <Content Include="WFPurchaseRequestManagement.aspx" />
@@ -369,6 +374,41 @@
     </Compile>
     <Compile Include="WFAnswerManagement.aspx.designer.cs">
       <DependentUpon>WFAnswerManagement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="WFAuthors.aspx.cs">
+      <DependentUpon>WFAuthors.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WFAuthors.aspx.designer.cs">
+      <DependentUpon>WFAuthors.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="WFCategory.aspx.cs">
+      <DependentUpon>WFCategory.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WFCategory.aspx.designer.cs">
+      <DependentUpon>WFCategory.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="WFEditorial.aspx.cs">
+      <DependentUpon>WFEditorial.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WFEditorial.aspx.designer.cs">
+      <DependentUpon>WFEditorial.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="WFMatEducativo.aspx.cs">
+      <DependentUpon>WFMatEducativo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WFMatEducativo.aspx.designer.cs">
+      <DependentUpon>WFMatEducativo.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="WFMatEducativoSecondary.aspx.cs">
+      <DependentUpon>WFMatEducativoSecondary.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WFMatEducativoSecondary.aspx.designer.cs">
+      <DependentUpon>WFMatEducativoSecondary.aspx</DependentUpon>
     </Compile>
     <Compile Include="WFPresentationMaterial.aspx.cs">
       <DependentUpon>WFPresentationMaterial.aspx</DependentUpon>
