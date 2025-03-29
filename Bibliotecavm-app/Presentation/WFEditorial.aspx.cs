@@ -42,7 +42,7 @@ namespace Presentation
                     LblMessage.Text = "¡Editorial guardada exitosamente!";
                     clearFields();
                     showEditorials();
-                } 
+                }
                 else
                 {
                     LblMessage.Text = "Error al guardar la editorial. Verifica los datos.";

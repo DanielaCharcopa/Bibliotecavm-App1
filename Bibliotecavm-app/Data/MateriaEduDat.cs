@@ -1,9 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
 
 namespace Data
 {
@@ -29,8 +26,10 @@ namespace Data
             return objData;
         }
 
+        // Guardar un nuevo material educativo
+        // Guardar un nuevo material educativo
         public bool saveMaterialEducativo(string _titulo, int _anoPublicacion, string _urlDescarga, decimal _precio,
-                                string _keywords, string _formato, int _editorialId, int _categoriaId)
+                                         string _keywords, string _formato, int _editorialId, int _categoriaId)
         {
             bool executed = false;
             MySqlCommand objInsertCmd = new MySqlCommand();
@@ -47,7 +46,6 @@ namespace Data
             objInsertCmd.Parameters.Add("formato", MySqlDbType.VarChar).Value = _formato ?? (object)DBNull.Value;
             objInsertCmd.Parameters.Add("editorial_id", MySqlDbType.Int32).Value = _editorialId;
             objInsertCmd.Parameters.Add("categoria_id", MySqlDbType.Int32).Value = _categoriaId;
-
 
             try
             {
@@ -66,9 +64,10 @@ namespace Data
             return executed; // Devuelve true si se ejecutó correctamente
         }
 
+        // Actualizar un material educativo
         public bool updateMaterialEducativo(int _idMaterial, string _titulo, int _anoPublicacion, string _urlDescarga,
-                                   decimal _precio, string _keywords, string _formato, int _editorialId,
-                                   int _categoriaId)
+                                           decimal _precio, string _keywords, string _formato, int _editorialId,
+                                           int _categoriaId)
         {
             bool executed = false;
             MySqlCommand objUpdateCmd = new MySqlCommand();
@@ -87,7 +86,6 @@ namespace Data
             objUpdateCmd.Parameters.Add("editorial_id", MySqlDbType.Int32).Value = _editorialId;
             objUpdateCmd.Parameters.Add("categoria_id", MySqlDbType.Int32).Value = _categoriaId;
 
-
             try
             {
                 int rows = objUpdateCmd.ExecuteNonQuery();
@@ -104,17 +102,15 @@ namespace Data
 
             return executed; // Devuelve true si se ejecutó correctamente
         }
-
         // Eliminar un material educativo
         public bool deleteMaterialEducativo(int _idMaterial)
         {
             bool executed = false;
             MySqlCommand objDeleteCmd = new MySqlCommand();
             objDeleteCmd.Connection = objPer.openConnection();
-            objDeleteCmd.CommandText = "proDeleteMaterialEducativo"; // Procedimiento almacenado
+            objDeleteCmd.CommandText = "proDeleteMaterialEducativo"; // Nombre del procedimiento almacenado
             objDeleteCmd.CommandType = CommandType.StoredProcedure;
             objDeleteCmd.Parameters.Add("id", MySqlDbType.Int32).Value = _idMaterial;
-
 
             try
             {
@@ -133,6 +129,30 @@ namespace Data
             return executed; // Devuelve true si se ejecutó correctamente
         }
 
+        public void ActualizarDuracionVisita(int visitaId, string duracion)
+        {
+            MySqlCommand objUpdateCmd = new MySqlCommand();
+            objUpdateCmd.Connection = objPer.openConnection();
+            objUpdateCmd.CommandText = "procActualizarDuracionVisita"; // Nombre del procedimiento almacenado
+            objUpdateCmd.CommandType = CommandType.StoredProcedure;
 
+            // Parámetros del procedimiento almacenado
+            objUpdateCmd.Parameters.Add("v_visita_id", MySqlDbType.Int32).Value = visitaId;
+            objUpdateCmd.Parameters.Add("v_duracion", MySqlDbType.Time).Value = TimeSpan.Parse(duracion);
+
+            try
+            {
+                objUpdateCmd.ExecuteNonQuery(); // Ejecutar el procedimiento almacenado
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al actualizar la duración de la visita: " + ex.Message);
+            }
+            finally
+            {
+                objPer.closeConnection(); // Cierra la conexión          
+            }
+
+        }
     }
 }

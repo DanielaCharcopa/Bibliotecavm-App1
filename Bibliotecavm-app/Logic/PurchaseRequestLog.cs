@@ -1,9 +1,6 @@
 ﻿using Data;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
 
 namespace Logic
 {
@@ -55,9 +52,13 @@ namespace Logic
 
 
         // Método para obtener la lista de materiales educativos con su precio
-        public DataSet showMaterialEducativos()
+        public DataSet showGetMaterials()
         {
-            return objPur.showMaterialEducativos();
+            return objPur.showGetMaterials();
+        }
+        public DataSet ListarMaterialesEducativos()
+        {
+            return objPur.ListarMaterialesEducativos();
         }
     }
 }

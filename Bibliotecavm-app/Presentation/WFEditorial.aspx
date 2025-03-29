@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Main.Master" AutoEventWireup="true" CodeBehind="WFEditorial.aspx.cs" Inherits="Presentation.WFEditorial" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MainUsuario.Master" AutoEventWireup="true" CodeBehind="WFEditorial.aspx.cs" Inherits="Presentation.WFEditorial" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -30,9 +30,9 @@
         <%-- Grid para mostrar Editoriales --%>
         <asp:GridView ID="GVEditorial" runat="server" AutoGenerateColumns="False"
             OnSelectedIndexChanged="GVEditorial_SelectedIndexChanged"
-            DataKeyNames="edi_id">
+           >
             <Columns>
-                <asp:BoundField DataField="edi_id" HeaderText="ID" />
+                <%--<asp:BoundField DataField="edi_id" HeaderText="ID" />--%>
                 <asp:BoundField DataField="edi_nombre" HeaderText="Nombre" />
                 <asp:BoundField DataField="edi_ciudad" HeaderText="Ciudad" />
                 <asp:BoundField DataField="edi_telefono" HeaderText="Teléfono" />

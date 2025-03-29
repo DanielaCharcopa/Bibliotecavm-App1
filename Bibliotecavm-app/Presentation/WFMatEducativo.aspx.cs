@@ -138,10 +138,10 @@ namespace Presentation
                 LblMsj.ForeColor = System.Drawing.Color.Red;
             }
         }
-    
+
 
         // Actualizar un material educativo existente
-        protected void BtnUpdate_Click(object sender, EventArgs e) 
+        protected void BtnUpdate_Click(object sender, EventArgs e)
         {
             // Verificar si se ha seleccionado un material para actualizar
             if (!string.IsNullOrEmpty(HFMaterialID.Value) && int.TryParse(HFMaterialID.Value, out int id))
@@ -173,7 +173,7 @@ namespace Presentation
                 LblMsj.Text = "Error: No se ha seleccionado un Material Educativo válido para actualizar.";
             }
 
-           
+
         }
 
         // Evento para eliminar un material educativo
@@ -205,9 +205,9 @@ namespace Presentation
             {
                 LblMsj.Text = "¡Error al eliminar el material! Verifique los datos ingresados.";
                 LblMsj.ForeColor = System.Drawing.Color.Red;
-         
-     }
-            
+
+            }
+
 
         }
 

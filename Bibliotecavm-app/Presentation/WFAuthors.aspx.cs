@@ -1,4 +1,4 @@
-﻿using Logic;  // Asegúrate de tener la lógica de negocio correspondiente
+﻿using Logic;
 using System;
 using System.Data;
 using System.Web;
@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace Presentation
 {
-    public partial class WFAuthors : Page
+    public partial class WFAuthors : System.Web.UI.Page
     {
         AuthorsLog objAut = new AuthorsLog();  // Instancia de la capa lógica de autores
 
@@ -162,10 +162,10 @@ namespace Presentation
             }
         }
 
-      
 
 
-        
+
+
     }
 }
 

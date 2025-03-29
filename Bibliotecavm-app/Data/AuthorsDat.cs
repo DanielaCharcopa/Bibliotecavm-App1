@@ -9,7 +9,7 @@ namespace Data
 {
     public class AuthorsDat
     {
-        Persistencia objPer = new Persistencia(); // Cambio para coincidir con la clase persistencia en minúscula
+        Persistencia objPer = new Persistencia();
 
         // Método para mostrar todos los Autores
         public DataSet showAuthors()

@@ -1,80 +1,261 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Main.master.cs" Inherits="Presentation.Main" %>
 
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistema de Gestión - Plataforma de administración">
     <title><asp:ContentPlaceHolder ID="head" runat="server" /></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
     <link href="styles/main.css" rel="stylesheet" type="text/css" />
+    <style>
+        /* Reset y estilos base */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --text-color: #333;
+            --light-bg: rgba(255, 255, 255, 0.9);
+            --spacing-unit: 1rem;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('../Recursos/Images/fondo.webp');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+        }
+        
+        /* Contenedor principal */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-unit);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--light-bg);
+        }
+        
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: var(--spacing-unit) 0;
+            background-color: var(--light-bg);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center; /* Asegura alineación horizontal */
+            gap: 10px; /* Espaciado entre el logo y el texto */
+        }
+
+        .logo-img {
+            max-width: 50px; /* Ajusta según necesidad */
+            height: auto; /* Mantiene la proporción */
+            object-fit: contain;
+        }
+
+
+        .user-info {
+            display: flex;
+            gap: var(--spacing-unit);
+            align-items: center;
+        }
+        
+        /* Navegación */
+        nav {
+            backdrop-filter: blur(39px);
+            -webkit-backdrop-filter: blur(39px);
+            border-radius: 9px;
+            box-shadow: 0 5px 30px 0 rgba(22, 32, 220, 0.37);
+            padding: calc(var(--spacing-unit) * 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            margin: calc(var(--spacing-unit) * 0.75) 0;
+        }
+        
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-unit);
+            justify-content: center;
+        }
+        
+        nav ul li a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            position: relative;
+            padding: 0.5rem 0;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            transition: color 0.3s ease;
+        }
+        
+        nav ul li a:hover,
+        nav ul li a:focus {
+            color: var(--secondary-color);
+            outline: none;
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background-color: var(--secondary-color);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        nav ul li a:hover::after,
+        nav ul li a:focus::after {
+            width: 100%;
+        }
+        
+        /* Contenido principal */
+        main {
+            flex: 1;
+            padding: var(--spacing-unit) 0;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: var(--spacing-unit) 0;
+            margin-top: auto;
+            background-color: var(--light-bg);
+        }
+        
+        footer p {
+            font-size: 0.9rem;
+            color: var(--primary-color);
+        }
+        
+        /* Estilos responsivos */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: calc(var(--spacing-unit) * 0.5);
+                text-align: center;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+                gap: calc(var(--spacing-unit) * 0.5);
+            }
+            
+            .container {
+                padding: 0 calc(var(--spacing-unit) * 0.5);
+            }
+        }
+        
+        /* Mejoras de accesibilidad */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--primary-color);
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+        
+        .skip-link:focus {
+            top: 0;
+        }
+        
+        [aria-hidden="true"] {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <form id="form1" runat="server">
-        <div class="container">
-            <!-- Header -->
-            <header>
-                <div class="logo">
-                    <h1>Sistema de Gestión</h1>
-                </div>
+        <!-- Enlace para saltar navegación (accesibilidad) -->
+        <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
+            <div class="container">
+                <!-- Header -->
+                <header>
+                    <div class="logo">
+                        <a href="Home.aspx" aria-label="Ir a la página de inicio">
+                            <img class="logo-img" src="Recursos/Icons/Escudo.ico" alt="Escudo del Cabildo de Gaumbía">
+                            <img class="logo-img" src="Recursos/Icons/Sin-fondo.ico" alt="Logo de Biblioteca Virtual Misak">
+                        </a>
+                        <h3>Biblioteca virtual misak</h3>
+                    </div>
+
                 <div class="user-info">
-                    <asp:Label ID="lblUsername" runat="server" Text="Bienvenido, Invitado"></asp:Label>
-                    <asp:LinkButton ID="lnkLogout" runat="server" OnClick="lnkLogout_Click" Visible="false">Cerrar Sesión</asp:LinkButton>
+                    <asp:Label ID="lblUsername" runat="server" Text="Bienvenido, Invitado" aria-live="polite"></asp:Label>
+                    <asp:LinkButton ID="lnkLogout" runat="server" OnClick="lnkLogout_Click" Visible="false" role="button">Cerrar Sesión</asp:LinkButton>
                 </div>
             </header>
 
             <!-- Navigation -->
-            <nav>
+            <nav aria-label="Navegación principal">
                 <ul>
-    <li><a href="Home.aspx">Inicio</a></li>
- <%--<li><a href="WFUserRegistration.aspx">Registrate</a></li>--%>
-    <%--<li><a href="Default.aspx">Inicio de Sesión</a></li>--%>
-    <li><a href="WFCategory.aspx">Categoria</a></li>
-      <li><a href="WFAuthors.aspx">Autors</a></li>
-       <li><a href="WFEditorial.aspx">Editorial</a></li>
-    <li><a href="WFMatEducativo.aspx">Material Educativo</a></li>
-    <li><a href="WFMatEducativoSecondary.aspx">Material Educativo Secu</a></li>
-      <li><a href="WFAcercaDe.aspx">Acerca de</a></li>
-
-    <!-- Paneles para roles específicos -->
-    <asp:Panel ID="pnlAdmin" runat="server" Visible="false">
-      <%--  <li><a href="WFAuthors.aspx">Registro de autores</a></li>
-        <li><a href="WFEditorial.aspx">Registro de editoriales</a></li>
-        <li><a href="WFCategory.aspx">Registro de categorías</a></li>
-        <li><a href="WFMaterialEducativo.aspx">Registro de material educativo</a></li>--%>
-        <li><a href="WFUserManagement.aspx">Gestión de usuarios</a></li>
-        <li><a href="WFSurvey.aspx">Registro de encuesta</a></li>
-        <li><a href="WFAnswer.aspx">Respuestas</a></li>
-        <li><a href="WFStatisticReport.aspx">Reporte estadístico</a></li>
-
-
-    </asp:Panel>
-
-    <asp:Panel ID="pnlDocente" runat="server" Visible="false">
-        <li><a href="WFAnswer.aspx">Respuestas</a></li>
-        <%--<li><a href="WFPresentationMaterial.aspx">Ver Material</a></li>--%>
-        <li><a href="WFPurchaseRequest.aspx">Solicitud de compra</a></li>
-        <li><a href="WFVisits.aspx">Registro de visitas</a></li>
-        <li><a href="WFStatisticReport.aspx">Reporte estadístico</a></li>
-    </asp:Panel>
-
-    <asp:Panel ID="pnlEstudiante" runat="server" Visible="false">
-        <li><a href="WFAnswer.aspx">Respuestas</a></li>
-        <%--<li><a href="WFPresentationMaterial.aspx">Ver Material</a></li>--%>
-        <li><a href="WFPurchaseRequest.aspx">Solicitud de compra</a></li>
-        <li><a href="WFVisits.aspx">Registro de visitas</a></li>
-    </asp:Panel>
-    </ul>
+                    <li><a href="Home.aspx" aria-current="page">Inicio</a></li>
+                    <li><a href="WFAcercaDe.aspx">Acerca de</a></li>
+                    <li><a href="Default.aspx">Inicio de Sesión</a></li>
+                    <li><a href="WFUserRegistration.aspx">Registrate</a></li>
+                </ul>
             </nav>
 
             <!-- Main Content -->
-            <main>
+            <main id="main-content" tabindex="-1">
                 <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
             </main>
 
             <!-- Footer -->
             <footer>
-                <p>© 2024 Sistema de Gestión - Todos los derechos reservados</p>
+                <p>© <span id="current-year"></span> Sistema de Gestión - Todos los derechos reservados</p>
             </footer>
         </div>
     </form>
+    
+     <%--Scripts--%> 
+    <script src="scripts/main.js"></script>
+    <script>
+        //Añade el año actual al footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+         //Mejora de accesibilidad para teclado
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('a, button, [role="button"], [tabindex="0"]');
+            
+            links.forEach(link => {
+                link.addEventListener('focus', function() {
+                    this.style.outline = '2px solid ' + getComputedStyle(document.documentElement).getPropertyValue('--secondary-color');
+                });
+                
+                link.addEventListener('blur', function() {
+                    this.style.outline = 'none';
+                });
+            });
+        });
+    </script>
 </body>
 </html>

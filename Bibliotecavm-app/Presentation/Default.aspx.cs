@@ -1,9 +1,9 @@
 ﻿
-using System;
-using System.Web.Security;
-using System.Web;
 using Logic; // Asegúrate de importar la capa lógica
 using Model; // Asegúrate de importar la capa de modelos
+using System;
+using System.Web;
+using System.Web.Security;
 
 namespace Presentation
 {
@@ -22,6 +22,14 @@ namespace Presentation
         {
             string correo = TBCorreo.Text.Trim();
             string contrasena = TBContrasena.Text.Trim();
+
+            // Validar que los campos no estén vacíos
+            if (string.IsNullOrEmpty(correo) || string.IsNullOrEmpty(contrasena))
+            {
+                LblMsg.Text = "El correo y la contraseña son obligatorios.";
+                LblMsg.ForeColor = System.Drawing.Color.Red;
+                return; // Detener la ejecución si hay campos vacíos
+            }
 
             try
             {
@@ -71,11 +79,11 @@ namespace Presentation
                 }
                 else
                 {
-                    LblMsg.Text = "Correo o contraseña incorrectos.";
+                    LblMsg.Text = "Correo no registrado o contraseña incorrecta.";
                     LblMsg.ForeColor = System.Drawing.Color.Red;
                 }
             }
-            catch (Exception )
+            catch (Exception ex)
             {
                 LblMsg.Text = "Ocurrió un error al iniciar sesión. Por favor, inténtelo de nuevo.";
                 LblMsg.ForeColor = System.Drawing.Color.Red;

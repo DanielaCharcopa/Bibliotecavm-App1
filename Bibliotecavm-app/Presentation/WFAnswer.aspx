@@ -10,6 +10,7 @@
         <div class="row">
             <div class="col">
                 <asp:Label ID="lblMessage" runat="server" Text="" ForeColor="Green"></asp:Label>
+                <asp:Label ID="lblError" runat="server" Text="" ForeColor="Red"></asp:Label>
             </div>
         </div>
         <br />
@@ -21,7 +22,12 @@
             </div>
             <div class="col">
                 <asp:Label ID="lblResponse" runat="server" Text="Respuesta:"></asp:Label>
-                <asp:TextBox ID="txtResponse" runat="server" CssClass="form-control" Width="200px"></asp:TextBox>
+                <asp:DropDownList ID="ddlResponse" runat="server" CssClass="form-select" Width="200px">
+                    <asp:ListItem Text="Seleccione una opción" Value="" />
+                    <asp:ListItem Text="Sí" Value="Sí" />
+                    <asp:ListItem Text="No" Value="No" />
+                </asp:DropDownList>
+              
             </div>
             <div class="col">
                 <label class="form-label" for="LblUsuario">Usuario:</label>
@@ -39,20 +45,22 @@
         </div>
         <br />
 
-        <div class="row">
-            <div class="col">
-                <h3>Listado de Respuestas</h3>
-                <asp:GridView ID="gvAnswers" runat="server" AutoGenerateColumns="False" CssClass="table table-hover" OnSelectedIndexChanged="gvAnswers_SelectedIndexChanged">
-                    <Columns>
-                        <asp:BoundField DataField="res_id" HeaderText="ID Respuesta" />
-                        <asp:BoundField DataField="tbl_encuesta_en_id" HeaderText="ID Pregunta" />
-                        <asp:BoundField DataField="en_descripcion_pregunta" HeaderText="Descripción Pregunta" />
-                        <asp:BoundField DataField="res_respuesta" HeaderText="Respuesta" />
-                        <asp:BoundField DataField="nombre_usuario" HeaderText="Usuario" />
-                        <asp:CommandField ShowSelectButton="True" SelectText="Seleccionar" />
-                    </Columns>
-                </asp:GridView>
-            </div>
-        </div>
+    <div class="row">
+    <div class="col">
+        <h3>Listado de Respuestas</h3>
+        <asp:GridView ID="gvAnswers" runat="server" AutoGenerateColumns="False" CssClass="table table-hover" OnSelectedIndexChanged="gvAnswers_SelectedIndexChanged">
+            <Columns>
+                <asp:BoundField DataField="res_id" HeaderText="ID Respuesta" />
+                <asp:BoundField DataField="tbl_encuesta_en_id" HeaderText="ID Pregunta" />
+                <asp:BoundField DataField="en_descripcion_pregunta" HeaderText="Descripción Pregunta" />
+                <asp:BoundField DataField="res_respuesta" HeaderText="Respuesta" />
+                <asp:BoundField DataField="nombre_usuario" HeaderText="Usuario" />
+                <asp:CommandField ShowSelectButton="True" SelectText="Seleccionar" />
+            </Columns>
+        </asp:GridView>
+    </div>
+    </div>
     </div>
 </asp:Content>
+
+
