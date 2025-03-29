@@ -9,15 +9,15 @@
         <h2>Iniciar Sesión</h2>
         <asp:Label ID="LblMsg" runat="server" CssClass="error-message" />
         
-        <div class="form-group">
-            <label for="TBCorreo">Correo:</label>
-            <asp:TextBox ID="TBCorreo" runat="server" CssClass="form-control" placeholder="Ingrese su correo" />
-        </div>
-        
-        <div class="form-group">
-            <label for="TBContrasena">Contraseña:</label>
-            <asp:TextBox ID="TBContrasena" runat="server" CssClass="form-control" TextMode="Password" placeholder="Ingrese su contraseña" />
-        </div>
+       <div class="form-group">
+    <label for="TBCorreo">Correo:</label>
+    <asp:TextBox ID="TBCorreo" runat="server" CssClass="form-control" placeholder="Ingrese su correo" required />
+</div>
+
+<div class="form-group">
+    <label for="TBContrasena">Contraseña:</label>
+    <asp:TextBox ID="TBContrasena" runat="server" CssClass="form-control" TextMode="Password" placeholder="Ingrese su contraseña" required />
+</div>
         
         <asp:Button ID="BtGuardar" runat="server" CssClass="btn" Text="Iniciar Sesión" OnClick="BtGuardar_Click" />
         

@@ -1,7 +1,5 @@
-﻿<%@ Page Title="Registro de Autores" Language="C#" MasterPageFile="~/Main.Master" AutoEventWireup="true" CodeBehind="WFAuthors.aspx.cs" Inherits="Presentation.WFAuthors" %>
-
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MainUsuario.Master" AutoEventWireup="true" CodeBehind="WFAuthors.aspx.cs" Inherits="Presentation.WFAuthors" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <%--Aquí pueden ir los estilos o scripts adicionales--%>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -43,7 +41,6 @@
                 <asp:BoundField DataField="au_nombre" HeaderText="Nombre" SortExpression="au_nombre" />
                 <asp:BoundField DataField="au_apellido" HeaderText="Apellido" SortExpression="au_apellido" />
                 <asp:BoundField DataField="au_municipio" HeaderText="Municipio" SortExpression="au_municipio" />
-                <%-- Campo de Comando para selección --%>
                 <asp:CommandField HeaderText="Opción" ShowSelectButton="True" />
             </Columns>
         </asp:GridView>

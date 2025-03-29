@@ -1,10 +1,9 @@
-﻿using System;
-using System.Web;
-using Logic;
-using Model;
+﻿using Logic;
 using SimpleCrypto;
-using System.Text.RegularExpressions;
+using System;
 using System.Data;
+using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.UI.WebControls;
 
 namespace Presentation

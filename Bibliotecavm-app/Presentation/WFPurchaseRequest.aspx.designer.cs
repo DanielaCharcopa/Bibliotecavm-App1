@@ -78,6 +78,33 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.TextBox TBFecha;
 
         /// <summary>
+        /// Control LblMaterial.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblMaterial;
+
+        /// <summary>
+        /// Control TxtMaterialSeleccionado.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TxtMaterialSeleccionado;
+
+        /// <summary>
+        /// Control HdnMaterialId.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField HdnMaterialId;
+
+        /// <summary>
         /// Control LblQuantity.
         /// </summary>
         /// <remarks>
@@ -94,24 +121,6 @@ namespace Presentation
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox TBQuantity;
-
-        /// <summary>
-        /// Control LblMaterial.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LblMaterial;
-
-        /// <summary>
-        /// Control DDLMaterial.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DDLMaterial;
 
         /// <summary>
         /// Control LblUnitPrice.
@@ -184,5 +193,23 @@ namespace Presentation
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView GVRequests;
+
+        /// <summary>
+        /// Control TxtBuscarMaterial.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TxtBuscarMaterial;
+
+        /// <summary>
+        /// Control GVMateriales.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView GVMateriales;
     }
 }

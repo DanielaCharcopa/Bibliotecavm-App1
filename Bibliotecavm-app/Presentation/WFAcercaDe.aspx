@@ -30,7 +30,7 @@
         <li>Acceso a libros, artículos, videos y otros materiales educativos.</li>
         <li>Recursos multimedia sobre la cultura y tradiciones Misak.</li>
         <li>Herramientas de accesibilidad para usuarios con discapacidades.</li>
-        <li>Programas educativos y talleres en línea.</li>
+        <li>Servico de ventas.</li>
     </ul>
     
     <h2>Contacto</h2>

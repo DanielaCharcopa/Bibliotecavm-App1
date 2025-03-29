@@ -1,9 +1,8 @@
-﻿using System;
+﻿using Logic;
+using System;
 using System.Data;
-using Logic;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using System.Web;
+using System.Web.UI.WebControls;
 
 namespace Presentation
 {
@@ -17,7 +16,7 @@ namespace Presentation
             {
                 if (Session["UserID"] == null)
                 {
-                    Response.Redirect("Login.aspx");
+                    Response.Redirect("Default.aspx");
                     return;
                 }
 
@@ -38,21 +37,11 @@ namespace Presentation
             try
             {
                 DataSet dsUnansweredQuestions = answersLog.showUnansweredQuestionsByUser(userId);
-
-                if (dsUnansweredQuestions != null && dsUnansweredQuestions.Tables.Count > 0 && dsUnansweredQuestions.Tables[0].Rows.Count > 0)
-                {
-                    ddlSurvey.DataSource = dsUnansweredQuestions.Tables[0];
-                    ddlSurvey.DataTextField = "en_descripcion_pregunta";
-                    ddlSurvey.DataValueField = "en_id";
-                    ddlSurvey.DataBind();
-
-                    ddlSurvey.Items.Insert(0, new ListItem("-- Seleccione una Pregunta --", "0"));
-                }
-                else
-                {
-                    ddlSurvey.Items.Clear();
-                    ddlSurvey.Items.Insert(0, new ListItem("No hay preguntas disponibles", "0"));
-                }
+                ddlSurvey.DataSource = dsUnansweredQuestions.Tables[0];
+                ddlSurvey.DataTextField = "en_descripcion_pregunta";
+                ddlSurvey.DataValueField = "en_id";
+                ddlSurvey.DataBind();
+                ddlSurvey.Items.Insert(0, new ListItem("-- Seleccione una Pregunta --", "0"));
             }
             catch (Exception ex)
             {
@@ -71,11 +60,15 @@ namespace Presentation
                 {
                     gvAnswers.DataSource = ds.Tables[0];
                     gvAnswers.DataBind();
+                    lblMessage.Text = "Respuestas cargadas correctamente.";
+                    lblMessage.ForeColor = System.Drawing.Color.Green;
                 }
                 else
                 {
                     gvAnswers.DataSource = null;
                     gvAnswers.DataBind();
+                    lblMessage.Text = "No hay respuestas registradas.";
+                    lblMessage.ForeColor = System.Drawing.Color.Red;
                 }
             }
             catch (Exception ex)
@@ -84,25 +77,43 @@ namespace Presentation
                 lblMessage.ForeColor = System.Drawing.Color.Red;
             }
         }
-
         protected void btnSaveAnswer_Click(object sender, EventArgs e)
         {
-            if (ddlSurvey.SelectedValue == "0" || string.IsNullOrWhiteSpace(txtResponse.Text))
+            if (ddlSurvey.SelectedValue == "0")
             {
-                lblMessage.Text = "Seleccione una pregunta y escriba una respuesta.";
+                lblMessage.Text = "Debe seleccionar una pregunta válida.";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(ddlResponse.SelectedValue) || ddlResponse.SelectedValue == "0")
+            {
+                lblMessage.Text = "Debe seleccionar una respuesta.";
                 lblMessage.ForeColor = System.Drawing.Color.Red;
                 return;
             }
 
             try
             {
-                string response = txtResponse.Text.Trim();
+                string response = ddlResponse.SelectedValue;
                 int questionId = Convert.ToInt32(ddlSurvey.SelectedValue);
                 int userId = Convert.ToInt32(Session["UserID"]);
 
+                Console.WriteLine($"Intentando guardar: Respuesta={response}, PreguntaID={questionId}, UsuarioID={userId}");
+
                 bool result = answersLog.saveAnswer(response, questionId, userId);
-                lblMessage.Text = result ? "Respuesta guardada exitosamente." : "Error al guardar la respuesta.";
-                lblMessage.ForeColor = result ? System.Drawing.Color.Green : System.Drawing.Color.Red;
+
+                if (result)
+                {
+                    lblMessage.Text = "Respuesta guardada exitosamente.";
+                    lblMessage.ForeColor = System.Drawing.Color.Green;
+                }
+                else
+                {
+                    lblMessage.Text = "Error al guardar la respuesta.";
+                    lblMessage.ForeColor = System.Drawing.Color.Red;
+                }
+
                 LoadUnansweredQuestions(userId);
                 LoadAnswers(userId);
             }
@@ -113,19 +124,20 @@ namespace Presentation
             }
         }
 
+
         protected void btnUpdateAnswer_Click(object sender, EventArgs e)
         {
-            if (ViewState["SelectedResId"] == null || string.IsNullOrWhiteSpace(txtResponse.Text))
+            if (ViewState["SelectedResId"] == null || !int.TryParse(ViewState["SelectedResId"].ToString(), out int answerId) ||
+                string.IsNullOrWhiteSpace(ddlResponse.SelectedValue))
             {
-                lblMessage.Text = "Seleccione una respuesta para actualizar.";
+                lblMessage.Text = "Seleccione una respuesta válida para actualizar.";
                 lblMessage.ForeColor = System.Drawing.Color.Red;
                 return;
             }
 
             try
             {
-                int answerId = (int)ViewState["SelectedResId"];
-                string response = txtResponse.Text.Trim();
+                string response = ddlResponse.SelectedValue;
                 int questionId = Convert.ToInt32(ddlSurvey.SelectedValue);
                 int userId = Convert.ToInt32(Session["UserID"]);
 
@@ -144,7 +156,7 @@ namespace Presentation
 
         protected void btnDeleteAnswer_Click(object sender, EventArgs e)
         {
-            if (ViewState["SelectedResId"] == null || ddlSurvey.SelectedValue == "0")
+            if (ViewState["SelectedResId"] == null || !int.TryParse(ViewState["SelectedResId"].ToString(), out int answerId))
             {
                 lblMessage.Text = "Seleccione una respuesta válida para eliminar.";
                 lblMessage.ForeColor = System.Drawing.Color.Red;
@@ -153,7 +165,6 @@ namespace Presentation
 
             try
             {
-                int answerId = (int)ViewState["SelectedResId"];
                 int questionId = Convert.ToInt32(ddlSurvey.SelectedValue);
                 int userId = Convert.ToInt32(Session["UserID"]);
 
@@ -175,26 +186,17 @@ namespace Presentation
             if (gvAnswers.SelectedRow != null)
             {
                 GridViewRow row = gvAnswers.SelectedRow;
-
                 try
                 {
-                    if (row.Cells.Count >= 4)
-                    {
-                        string questionId = row.Cells[1].Text.Trim();
-                        string response = HttpUtility.HtmlDecode(row.Cells[3].Text.Trim());
+                    string questionId = HttpUtility.HtmlDecode(row.Cells[1].Text.Trim());
+                    string response = HttpUtility.HtmlDecode(row.Cells[3].Text.Trim());
 
-                        ddlSurvey.SelectedValue = questionId;
-                        txtResponse.Text = response;
-                        ViewState["SelectedResId"] = int.Parse(row.Cells[0].Text.Trim());
+                    ddlSurvey.SelectedValue = questionId;
+                    ddlResponse.SelectedValue = response;
+                    ViewState["SelectedResId"] = int.Parse(row.Cells[0].Text.Trim());
 
-                        lblMessage.Text = "Respuesta seleccionada para edición.";
-                        lblMessage.ForeColor = System.Drawing.Color.Blue;
-                    }
-                    else
-                    {
-                        lblMessage.Text = "Error al seleccionar la respuesta.";
-                        lblMessage.ForeColor = System.Drawing.Color.Red;
-                    }
+                    lblMessage.Text = "Respuesta seleccionada para edición.";
+                    lblMessage.ForeColor = System.Drawing.Color.Blue;
                 }
                 catch (Exception ex)
                 {

@@ -1,10 +1,6 @@
 ﻿using Data;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Web;
 using Model;
+using System.Data;
 
 namespace Logic
 {

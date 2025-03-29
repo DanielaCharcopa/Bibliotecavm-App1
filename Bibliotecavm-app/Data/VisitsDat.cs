@@ -1,15 +1,11 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
 
 namespace Data
 {
     public class VisitsDat
     {
-
         Persistencia objPer = new Persistencia();
 
         // Mostrar todas las visitas
@@ -29,9 +25,9 @@ namespace Data
 
             return objData;
         }
-        //  Registra una nueva visita en la base de datos.
 
-        public bool saveVisits(DateTime fechaIngreso, TimeSpan duracion, string dispositivo, int usuId, int matId)
+        // Registra una nueva visita en la base de datos.
+        public bool saveVisits(DateTime fechaIngreso, TimeSpan duracion, int usuId, int matId)
         {
             bool executed = false;
 
@@ -42,9 +38,8 @@ namespace Data
 
             objInsertCmd.Parameters.Add("v_fecha_ingreso", MySqlDbType.Date).Value = fechaIngreso;
             objInsertCmd.Parameters.Add("v_duracion", MySqlDbType.Time).Value = duracion;
-            objInsertCmd.Parameters.Add("v_dispositivo", MySqlDbType.String).Value = dispositivo; // Cambiar a String para ENUM
             objInsertCmd.Parameters.Add("v_usu_id", MySqlDbType.Int32).Value = usuId;
-            objInsertCmd.Parameters.Add("v_mat_id", MySqlDbType.Int32).Value = matId; // Agregar el parámetro faltante
+            objInsertCmd.Parameters.Add("v_mat_id", MySqlDbType.Int32).Value = matId;
 
             try
             {
@@ -62,9 +57,8 @@ namespace Data
             return executed;
         }
 
-        //  Modifica la información de una visita existente.
-
-        public bool updateVisits(int idVisits, DateTime fechaIngreso, TimeSpan duracion, string dispositivo, int usuId, int matId)
+        // Modifica la información de una visita existente.
+        public bool updateVisits(int idVisits, DateTime fechaIngreso, TimeSpan duracion, int usuId, int matId)
         {
             bool executed = false;
 
@@ -76,9 +70,8 @@ namespace Data
             objUpdateCmd.Parameters.Add("v_vis_id", MySqlDbType.Int32).Value = idVisits;
             objUpdateCmd.Parameters.Add("v_fecha_ingreso", MySqlDbType.Date).Value = fechaIngreso;
             objUpdateCmd.Parameters.Add("v_duracion", MySqlDbType.Time).Value = duracion;
-            objUpdateCmd.Parameters.Add("v_dispositivo", MySqlDbType.String).Value = dispositivo; // Cambiar a String para ENUM
             objUpdateCmd.Parameters.Add("v_usu_id", MySqlDbType.Int32).Value = usuId;
-            objUpdateCmd.Parameters.Add("v_mat_id", MySqlDbType.Int32).Value = matId; // Agregar el parámetro faltante
+            objUpdateCmd.Parameters.Add("v_mat_id", MySqlDbType.Int32).Value = matId;
 
             try
             {
@@ -96,8 +89,7 @@ namespace Data
             return executed;
         }
 
-        //  Borra una visita de la base de datos.
-
+        // Borra una visita de la base de datos.
         public bool deleteVisits(int idVisits)
         {
             bool executed = false;
@@ -125,27 +117,7 @@ namespace Data
             return executed;
         }
 
-        //  Obtiene todas las visitas registradas en la base de datos.
-
-        public DataSet showvisits()
-        {
-            DataSet objData = new DataSet();
-            MySqlDataAdapter objAdapter = new MySqlDataAdapter();
-            MySqlCommand objSelectCmd = new MySqlCommand();
-
-            objSelectCmd.Connection = objPer.openConnection();
-            objSelectCmd.CommandText = "procSelectVisits"; // Procedimiento almacenado
-            objSelectCmd.CommandType = CommandType.StoredProcedure;
-
-            objAdapter.SelectCommand = objSelectCmd;
-            objAdapter.Fill(objData);
-            objPer.closeConnection();
-
-            return objData;
-        }
-
         // Devuelve el número total de visitas registradas.
-
         public int countTotalVisits()
         {
             int totalVisits = 0;
@@ -171,10 +143,7 @@ namespace Data
             return totalVisits;
         }
 
-
         // Calcula cuántas visitas han sido realizadas por docentes.
-
-
         public int countVisitsByTeacher()
         {
             int totalVisits = 0;
@@ -200,10 +169,7 @@ namespace Data
             return totalVisits;
         }
 
-
         // Calcula cuántas visitas han sido realizadas por estudiantes.
-
-
         public int countVisitsByStudent()
         {
             int totalVisits = 0;
@@ -230,7 +196,6 @@ namespace Data
         }
 
         // Lista los materiales más consultados por los usuarios.
-
         public DataSet GetMaterialAndVisitStats()
         {
             DataSet objData = new DataSet();
@@ -248,10 +213,7 @@ namespace Data
             return objData;
         }
 
-
         // Recupera todas las visitas realizadas por un usuario específico.
-
-
         public DataSet GetMostVisitedMaterials()
         {
             DataSet objData = new DataSet();
@@ -269,8 +231,7 @@ namespace Data
             return objData;
         }
 
-        //  
-
+        // Recupera todas las visitas realizadas por un usuario específico.
         public DataSet GetVisitsByUser(int userId)
         {
             DataSet objData = new DataSet();
@@ -290,5 +251,64 @@ namespace Data
             return objData;
         }
 
+        // Listar materiales educativos.
+        public DataSet ListarMaterialesEducativos()
+        {
+            DataSet ds = new DataSet();
+            MySqlDataAdapter objAdapter = new MySqlDataAdapter();
+            MySqlCommand objSelectCmd = new MySqlCommand();
+
+            try
+            {
+                objSelectCmd.Connection = objPer.openConnection();
+                objSelectCmd.CommandText = "procListarMaterialesEducativos"; // Nombre del SP
+                objSelectCmd.CommandType = CommandType.StoredProcedure;
+
+                objAdapter.SelectCommand = objSelectCmd;
+                objAdapter.Fill(ds); // Llenar el DataSet con los resultados del SP
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al listar materiales educativos: " + ex.Message);
+            }
+            finally
+            {
+                objPer.closeConnection();
+            }
+
+            return ds;
+        }
+
+        public int ObtenerUltimaVisitaId(int usuId, int matId)
+        {
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.Connection = objPer.openConnection();
+            cmd.CommandText = "procObtenerUltimaVisitaId"; // Nombre del SP
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            // Parámetros del SP
+            cmd.Parameters.AddWithValue("v_usu_id", usuId);
+            cmd.Parameters.AddWithValue("v_mat_id", matId);
+
+            int visitaId = Convert.ToInt32(cmd.ExecuteScalar());
+            objPer.closeConnection();
+
+            return visitaId;
+        }
+
+        public void ActualizarDuracionVisita(int visitaId, string duracion)
+        {
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.Connection = objPer.openConnection();
+            cmd.CommandText = "procActualizarDuracionVisita"; // Nombre del SP
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            // Parámetros del SP
+            cmd.Parameters.AddWithValue("v_visita_id", visitaId);
+            cmd.Parameters.AddWithValue("v_duracion", TimeSpan.Parse(duracion));
+
+            cmd.ExecuteNonQuery();
+            objPer.closeConnection();
+        }
     }
 }

@@ -1,9 +1,6 @@
 ﻿using Data;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
 
 namespace Logic
 {
@@ -18,15 +15,15 @@ namespace Logic
         }
 
         // Método para guardar una nueva visita
-        public bool saveVisits(DateTime fechaIngreso, TimeSpan duracion, string dispositivo, int usuId, int matId)
+        public bool saveVisits(DateTime fechaIngreso, TimeSpan duracion, int usuId, int matId)
         {
-            return objVis.saveVisits(fechaIngreso, duracion, dispositivo, usuId, matId); // Llamamos al método correcto en la capa de datos
+            return objVis.saveVisits(fechaIngreso, duracion, usuId, matId); // Llamamos al método correcto en la capa de datos
         }
 
         // Método para actualizar una visita existente
-        public bool updateVisits(int idVisits, DateTime fechaIngreso, TimeSpan duracion, string dispositivo, int usuId, int matId)
+        public bool updateVisits(int idVisits, DateTime fechaIngreso, TimeSpan duracion, int usuId, int matId)
         {
-            return objVis.updateVisits(idVisits, fechaIngreso, duracion, dispositivo, usuId, matId); // Llamamos al método correcto en la capa de datos
+            return objVis.updateVisits(idVisits, fechaIngreso, duracion, usuId, matId); // Llamamos al método correcto en la capa de datos
         }
 
         // Método para eliminar una visita
@@ -69,6 +66,21 @@ namespace Logic
         public DataSet GetVisitsByUser(int userId)
         {
             return objVis.GetVisitsByUser(userId);
+        }
+        public DataSet ListarMaterialesEducativos()
+        {
+            return objVis.ListarMaterialesEducativos();
+        }
+
+        public int ObtenerUltimaVisitaId(int usuId, int matId)
+        {
+            VisitsDat datos = new VisitsDat();
+            return datos.ObtenerUltimaVisitaId(usuId, matId);
+        }
+        public void ActualizarDuracionVisita(int visitaId, string duracion)
+        {
+            VisitsDat datos = new VisitsDat();
+            datos.ActualizarDuracionVisita(visitaId, duracion);
         }
     }
 }

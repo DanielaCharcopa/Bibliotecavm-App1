@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Main.Master" AutoEventWireup="true" CodeBehind="WFCategory.aspx.cs" Inherits="Presentation.WFCategory" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MainUsuario.Master" AutoEventWireup="true" CodeBehind="WFCategory.aspx.cs" Inherits="Presentation.WFCategory" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -30,14 +30,12 @@
     </div>
 
     <div>
-        <%-- Grid para Mostrar Categorías --%>
         <asp:GridView ID="GVCategory" runat="server" AutoGenerateColumns="False" 
             OnSelectedIndexChanged="GVCategory_SelectedIndexChanged" DataKeyNames="cat_id">
             <Columns>
                 <asp:BoundField DataField="cat_id" HeaderText="ID" />
                 <asp:BoundField DataField="cat_nombre" HeaderText="Nombre" />
                 <asp:BoundField DataField="cat_descripcion" HeaderText="Descripción" />
-                <%-- Campo de Comando para selección --%>
                 <asp:CommandField HeaderText="Opción" ShowSelectButton="True" />
 
             </Columns>

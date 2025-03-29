@@ -1,11 +1,8 @@
 ﻿
 using Logic;
 using System;
-using System.Data;
 using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using Model;
 
 namespace Presentation
 {
@@ -42,6 +39,14 @@ namespace Presentation
         {
             try
             {
+                // Validar que el campo no esté vacío
+                if (string.IsNullOrWhiteSpace(txtDescripcionPregunta.Text))
+                {
+                    lblMessage.Text = "Por favor, ingrese una descripción para la pregunta.";
+                    lblMessage.ForeColor = System.Drawing.Color.Red;
+                    return; // Salir del método si la validación falla
+                }
+
                 descripcionPregunta = txtDescripcionPregunta.Text;
                 int usuId = Convert.ToInt32(Session["UserId"]); // Obtener el ID del usuario autenticado
 
@@ -70,6 +75,14 @@ namespace Presentation
         {
             try
             {
+                // Validar que el campo no esté vacío
+                if (string.IsNullOrWhiteSpace(txtDescripcionPregunta.Text))
+                {
+                    lblMessage.Text = "Por favor, ingrese una descripción para la pregunta.";
+                    lblMessage.ForeColor = System.Drawing.Color.Red;
+                    return; // Salir del método si la validación falla
+                }
+
                 surveyId = int.Parse(TBCode.Value); // Obtener el ID de la encuesta seleccionada
                 descripcionPregunta = txtDescripcionPregunta.Text;
                 int usuId = Convert.ToInt32(Session["UserId"]); // Obtener el ID del usuario autenticado

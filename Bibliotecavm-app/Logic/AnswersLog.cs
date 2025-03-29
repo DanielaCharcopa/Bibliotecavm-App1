@@ -1,38 +1,47 @@
 ﻿using Data;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
 
 namespace Logic
 {
     public class AnswersLog
     {
-         AnswerDat objAnswerDat = new AnswerDat();
+        AnswerDat objAnswerDat = new AnswerDat();
 
-        // Método para mostrar todas las Respuestas
+        // Método para mostrar todas las respuestas (Administrador)
         public DataSet showAnswers()
         {
             return objAnswerDat.showAnswers();
         }
 
-        // Método para guardar una nueva Respuesta
-        public bool saveAnswer(string _respuesta, int _question_id, int _usu_id)
+        // Método para guardar una nueva respuesta
+        public bool saveAnswer(string respuesta, int questionId, int usuarioId)
         {
-            return objAnswerDat.saveAnswer(_respuesta, _question_id, _usu_id);
+            // Validar que la respuesta sea "Sí" o "No"
+            if (respuesta != "Sí" && respuesta != "No")
+            {
+                throw new ArgumentException("La respuesta debe ser 'Sí' o 'No'.");
+            }
+
+            return objAnswerDat.saveAnswer(respuesta, questionId, usuarioId);
         }
 
-        // Método para actualizar una Respuesta
-        public bool updateAnswer(int _answer_id, string _respuesta, int _question_id, int _usu_id)
+        // Método para actualizar una respuesta
+        public bool updateAnswer(int answerId, string respuesta, int questionId, int usuarioId)
         {
-            return objAnswerDat.updateAnswer(_answer_id, _respuesta, _question_id, _usu_id);
+            // Validar que la respuesta sea "Sí" o "No"
+            if (respuesta != "Sí" && respuesta != "No")
+            {
+                throw new ArgumentException("La respuesta debe ser 'Sí' o 'No'.");
+            }
+
+            return objAnswerDat.updateAnswer(answerId, respuesta, questionId, usuarioId);
         }
 
-        // Método para borrar una Respuesta
-        public bool deleteAnswer(int _answer_id, int _question_id, int _usu_id)
+        // Método para borrar una respuesta
+        public bool deleteAnswer(int answerId, int questionId, int usuarioId)
         {
-            return objAnswerDat.deleteAnswer(_answer_id, _question_id, _usu_id); // Llamamos al método correcto en la capa de datos
+            return objAnswerDat.deleteAnswer(answerId, questionId, usuarioId);
         }
 
         // Método para mostrar preguntas no respondidas por el usuario

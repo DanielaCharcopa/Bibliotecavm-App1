@@ -24,6 +24,15 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.Label lblMessage;
 
         /// <summary>
+        /// Control lblError.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblError;
+
+        /// <summary>
         /// Control lblSurvey.
         /// </summary>
         /// <remarks>
@@ -51,13 +60,13 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.Label lblResponse;
 
         /// <summary>
-        /// Control txtResponse.
+        /// Control ddlResponse.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtResponse;
+        protected global::System.Web.UI.WebControls.DropDownList ddlResponse;
 
         /// <summary>
         /// Control LblUsuario.
