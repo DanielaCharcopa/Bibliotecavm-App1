@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MainUsuario.Master" AutoEventWireup="true" CodeBehind="WFUserManagement.aspx.cs" Inherits="Presentation.WFUserManagement" %>
+﻿<%@ Page Title="Gestion de usuarios" Language="C#" MasterPageFile="~/MainUsuario.Master" AutoEventWireup="true" CodeBehind="WFUserManagement.aspx.cs" Inherits="Presentation.WFUserManagement" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <%--Agrega las dependencias de jQuery--%> 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -28,10 +28,10 @@
         <h2>Gestión de Usuarios</h2>
         <asp:Label ID="LblMessage" runat="server" CssClass="message"></asp:Label>
 
-        <%--Campo oculto para almacenar el ID del usuario seleccionado--%> 
+        <%--Campo oculto para almacenar el ID del usuario seleccionado--%>
         <asp:HiddenField ID="HFUserId" runat="server" />
 
-        <%--Campos del formulario--%> 
+        <%--Campos del formulario--%>
         <div>
             <label for="TBFirstName">Nombre:</label>
             <asp:TextBox ID="TBFirstName" runat="server" CssClass="form-control"></asp:TextBox>
@@ -56,14 +56,15 @@
             <%-- Mensaje de validación para la contraseña --%>
             <asp:Label ID="LblPasswordMessage" runat="server" CssClass="error-message" Visible="false" Text="Por favor ingrese la contraseña del usuario."></asp:Label>
         </div>
-       <div>
-    <label for="DDLRole">Rol:</label>
-    <asp:DropDownList ID="DDLRole" runat="server" CssClass="form-control">
-        <asp:ListItem Text="Seleccione un rol" Value="" />   <%-- La opción "Administrador" se agregará dinámicamente en el código C# --%>
-        <asp:ListItem Text="Docente" Value="Docente" />
-        <asp:ListItem Text="Estudiante" Value="Estudiante" />
-    </asp:DropDownList>
-</div>
+        <div>
+            <label for="DDLRole">Rol:</label>
+            <asp:DropDownList ID="DDLRole" runat="server" CssClass="form-control">
+                <asp:ListItem Text="Seleccione un rol" Value="" />
+                <%-- La opción "Administrador" se agregará dinámicamente en el código C# --%>
+                <asp:ListItem Text="Docente" Value="Docente" />
+                <asp:ListItem Text="Estudiante" Value="Estudiante" />
+            </asp:DropDownList>
+        </div>
         <div>
             <label for="DDLEducationLevel">Nivel Educativo:</label>
             <asp:DropDownList ID="DDLEducationLevel" runat="server" CssClass="form-control">
@@ -81,28 +82,36 @@
             </asp:DropDownList>
         </div>
 
-        <%--Botones de acción--%> 
+        <%--Botones de acción--%>
         <div style="margin-top: 20px;">
             <asp:Button ID="BtnSave" runat="server" Text="Guardar" OnClientClick="return validateForm();" OnClick="BtnSave_Click" CssClass="btn btn-primary" />
             <asp:Button ID="BtnUpdate" runat="server" Text="Actualizar" OnClick="BtnUpdate_Click" CssClass="btn btn-warning" />
             <asp:Button ID="BtnDelete" runat="server" Text="Eliminar" OnClick="BtnDelete_Click" CssClass="btn btn-danger" />
-            <asp:Button ID="BtnClear" runat="server" Text="Limpiar" OnClientClick="ClearForm()" CssClass="btn btn-secondary" />
+            <%--            <asp:Button ID="BtnClear" runat="server" Text="Limpiar" OnClientClick="ClearForm()" CssClass="btn btn-secondary" />--%>
         </div>
     </div>
 
-    <%--Buscar usuarios por correo--%> 
-    <div class="form-group">
+    <%--Buscar usuarios por correo--%>
+    <div class="form-group" style="margin-top: 20px;">
         <label for="TxtBuscarCorreo">Buscar por Correo Electrónico:</label>
         <asp:TextBox ID="TxtBuscarCorreo" runat="server" CssClass="form-control" placeholder="Escribe el correo del usuario"></asp:TextBox>
+        <asp:Button ID="BtnBuscar" runat="server" Text="Buscar" OnClick="BtnBuscar_Click" CssClass="btn btn-info" Style="margin-top: 5px;" />
+        <asp:Button ID="BtnLimpiarBusqueda" runat="server" Text="Mostrar Todos" OnClick="BtnLimpiarBusqueda_Click" CssClass="btn btn-secondary" Style="margin-top: 5px;" />
     </div>
+    <asp:Label ID="lblmesaje2" runat="server" CssClass="message"></asp:Label>
 
-    <%--Mensaje cuando no hay resultados--%> 
+
+    <%--Mensaje cuando no hay resultados--%>
     <div id="mensajeNoResultados" style="display: none; color: red; margin-top: 10px;">
         No se encontraron resultados.
+   
     </div>
 
-    <%--GridView para mostrar los usuarios--%> 
-    <asp:GridView ID="GVUsers" runat="server" CssClass="table table-bordered" AutoGenerateColumns="False" DataKeyNames="usu_id" OnSelectedIndexChanged="GVUsers_SelectedIndexChanged1">
+    <%--GridView para mostrar los usuarios--%>
+    <asp:GridView ID="GVUsers" runat="server" CssClass="table table-bordered" AutoGenerateColumns="False"
+        DataKeyNames="usu_id" OnSelectedIndexChanged="GVUsers_SelectedIndexChanged1"
+        AllowPaging="true" PageSize="10" OnPageIndexChanging="GVUsers_PageIndexChanging"
+        PagerStyle-CssClass="pagination" PagerSettings-Mode="NumericFirstLast">
         <Columns>
             <asp:BoundField DataField="usu_id" HeaderText="ID" />
             <asp:BoundField DataField="usu_nombre" HeaderText="Nombre" />
@@ -113,7 +122,12 @@
             <asp:CommandField ShowSelectButton="True" HeaderText="Opción" SelectText="Seleccionar" />
         </Columns>
     </asp:GridView>
-    <script>
+
+    <asp:Label ID="lblMesage" runat="server" CssClass="message"></asp:Label>
+
+     <%--se creo el script para la opción de búsqueda, pero luego se cambio.--%>
+
+    <%--<script>
         $(document).ready(function () {
             $("#ContentPlaceHolder1_TxtBuscarCorreo").on("keyup", function () {
                 var filtro = $(this).val().toLowerCase();
@@ -133,5 +147,5 @@
                 $("#mensajeNoResultados").toggle(!hayResultados);
             });
         });
-    </script>
+    </script>--%>
 </asp:Content>

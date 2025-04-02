@@ -120,40 +120,52 @@ namespace Data
 
         public DataSet showUnansweredQuestionsByUser(int userId)
         {
+            DataSet ds = new DataSet();
             MySqlDataAdapter objAdapter = new MySqlDataAdapter();
-            DataSet objData = new DataSet();
             MySqlCommand objSelectCmd = new MySqlCommand();
-            objSelectCmd.Connection = objPer.openConnection();
-            objSelectCmd.CommandText = "procSelectUnansweredQuestionsByUser"; // Nombre del procedimiento almacenado
-            objSelectCmd.CommandType = CommandType.StoredProcedure;
-            objSelectCmd.Parameters.Add("v_user_id", MySqlDbType.Int32).Value = userId; // ID del usuario
 
             try
             {
+                objSelectCmd.Connection = objPer.openConnection();
+                objSelectCmd.CommandText = "procSelectUnansweredQuestionsByUser"; // Nombre del SP
+                objSelectCmd.CommandType = CommandType.StoredProcedure;
+                objSelectCmd.Parameters.AddWithValue("v_usu_id", userId); // Parámetro del SP
+
                 objAdapter.SelectCommand = objSelectCmd;
-                objAdapter.Fill(objData);
+                objAdapter.Fill(ds); // Llena el DataSet
+
+                // Debug: Verifica filas retornadas (opcional, para diagnóstico)
+                Console.WriteLine($"Número de preguntas no respondidas: {ds.Tables[0].Rows.Count}");
             }
-            catch (Exception e)
+            catch (MySqlException ex)
             {
-                Console.WriteLine("Error: " + e.ToString());
+                // Captura errores específicos de MySQL (ej: SP no existe, sintaxis incorrecta)
+                Console.WriteLine($"Error MySQL: {ex.Number} - {ex.Message}");
+                throw new Exception("Error al cargar preguntas. Contacte al administrador.");
+            }
+            catch (Exception ex)
+            {
+                // Captura otros errores genéricos (ej: conexión fallida)
+                Console.WriteLine($"Error inesperado: {ex.Message}");
+                throw;
             }
             finally
             {
-                objPer.closeConnection();
+                objPer.closeConnection(); // Cierra la conexión siempre
             }
 
-            return objData;
+            return ds;
         }
 
-      //  Recupera las respuestas dadas por un usuario.
+        //  Recupera las respuestas dadas por un usuario.
 
-public DataSet showAnswersByUser(int userId)
+        public DataSet showAnswersByUser(int userId)
         {
             MySqlDataAdapter objAdapter = new MySqlDataAdapter();
             DataSet objData = new DataSet();
             MySqlCommand objSelectCmd = new MySqlCommand();
             objSelectCmd.Connection = objPer.openConnection();
-            objSelectCmd.CommandText = "procSelectAnswersByUser"; // Nombre del procedimiento almacenado
+            objSelectCmd.CommandText = "procSelectAnswerByUser"; // Nombre del procedimiento almacenado
             objSelectCmd.CommandType = CommandType.StoredProcedure;
             objSelectCmd.Parameters.Add("v_user_id", MySqlDbType.Int32).Value = userId; // ID del usuario
 
@@ -173,6 +185,7 @@ public DataSet showAnswersByUser(int userId)
 
             return objData;
         }
+
 
     }
 }

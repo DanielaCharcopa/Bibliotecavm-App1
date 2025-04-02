@@ -1,5 +1,6 @@
 ﻿using Data;
 using Model;
+using System;
 using System.Data;
 
 namespace Logic
@@ -59,6 +60,26 @@ namespace Logic
         public bool CheckAdminExists()
         {
             return objUserDat.AdminExists(); // Llamamos al método en la capa de datos
+        }
+        // Método para buscar usuarios por correo electrónico (coincidencia parcial)
+        public DataSet SearchUsersByEmail(string email)
+        {
+            try
+            {
+                // Validar que el parámetro no esté vacío
+                if (string.IsNullOrWhiteSpace(email))
+                {
+                    throw new ArgumentException("El término de búsqueda no puede estar vacío");
+                }
+
+                // Llamar al método de la capa de datos
+                return objUserDat.SearchUsersByEmail(email);
+            }
+            catch (Exception ex)
+            {
+                // Puedes registrar el error aquí si es necesario
+                throw new Exception("Error en la capa lógica al buscar usuarios: " + ex.Message);
+            }
         }
     }
 }

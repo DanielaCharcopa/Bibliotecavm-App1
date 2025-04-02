@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MainUsuario.Master" AutoEventWireup="true" CodeBehind="WFPurchaseRequest.aspx.cs" Inherits="Presentation.WFPurchaseRequest" %>
+﻿<%@ Page Title="Solicitudes de compras" Language="C#" MasterPageFile="~/MainUsuario.Master" AutoEventWireup="true" CodeBehind="WFPurchaseRequest.aspx.cs" Inherits="Presentation.WFPurchaseRequest" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
@@ -6,15 +6,15 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <h1>Registro de Compras</h1>
     
-    <asp:Label ID="LBLUser" runat="server" Text="Usuario:"></asp:Label>
+    <%--<asp:Label ID="LBLUser" runat="server" Text="Usuario:"></asp:Label>--%>
     <br />
     <asp:Label ID="LblMsj" runat="server" ForeColor="Red"></asp:Label>
     <asp:HiddenField ID="HFPurchaId" runat="server" />
 
     <table>
         <tr>
-            <td><asp:Label ID="LblTicket" runat="server" Text="Ticket:"></asp:Label></td>
-            <td><asp:TextBox ID="TBTicket" runat="server" ReadOnly="true" CssClass="disabled-input"></asp:TextBox></td>
+<%--            <td><asp:Label ID="LblTicket" runat="server" Text="Ticket:"></asp:Label></td>--%>
+              <asp:TextBox ID="TBTicket" runat="server" CssClass="hidden-ticket"></asp:TextBox>
         </tr>
         <tr>
             <td><asp:Label ID="LblFecha" runat="server" Text="Fecha:"></asp:Label></td>
@@ -83,4 +83,9 @@
     </Columns>
 </asp:GridView>
 
+     <style>
+        .hidden-ticket {
+            display: none;
+        }
+    </style>
 </asp:Content>

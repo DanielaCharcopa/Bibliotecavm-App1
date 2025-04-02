@@ -150,15 +150,6 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.Button BtnDelete;
 
         /// <summary>
-        /// Control BtnClear.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnClear;
-
-        /// <summary>
         /// Control TxtBuscarCorreo.
         /// </summary>
         /// <remarks>
@@ -168,6 +159,33 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.TextBox TxtBuscarCorreo;
 
         /// <summary>
+        /// Control BtnBuscar.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button BtnBuscar;
+
+        /// <summary>
+        /// Control BtnLimpiarBusqueda.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button BtnLimpiarBusqueda;
+
+        /// <summary>
+        /// Control lblmesaje2.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblmesaje2;
+
+        /// <summary>
         /// Control GVUsers.
         /// </summary>
         /// <remarks>
@@ -175,5 +193,14 @@ namespace Presentation
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView GVUsers;
+
+        /// <summary>
+        /// Control lblMesage.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblMesage;
     }
 }

@@ -28,23 +28,25 @@ namespace Presentation
                 TBFecha.Attributes["min"] = DateTime.Now.ToString("yyyy-MM-dd");
                 TBFecha.Text = DateTime.Now.ToString("yyyy-MM-dd");
 
-                TBTicket.Text = GenerateTicket();
 
                 showPurchaseRequestsByUser(loggedInUserId);
-                showLoggedInUser(loggedInUserName);
+                //showLoggedInUser(loggedInUserName);
 
             }
         }
 
         private string GenerateTicket()
         {
-            return "T-" + DateTime.Now.ToString("yyyyMMddHHmmss");
+            // Genera un ticket único con formato: T-AAAAMMDD-HHMMSS-NNN
+            // Donde NNN es un número aleatorio de 3 dígitos
+            Random rnd = new Random();
+            return $"T-{DateTime.Now:yyyyMMdd-HHmmss}-{rnd.Next(100, 999)}";
         }
 
-        private void showLoggedInUser(string userName)
-        {
-            LBLUser.Text = userName;
-        }
+        //private void showLoggedInUser(string userName)
+        //{
+        //    LBLUser.Text = userName;
+        //}
 
 
         private void showPurchaseRequestsByUser(int userId)
@@ -95,13 +97,15 @@ namespace Presentation
             try
             {
                 int userId = Convert.ToInt32(Session["UserID"]);
-                if (string.IsNullOrEmpty(TBTicket.Text) ||
-                    string.IsNullOrEmpty(TBQuantity.Text) ||
+                if (string.IsNullOrEmpty(TBQuantity.Text) ||
                     string.IsNullOrEmpty(HdnMaterialId.Value))
                 {
                     LblMsj.Text = "Por favor, completa todos los campos.";
                     return;
                 }
+
+                // Generar el ticket justo antes de guardar
+                TBTicket.Text = GenerateTicket();
 
                 string errorMessage;
                 bool result = objPur.savePurchaseRequest(
@@ -114,7 +118,7 @@ namespace Presentation
 
                 if (result)
                 {
-                    LblMsj.Text = "Solicitud guardada exitosamente.";
+                    LblMsj.Text = $"Solicitud guardada exitosamente. Ticket: {TBTicket.Text}";
                     showPurchaseRequestsByUser(userId);
                     clear();
                 }
