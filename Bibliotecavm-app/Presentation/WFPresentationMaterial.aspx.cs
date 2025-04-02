@@ -108,7 +108,7 @@ namespace Presentation
             {
                 int matId = Convert.ToInt32(e.CommandArgument);
                 // Redirigir al formulario de compra con el ID del material
-                Response.Redirect($"WFComprarMaterial.aspx?id={matId}");
+                Response.Redirect($"WFPurchaseRequest.aspx?id={matId}");
             }
         }
 

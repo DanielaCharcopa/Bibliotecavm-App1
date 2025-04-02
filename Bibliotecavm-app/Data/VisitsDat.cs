@@ -310,5 +310,51 @@ namespace Data
             cmd.ExecuteNonQuery();
             objPer.closeConnection();
         }
+
+        // Buscar visitas por correo electrónico
+        public DataSet searchVisitsByEmail(string email)
+        {
+            DataSet objData = new DataSet();
+            MySqlDataAdapter objAdapter = new MySqlDataAdapter();
+            MySqlCommand objSelectCmd = new MySqlCommand();
+
+            objSelectCmd.Connection = objPer.openConnection();
+            objSelectCmd.CommandText = "procSearchUserVisitsByEmail";
+            objSelectCmd.CommandType = CommandType.StoredProcedure;
+
+            // Agregar parámetro
+            objSelectCmd.Parameters.AddWithValue("@p_email", email);
+
+            objAdapter.SelectCommand = objSelectCmd;
+            objAdapter.Fill(objData);
+            objPer.closeConnection();
+
+            return objData;
+        }
+        // Buscar visitas por rango de fechas y/o email
+        public DataSet SearchVisitsByDateRange(string email, DateTime? startDate, DateTime? endDate)
+        {
+            DataSet objData = new DataSet();
+            MySqlDataAdapter objAdapter = new MySqlDataAdapter();
+            MySqlCommand objSelectCmd = new MySqlCommand();
+
+            objSelectCmd.Connection = objPer.openConnection();
+            objSelectCmd.CommandText = "procSearchVisitsByDateRange";
+            objSelectCmd.CommandType = CommandType.StoredProcedure;
+
+            // Parámetros con manejo de valores nulos
+            objSelectCmd.Parameters.AddWithValue("@p_email",
+                string.IsNullOrEmpty(email) ? (object)DBNull.Value : email);
+            objSelectCmd.Parameters.AddWithValue("@p_fecha_inicio",
+                startDate.HasValue ? (object)startDate.Value : DBNull.Value);
+            objSelectCmd.Parameters.AddWithValue("@p_fecha_fin",
+                endDate.HasValue ? (object)endDate.Value : DBNull.Value);
+
+            objAdapter.SelectCommand = objSelectCmd;
+            objAdapter.Fill(objData);
+            objPer.closeConnection();
+
+            return objData;
+        }
     }
 }

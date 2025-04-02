@@ -49,15 +49,26 @@ namespace Presentation
         private void LoadUsers()
         {
             DataSet ds = objUser.showUsers();
-            if (ds != null && ds.Tables.Count > 0)
+            if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
                 GVUsers.DataSource = ds.Tables[0];
                 GVUsers.DataBind();
+
+                // Configurar el mensaje de paginación
+                int totalRecords = ds.Tables[0].Rows.Count;
+                int pageSize = GVUsers.PageSize;
+                int currentPage = GVUsers.PageIndex + 1;
+                int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+
+                lblMesage.Text = $"Mostrando página {currentPage} de {totalPages} - Total de usuarios: {totalRecords}";
+                lblMesage.ForeColor = System.Drawing.Color.Blue;
             }
             else
             {
                 GVUsers.DataSource = null;
                 GVUsers.DataBind();
+                lblMesage.Text = "No se encontraron usuarios registrados.";
+                lblMesage.ForeColor = System.Drawing.Color.Red;
             }
         }
 
@@ -337,5 +348,46 @@ namespace Presentation
             string currentEmail = HttpUtility.HtmlDecode(TBEmail.Text.Trim());
             return email.Equals(currentEmail, StringComparison.OrdinalIgnoreCase);
         }
+        protected void GVUsers_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            GVUsers.PageIndex = e.NewPageIndex;
+            LoadUsers(); // Vuelve a cargar los datos con la nueva página
+        }
+        protected void BtnBuscar_Click(object sender, EventArgs e)
+        {
+            string correoBusqueda = TxtBuscarCorreo.Text.Trim();
+
+            if (!string.IsNullOrEmpty(correoBusqueda))
+            {
+                DataSet ds = objUser.SearchUsersByEmail(correoBusqueda);
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    GVUsers.DataSource = ds.Tables[0];
+                    GVUsers.DataBind();
+                    lblmesaje2.Text = $"Se encontraron {ds.Tables[0].Rows.Count} resultados.";
+                    lblmesaje2.ForeColor = System.Drawing.Color.Blue;
+                }
+                else
+                {
+                    GVUsers.DataSource = null;
+                    GVUsers.DataBind();
+                    lblmesaje2.Text = "No se encontraron usuarios con ese correo.";
+                    lblmesaje2.ForeColor = System.Drawing.Color.Red;
+                }
+            }
+            else
+            {
+                LoadUsers(); // Si el campo está vacío, cargar todos los usuarios
+            }
+        }
+
+        protected void BtnLimpiarBusqueda_Click(object sender, EventArgs e)
+        {
+            TxtBuscarCorreo.Text = string.Empty;
+            LoadUsers(); // Cargar todos los usuarios
+            lblmesaje2.Text = "Mostrando todos los usuarios.";
+            lblmesaje2.ForeColor = System.Drawing.Color.Blue;
+        }
     }
+
 }

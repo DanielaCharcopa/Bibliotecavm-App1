@@ -82,5 +82,44 @@ namespace Logic
             VisitsDat datos = new VisitsDat();
             datos.ActualizarDuracionVisita(visitaId, duracion);
         }
+
+        // Método para buscar visitas por correo electrónico
+        public DataSet searchVisitsByEmail(string email)
+        {
+            try
+            {
+                // Validación básica del parámetro
+                if (string.IsNullOrWhiteSpace(email))
+                {
+                    throw new ArgumentException("El correo electrónico no puede estar vacío");
+                }
+
+                // Llamada al método de la capa de datos
+                return objVis.searchVisitsByEmail(email);
+            }
+            catch (Exception ex)
+            {
+                // Aquí puedes manejar el error, registrarlo o relanzarlo según tu estrategia
+                throw new Exception("Error al buscar visitas por correo: " + ex.Message);
+            }
+        }
+        public DataSet SearchVisitsByDateRange(string email, DateTime? startDate, DateTime? endDate)
+        {
+            try
+            {
+                // Validación básica de fechas
+                if (startDate.HasValue && endDate.HasValue && startDate > endDate)
+                {
+                    throw new ArgumentException("La fecha de inicio no puede ser mayor a la fecha fin");
+                }
+
+                return objVis.SearchVisitsByDateRange(email, startDate, endDate);
+            }
+            catch (Exception ex)
+            {
+                // Manejo de errores (puedes personalizar esto)
+                throw new Exception("Error al buscar visitas: " + ex.Message);
+            }
+        }
     }
 }

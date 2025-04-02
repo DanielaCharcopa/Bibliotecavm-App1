@@ -1,6 +1,7 @@
 ﻿using Logic;
 using System;
 using System.Data;
+using System.Web.UI.WebControls;
 
 namespace Presentation
 {
@@ -24,6 +25,7 @@ namespace Presentation
 
                 // Cargar estadísticas
                 LoadStatistics();
+                LoadUserVisits();
             }
         }
 
@@ -87,5 +89,127 @@ namespace Presentation
                 LblMsj.Text = "Error al cargar estadísticas: " + ex.Message;
             }
         }
+        private void LoadUserVisits(string emailFilter = "")
+        {
+            try
+            {
+                DataSet ds;
+
+                if (string.IsNullOrEmpty(emailFilter))
+                {
+                    ds = objVis.showVisits(); // Cargar todas las visitas
+                }
+                else
+                {
+                    ds = objVis.searchVisitsByEmail(emailFilter); // Buscar por correo
+                }
+
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    gvUserVisits.DataSource = ds.Tables[0];
+                    gvUserVisits.DataBind();
+                    lblSearchMessage.Text = $"Mostrando {ds.Tables[0].Rows.Count} registros";
+                    lblSearchMessage.ForeColor = System.Drawing.Color.Blue;
+                }
+                else
+                {
+                    gvUserVisits.DataSource = null;
+                    gvUserVisits.DataBind();
+                    lblSearchMessage.Text = string.IsNullOrEmpty(emailFilter)
+                        ? "No hay visitas registradas"
+                        : $"No se encontraron visitas para '{emailFilter}'";
+                    lblSearchMessage.ForeColor = System.Drawing.Color.Red;
+                }
+            }
+            catch (Exception ex)
+            {
+                lblSearchMessage.Text = "Error al cargar visitas: " + ex.Message;
+                lblSearchMessage.ForeColor = System.Drawing.Color.Red;
+            }
+        }
+        protected void btnSearch_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string email = txtSearchEmail.Text.Trim();
+
+                DateTime? fechaInicio = null;
+                if (!string.IsNullOrEmpty(txtFechaInicio.Text))
+                {
+                    fechaInicio = DateTime.Parse(txtFechaInicio.Text);
+                }
+
+                DateTime? fechaFin = null;
+                if (!string.IsNullOrEmpty(txtFechaFin.Text))
+                {
+                    fechaFin = DateTime.Parse(txtFechaFin.Text);
+                }
+
+                // Validación adicional de fechas
+                if (fechaInicio.HasValue && fechaFin.HasValue && fechaInicio > fechaFin)
+                {
+                    throw new ArgumentException("La fecha de inicio no puede ser mayor a la fecha fin");
+                }
+
+                // Guardar filtros en ViewState
+                ViewState["CurrentEmailFilter"] = email;
+                ViewState["CurrentFechaInicio"] = fechaInicio;
+                ViewState["CurrentFechaFin"] = fechaFin;
+
+                DataSet ds = objVis.SearchVisitsByDateRange(email, fechaInicio, fechaFin);
+
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    gvUserVisits.DataSource = ds.Tables[0];
+                    gvUserVisits.DataBind();
+                    lblSearchMessage.Text = $"Mostrando {ds.Tables[0].Rows.Count} registros filtrados";
+                    lblSearchMessage.ForeColor = System.Drawing.Color.Blue;
+                }
+                else
+                {
+                    gvUserVisits.DataSource = null;
+                    gvUserVisits.DataBind();
+                    lblSearchMessage.Text = "No se encontraron resultados con los filtros aplicados";
+                    lblSearchMessage.ForeColor = System.Drawing.Color.Red;
+                }
+            }
+            catch (Exception ex)
+            {
+                lblSearchMessage.Text = "Error al filtrar: " + ex.Message;
+                lblSearchMessage.ForeColor = System.Drawing.Color.Red;
+            }
+        }
+
+        protected void gvUserVisits_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvUserVisits.PageIndex = e.NewPageIndex;
+            // Recuperar filtros del ViewState
+            string email = ViewState["CurrentEmailFilter"]?.ToString() ?? "";
+            DateTime? fechaInicio = ViewState["CurrentFechaInicio"] as DateTime?;
+            DateTime? fechaFin = ViewState["CurrentFechaFin"] as DateTime?;
+
+            DataSet ds = objVis.SearchVisitsByDateRange(email, fechaInicio, fechaFin);
+            gvUserVisits.DataSource = ds;
+            gvUserVisits.DataBind();
+        }
+
+        protected void btnClearSearch_Click(object sender, EventArgs e)
+        {
+            // Limpiar controles
+            txtSearchEmail.Text = "";
+            txtFechaInicio.Text = "";
+            txtFechaFin.Text = "";
+
+            // Limpiar ViewState
+            ViewState["CurrentEmailFilter"] = "";
+            ViewState["CurrentFechaInicio"] = null;
+            ViewState["CurrentFechaFin"] = null;
+
+            // Recargar datos sin filtros
+            LoadUserVisits();
+            lblSearchMessage.Text = "Mostrando todas las visitas";
+            lblSearchMessage.ForeColor = System.Drawing.Color.Blue;
+        }
     }
 }
+

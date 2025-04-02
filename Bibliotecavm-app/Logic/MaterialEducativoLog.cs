@@ -41,7 +41,7 @@ namespace Logic
         {
             try
             {
-               // Actualizar la duración de la visita
+                // Actualizar la duración de la visita
                 objMatEdu.ActualizarDuracionVisita(visitaId, duracion);
             }
             catch (Exception ex)

@@ -232,5 +232,26 @@ namespace Data
 
             return exists;
         }
+        // Buscar usuarios por correo electrónico (coincidencia parcial)
+        public DataSet SearchUsersByEmail(string email)
+        {
+            DataSet objData = new DataSet();
+            MySqlDataAdapter objAdapter = new MySqlDataAdapter();
+            MySqlCommand objSelectCmd = new MySqlCommand();
+
+            objSelectCmd.Connection = objPer.openConnection();
+            objSelectCmd.CommandText = "procSearchUsersByEmail"; // Procedimiento almacenado
+            objSelectCmd.CommandType = CommandType.StoredProcedure;
+
+            // Agregar parámetro para la búsqueda
+            objSelectCmd.Parameters.AddWithValue("@p_correo", email);
+
+            objAdapter.SelectCommand = objSelectCmd;
+            objAdapter.Fill(objData);
+            objPer.closeConnection();
+
+            return objData;
+        }
+
     }
 }

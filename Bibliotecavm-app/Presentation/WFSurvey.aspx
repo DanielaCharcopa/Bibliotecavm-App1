@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MainUsuario.Master" AutoEventWireup="true" CodeBehind="WFSurvey.aspx.cs" Inherits="Presentation.WFSurvey" %>
+﻿<%@ Page Title="Gestion de encuesta" Language="C#" MasterPageFile="~/MainUsuario.Master" AutoEventWireup="true" CodeBehind="WFSurvey.aspx.cs" Inherits="Presentation.WFSurvey" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 
