@@ -1,0 +1,580 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="MainAdmin.master.cs" Inherits="Presentation.MainAdmin" %>
+
+<!DOCTYPE html>
+<html lang="es">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistema de Gestión - Plataforma de administración">
+    <title>Biblioteca Virtual Misak</title>
+    <asp:ContentPlaceHolder ID="head" runat="server" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style type="text/css">
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;500;600;700&display=swap');
+        
+        :root {
+            --sidebar-width: 250px;
+            --header-height: 80px;
+            --primary-blue: #1a237e;
+            --light-blue: #303f9f;
+            --white-80: rgba(255, 255, 255, 0.8);
+            --white-15: rgba(255, 255, 255, 0.15);
+            --transition-speed: 0.3s;
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #1a237e;
+            --text-color: #333;
+            --light-bg: rgba(255, 255, 255, 0.9);
+            --spacing-unit: 1rem;
+            --nav-blur: 39px;
+            --nav-shadow: 0 5px 30px 0 rgba(22, 32, 220, 0.37);
+            --dropdown-bg: rgba(255, 255, 255, 0.95);
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        
+        /* HEADER */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030;
+            height: var(--header-height);
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        /* LOGO */
+        .logo {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-img {
+            max-width: 50px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .logo h3 {
+            line-height: 1.2;
+            margin: 0;
+            font-size: 1.1rem;
+            color: var(--primary-blue);
+        }
+
+        .logo-subtitle {
+            display: block;
+            font-size: 0.5em;
+            color: #555;
+            margin-top: 4px;
+        }
+
+        /* USER INFO */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-unit);
+        }
+
+        .user-info a, 
+        .user-info .btn-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .user-info a:hover, 
+        .user-info .btn-link:hover {
+            color: var(--secondary-color);
+        }
+        
+        .logout-icon {
+            color: #e74c3c;
+        }
+
+        /* Botón menú móvil */
+        .btn-menu-mobile {
+            margin-right: 1rem;
+            font-size: 1.25rem;
+            color: var(--primary-blue);
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            flex-shrink: 0;
+        }
+        
+        .btn-menu-mobile:hover {
+            color: var(--light-blue);
+            transform: scale(1.1);
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: var(--sidebar-width);
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            bottom: 0;
+            background-color: var(--primary-blue);
+            overflow-y: auto;
+            transition: transform var(--transition-speed) ease;
+            z-index: 1020;
+            padding-top: 10px;
+        }
+        
+        .sidebar .nav-link {
+            padding: 0.75rem 1rem;
+            color: var(--white-80);
+            display: flex;
+            align-items: center;
+            font-weight: 400;
+            border-radius: 4px;
+            margin: 0.15rem 0.5rem;
+            white-space: nowrap;
+            transition: all var(--transition-speed) ease;
+        }
+        
+        .sidebar .nav-link:hover {
+            color: white;
+            background-color: var(--light-blue);
+            transform: translateX(3px);
+        }
+        
+        .sidebar .nav-icon {
+            width: 1.5rem;
+            margin-right: 0.75rem;
+            text-align: center;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+        
+        .sidebar .toggle-icon {
+            margin-left: auto;
+            transition: transform var(--transition-speed);
+            font-size: 0.8rem;
+        }
+        
+        /* SUBMENUS */
+        .submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height var(--transition-speed) ease;
+            padding-left: 1.5rem;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .has-submenu.open .submenu {
+            max-height: 1000px;
+        }
+        
+        .has-submenu.open .toggle-icon {
+            transform: rotate(180deg);
+        }
+        
+        /* CONTENIDO PRINCIPAL */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--header-height);
+            padding: 20px;
+            transition: all var(--transition-speed);
+            min-height: calc(100vh - var(--header-height));
+            background-color: #f8f9fa;
+        }
+        
+        /* ESTADOS ACTIVOS */
+        .sidebar .nav-link.active {
+            background-color: var(--light-blue);
+            color: white;
+            font-weight: 500;
+            transform: translateX(5px);
+        }
+        
+        .sidebar .nav-link.active-parent {
+            background-color: var(--white-15);
+            color: white;
+            font-weight: 500;
+        }
+        
+        /* OVERLAY PARA MÓVIL */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1010;
+            display: none;
+            transition: opacity var(--transition-speed) ease;
+        }
+        
+        /* FOOTER */
+        footer {
+            background-color: var(--primary-blue);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-left: var(--sidebar-width);
+            transition: all var(--transition-speed);
+        }
+        
+        /* VERSIÓN MÓVIL - LOGOS CENTRADOS ENTRE BOTONES */
+        @media (max-width: 767.98px) {
+            /* Header reorganizado */
+            header {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                padding: 8px 15px;
+                height: auto;
+                min-height: var(--header-height);
+            }
+
+            /* Fila superior con botones y logo centrado */
+            .header-top-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                position: relative;
+                margin-bottom: 8px;
+            }
+
+            /* Botón menú móvil (izquierda) */
+            .btn-menu-mobile {
+                position: static;
+                margin: 0;
+                padding: 5px;
+                z-index: 1;
+            }
+
+            /* Contenedor del logo centrado */
+            .logo-mobile-container {
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                display: flex;
+                justify-content: center;
+            }
+
+            .logo-mobile-container a {
+                display: flex;
+                gap: 8px;
+            }
+
+            /* Botón cerrar sesión (derecha) */
+            .logout-btn-container {
+                z-index: 1;
+            }
+
+            /* Texto del logo debajo */
+            .logo-text {
+                width: 100%;
+                text-align: center;
+                margin-top: 5px;
+            }
+
+            .logo-text h3 {
+                font-size: 1rem;
+                margin: 0;
+                line-height: 1.2;
+            }
+
+            .logo-text span {
+                font-size: 0.65rem;
+                line-height: 1.1;
+            }
+
+            /* Ocultar elementos no necesarios en móvil */
+            .username-label {
+                display: none;
+            }
+
+            /* Ajuste del contenido principal */
+            .main-content {
+                margin-top: 0 !important;
+                padding-top: 10px;
+            }
+
+            /* Sidebar para móviles */
+            .sidebar {
+                top: 0;
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            footer {
+                margin-left: 0;
+            }
+            
+            .sidebar.show ~ .sidebar-overlay {
+                display: block;
+                opacity: 1;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .btn-menu-mobile {
+                display: none;
+            }
+            
+            .header-top-row,
+            .logo-mobile-container,
+            .logo-text {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+        <!-- HEADER -->
+        <header>
+            <!-- Versión desktop -->
+            <div class="d-none d-md-block">
+                <!-- Logo y marca con imágenes -->
+                <div class="logo">
+                    <a href="WFStatisticReport2.aspx" aria-label="Ir a la página de inicio">
+                        <img class="logo-img" src="Recursos/Icons/Escudo.ico" alt="Escudo institucional">
+                        <img class="logo-img" src="Recursos/Icons/Sin-fondo.ico" alt="Logo del sistema">
+                    </a>
+                    <div>
+                        <h3>Biblioteca Virtual Misak Web</h3>
+                        <span class="logo-subtitle">Asha mϴrϴp paya kusrep puinuk (AshMϴr)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Versión móvil -->
+            <div class="d-md-none w-100">
+                <!-- Fila superior con botones y logo -->
+                <div class="header-top-row">
+                    <!-- Botón menú móvil (izquierda) -->
+                    <button class="btn-menu-mobile" type="button" onclick="toggleSidebar()" aria-label="Toggle navigation">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    
+                    <!-- Logos centrados -->
+                    <div class="logo-mobile-container">
+                        <a href="WFStatisticReport2.aspx" aria-label="Ir a la página de inicio">
+                            <img class="logo-img" src="Recursos/Icons/Escudo.ico" alt="Escudo institucional">
+                            <img class="logo-img" src="Recursos/Icons/Sin-fondo.ico" alt="Logo del sistema">
+                        </a>
+                    </div>
+                    
+                    <!-- Botón cerrar sesión (derecha) -->
+                    <div class="logout-btn-container">
+                        <asp:LinkButton
+                            ID="lnkLogout"
+                            runat="server"
+                            OnClick="lnkLogout_Click"
+                            Visible="true"
+                            role="button"
+                            CssClass="btn-link d-flex align-items-center text-danger fw-semibold">
+                            <i class="fas fa-door-open me-2 fa-lg logout-icon"></i> Cerrar
+                        </asp:LinkButton>
+                    </div>
+                </div>
+
+                <!-- Texto del logo -->
+                <div class="logo-text">
+                    <h3>Biblioteca Virtual Misak Web</h3>
+                    <span>Asha mϴrϴp paya kusrep puinuk (AshMϴr)</span>
+                </div>
+            </div>
+
+            <!-- User info (solo desktop) -->
+            <div class="user-info d-none d-md-flex">
+                <asp:Label ID="lblUsername" runat="server" Text="Bienvenid@, Usuario" aria-live="polite" class="username-label"></asp:Label>
+                <asp:LinkButton
+                    ID="lnkLogoutDesktop"
+                    runat="server"
+                    OnClick="lnkLogout_Click"
+                    Visible="true"
+                    role="button"
+                    CssClass="btn-link d-flex align-items-center text-danger fw-semibold">
+                    <i class="fas fa-door-open me-2 fa-lg logout-icon"></i> Cerrar Sesión
+                </asp:LinkButton>
+            </div>
+        </header>
+
+        <!-- SIDEBAR -->
+        <asp:Panel ID="pnlAdmin" runat="server" CssClass="sidebar text-white">
+            <div class="d-flex flex-column h-100 p-3">
+                <div class="d-flex justify-content-between align-items-center d-lg-none mb-3">
+                    <h5 class="mb-0">Menú</h5>
+                    <button class="btn-close btn-close-white" type="button" onclick="toggleSidebar()" aria-label="Close menu"></button>
+                </div>
+
+                <ul class="nav nav-pills flex-column mb-auto">
+                    <li class="nav-item">
+                        <a href="WFStatisticReport2.aspx" class="nav-link <%= CurrentPage == "Home2" ? "active" : "" %>">
+                            <i class="fas fa-home nav-icon"></i>Inicio
+                        </a>
+                    </li>
+
+                    <li class="nav-item has-submenu <%= IsInSubmenu("WFStatisticReport2|WFUserManagement|WFPurchaseRequestManagement|WFSurvey|WFAnswerManagement") ? "open" : "" %>">
+                        <a href="#" class="nav-link menu-toggle <%= IsInSubmenu("WFStatisticReport2|WFUserManagement|WFPurchaseRequestManagement|WFSurvey|WFAnswerManagement") ? "active-parent" : "" %>">
+                            <i class="fas fa-sliders-h nav-icon"></i>Gestión del Sistema
+                            <i class="fas fa-chevron-down toggle-icon"></i>
+                        </a>
+                        <ul class="submenu nav flex-column">
+                            <li><a href="WFStatisticReport2.aspx" class="nav-link <%= CurrentPage == "WFStatisticReport2" ? "active" : "" %>">
+                                <i class="fas fa-chart-pie nav-icon"></i>Reportes</a></li>
+                            <li><a href="WFUserManagement.aspx" class="nav-link <%= CurrentPage == "WFUserManagement" ? "active" : "" %>">
+                                <i class="fas fa-users-cog nav-icon"></i>Usuarios</a></li>
+                            <li><a href="WFPurchaseRequestManagement.aspx" class="nav-link <%= CurrentPage == "WFPurchaseRequestManagement" ? "active" : "" %>">
+                                <i class="fas fa-cash-register nav-icon"></i>Ventas</a></li>
+                            <li><a href="WFSurvey.aspx" class="nav-link <%= CurrentPage == "WFSurvey" ? "active" : "" %>">
+                                <i class="fas fa-poll nav-icon"></i>Encuestas</a></li>
+                            <li><a href="WFAnswerManagement.aspx" class="nav-link <%= CurrentPage == "WFAnswerManagement" ? "active" : "" %>">
+                                <i class="fas fa-comments nav-icon"></i>Respuestas</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item has-submenu <%= IsInSubmenu("WFAuthors|WFCategory|WFEditorial|WFMatEducativo") ? "open" : "" %>">
+                        <a href="#" class="nav-link menu-toggle <%= IsInSubmenu("WFAuthors|WFCategory|WFEditorial|WFMatEducativo") ? "active-parent" : "" %>">
+                            <i class="fas fa-book-open nav-icon"></i>Gestión de Materiales
+                            <i class="fas fa-chevron-down toggle-icon"></i>
+                        </a>
+                        <ul class="submenu nav flex-column">
+                            <li><a href="WFAuthors.aspx" class="nav-link <%= CurrentPage == "WFAuthors" ? "active" : "" %>">
+                                <i class="fas fa-user-edit nav-icon"></i>Autores</a></li>
+                            <li><a href="WFCategory.aspx" class="nav-link <%= CurrentPage == "WFCategory" ? "active" : "" %>">
+                                <i class="fas fa-tags nav-icon"></i>Categorías</a></li>
+                            <li><a href="WFEditorial.aspx" class="nav-link <%= CurrentPage == "WFEditorial" ? "active" : "" %>">
+                                <i class="fas fa-building nav-icon"></i>Editoriales</a></li>
+                            <li><a href="WFMatEducativo.aspx" class="nav-link <%= CurrentPage == "WFMatEducativo" ? "active" : "" %>">
+                                <i class="fas fa-book nav-icon"></i>Materiales</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </asp:Panel>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
+        </main>
+
+        <!-- FOOTER -->
+        <footer>
+            <div class="container-fluid">
+                <p class="mb-0">© <%= DateTime.Now.Year %> Sistema de Gestión - Biblioteca Virtual Misak</p>
+            </div>
+        </footer>
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Función para alternar el sidebar en móviles
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+
+            // Solo aplicar en móviles
+            if (window.innerWidth <= 767) {
+                sidebar.classList.toggle('show');
+
+                if (sidebar.classList.contains('show')) {
+                    overlay.style.display = 'block';
+                    setTimeout(() => overlay.style.opacity = '1', 10);
+                } else {
+                    overlay.style.opacity = '0';
+                    setTimeout(() => overlay.style.display = 'none', 300);
+                }
+
+                // Guardar estado solo para móviles
+                sessionStorage.setItem('sidebarState', sidebar.classList.contains('show') ? 'open' : 'closed');
+            }
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function () {
+            // Manejar submenús
+            document.querySelectorAll('.menu-toggle').forEach(toggle => {
+                toggle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const parent = this.closest('.has-submenu');
+                    parent.classList.toggle('open');
+
+                    // Cerrar otros submenús
+                    document.querySelectorAll('.has-submenu').forEach(item => {
+                        if (item !== parent) item.classList.remove('open');
+                    });
+                });
+            });
+
+            // Cerrar menú al seleccionar solo en móviles
+            document.querySelectorAll('.sidebar .nav-link[href^="WF"]').forEach(link => {
+                link.addEventListener('click', function () {
+                    if (window.innerWidth <= 767) {
+                        toggleSidebar();
+                    }
+                });
+            });
+
+            // Restaurar estado del sidebar solo en móviles
+            if (window.innerWidth <= 767 && sessionStorage.getItem('sidebarState') === 'open') {
+                document.querySelector('.sidebar').classList.add('show');
+                document.querySelector('.sidebar-overlay').style.display = 'block';
+                setTimeout(() => document.querySelector('.sidebar-overlay').style.opacity = '1', 10);
+            }
+
+            // Forzar sidebar visible en desktop/tablet
+            if (window.innerWidth > 767) {
+                document.querySelector('.sidebar').classList.add('show');
+                document.querySelector('.sidebar').style.transform = 'translateX(0)';
+                document.querySelector('.main-content').style.marginLeft = 'var(--sidebar-width)';
+                document.querySelector('footer').style.marginLeft = 'var(--sidebar-width)';
+                document.querySelector('.sidebar-overlay').style.display = 'none';
+            }
+        });
+
+        // Manejar redimensionamiento - asegurar sidebar visible en desktop/tablet
+        window.addEventListener('resize', function () {
+            if (window.innerWidth <= 767) {
+                // Comportamiento móvil
+                if (!document.querySelector('.sidebar').classList.contains('show')) {
+                    document.querySelector('.sidebar-overlay').style.opacity = '0';
+                    setTimeout(() => document.querySelector('.sidebar-overlay').style.display = 'none', 300);
+                }
+            } else {
+                // Forzar sidebar visible en desktop/tablet
+                document.querySelector('.sidebar').classList.add('show');
+                document.querySelector('.sidebar').style.transform = 'translateX(0)';
+                document.querySelector('.main-content').style.marginLeft = 'var(--sidebar-width)';
+                document.querySelector('footer').style.marginLeft = 'var(--sidebar-width)';
+                document.querySelector('.sidebar-overlay').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

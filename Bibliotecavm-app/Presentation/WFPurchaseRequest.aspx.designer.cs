@@ -42,6 +42,15 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.TextBox TBTicket;
 
         /// <summary>
+        /// Control TBFecha.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TBFecha;
+
+        /// <summary>
         /// Control LblFecha.
         /// </summary>
         /// <remarks>
@@ -51,13 +60,13 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.Label LblFecha;
 
         /// <summary>
-        /// Control TBFecha.
+        /// Control LblFechaMostrar.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TBFecha;
+        protected global::System.Web.UI.WebControls.Label LblFechaMostrar;
 
         /// <summary>
         /// Control LblMaterial.
@@ -85,6 +94,15 @@ namespace Presentation
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField HdnMaterialId;
+
+        /// <summary>
+        /// Control BtnBuscarMaterial.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton BtnBuscarMaterial;
 
         /// <summary>
         /// Control LblQuantity.
@@ -147,7 +165,7 @@ namespace Presentation
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnSave;
+        protected global::System.Web.UI.WebControls.LinkButton BtnSave;
 
         /// <summary>
         /// Control BtnUpdate.
@@ -156,7 +174,7 @@ namespace Presentation
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnUpdate;
+        protected global::System.Web.UI.WebControls.LinkButton BtnUpdate;
 
         /// <summary>
         /// Control BtnDelete.
@@ -165,7 +183,7 @@ namespace Presentation
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnDelete;
+        protected global::System.Web.UI.WebControls.LinkButton BtnDelete;
 
         /// <summary>
         /// Control GVRequests.
@@ -175,23 +193,5 @@ namespace Presentation
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView GVRequests;
-
-        /// <summary>
-        /// Control TxtBuscarMaterial.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TxtBuscarMaterial;
-
-        /// <summary>
-        /// Control GVMateriales.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GVMateriales;
     }
 }

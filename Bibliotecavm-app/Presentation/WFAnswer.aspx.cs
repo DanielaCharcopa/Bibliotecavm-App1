@@ -1,36 +1,46 @@
 ﻿using Logic;
 using System;
 using System.Data;
-using System.Web;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace Presentation
 {
     public partial class WFAnswer : System.Web.UI.Page
     {
-        AnswersLog answersLog = new AnswersLog();
+        private readonly AnswersLog answersLog = new AnswersLog();
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                if (Session["UserID"] == null)
-                {
-                    Response.Redirect("Default.aspx");
-                    return;
-                }
-
-                int loggedInUserId = Convert.ToInt32(Session["UserID"]);
-                //ShowLoggedInUserName();
-                LoadUnansweredQuestions(loggedInUserId);
-                //LoadAnswers(loggedInUserId);
+                ValidateUserSession();
+                InitializeControls();
+                LoadUserData();
             }
         }
 
-        //private void ShowLoggedInUserName()
-        //{
-        //    LblUsuario.Text = Session["UserName"]?.ToString() ?? "Usuario no identificado";
-        //}
+        private void ValidateUserSession()
+        {
+            if (Session["UserID"] == null)
+            {
+                Response.Redirect("~/Default.aspx", true);
+                Context.ApplicationInstance.CompleteRequest();
+            }
+        }
+
+        private void InitializeControls()
+        {
+            successAlert.Visible = false;
+            errorAlert.Visible = false;
+            btnSaveAnswer.Enabled = true;
+        }
+
+        private void LoadUserData()
+        {
+            int userId = Convert.ToInt32(Session["UserID"]);
+            LoadUnansweredQuestions(userId);
+        }
 
         private void LoadUnansweredQuestions(int userId)
         {
@@ -45,179 +55,128 @@ namespace Presentation
                     ddlSurvey.DataValueField = "en_id";
                     ddlSurvey.DataBind();
                     ddlSurvey.Items.Insert(0, new ListItem("-- Seleccione una Pregunta --", "0"));
+
+                    ToggleFormControls(true);
                 }
                 else
                 {
                     ddlSurvey.Items.Clear();
                     ddlSurvey.Items.Add(new ListItem("-- No hay preguntas disponibles --", "0"));
-                    lblError.Text = "No hay preguntas sin responder o ya contestó todas.";
+                    ToggleFormControls(false);
+                    ShowInfoMessage("No hay preguntas disponibles para responder o ya has contestado todas.");
                 }
             }
             catch (Exception ex)
             {
-                lblError.Text = $"Error: {ex.Message}";
+                ShowErrorMessage($"Error al cargar preguntas: {ex.Message}");
                 ddlSurvey.Items.Add(new ListItem("-- Error al cargar --", "0"));
+                ToggleFormControls(false);
             }
         }
 
-        //private void LoadAnswers(int userId)
-        //{
-        //    try
-        //    {
-        //        DataSet ds = answersLog.showAnswersByUser(userId);
+        private void ToggleFormControls(bool enabled)
+        {
+            ddlSurvey.Enabled = enabled;
+            ddlResponse.Enabled = enabled;
+            btnSaveAnswer.Enabled = enabled;
+        }
 
-        //        if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-        //        {
-        //            gvAnswers.DataSource = ds.Tables[0];
-        //            gvAnswers.DataBind();
-        //            lblMessage.Text = "Respuestas cargadas correctamente.";
-        //            lblMessage.ForeColor = System.Drawing.Color.Green;
-        //        }
-        //        else
-        //        {
-        //            gvAnswers.DataSource = null;
-        //            gvAnswers.DataBind();
-        //            lblMessage.Text = "No hay respuestas registradas.";
-        //            lblMessage.ForeColor = System.Drawing.Color.Red;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        lblMessage.Text = "Error al cargar respuestas: " + ex.Message;
-        //        lblMessage.ForeColor = System.Drawing.Color.Red;
-        //    }
-        //}
         protected void btnSaveAnswer_Click(object sender, EventArgs e)
+        {
+            if (!ValidateForm())
+                return;
+
+            try
+            {
+                SaveAnswer();
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage($"Error inesperado: {ex.Message}");
+                ResetSaveButton();
+            }
+        }
+
+        private bool ValidateForm()
         {
             if (ddlSurvey.SelectedValue == "0")
             {
-                lblMessage.Text = "Debe seleccionar una pregunta válida.";
-                lblMessage.ForeColor = System.Drawing.Color.Red;
-                return;
+                ShowErrorMessage("Por favor, seleccione una pregunta válida");
+                ScriptManager.RegisterStartupScript(this, GetType(), "focusQuestion",
+                    $"document.getElementById('{ddlSurvey.ClientID}').focus();", true);
+                return false;
             }
 
             if (string.IsNullOrWhiteSpace(ddlResponse.SelectedValue))
             {
-                lblMessage.Text = "Debe seleccionar una respuesta.";
-                lblMessage.ForeColor = System.Drawing.Color.Red;
-                return;
+                ShowErrorMessage("Debe seleccionar una respuesta");
+                ScriptManager.RegisterStartupScript(this, GetType(), "focusResponse",
+                    $"document.getElementById('{ddlResponse.ClientID}').focus();", true);
+                return false;
             }
 
-            try
-            {
-                string response = ddlResponse.SelectedValue;
-                int questionId = Convert.ToInt32(ddlSurvey.SelectedValue);
-                int userId = Convert.ToInt32(Session["UserID"]);
-
-                bool result = answersLog.saveAnswer(response, questionId, userId);
-
-                if (result)
-                {
-                    lblMessage.Text = "Respuesta guardada exitosamente.";
-                    lblMessage.ForeColor = System.Drawing.Color.Green;
-
-                    // Paso clave: Recargar preguntas ANTES de resetear
-                    int currentUserId = Convert.ToInt32(Session["UserID"]);
-                    LoadUnansweredQuestions(currentUserId); // Recarga las preguntas actualizadas
-
-                    // Resetear controles
-                    ddlResponse.SelectedIndex = 0;
-                    ddlSurvey.SelectedIndex = 0; // Ahora funcionará porque la lista está fresca
-                }
-                else
-                {
-                    lblMessage.Text = "Error al guardar la respuesta.";
-                    lblMessage.ForeColor = System.Drawing.Color.Red;
-                }
-            }
-            catch (Exception ex)
-            {
-                lblMessage.Text = "Error al guardar la respuesta: " + ex.Message;
-                lblMessage.ForeColor = System.Drawing.Color.Red;
-            }
+            return true;
         }
 
+        private void SaveAnswer()
+        {
+            string response = ddlResponse.SelectedValue;
+            int questionId = Convert.ToInt32(ddlSurvey.SelectedValue);
+            int userId = Convert.ToInt32(Session["UserID"]);
 
-        //protected void btnUpdateAnswer_Click(object sender, EventArgs e)
-        //{
-        //    if (ViewState["SelectedResId"] == null || !int.TryParse(ViewState["SelectedResId"].ToString(), out int answerId) ||
-        //        string.IsNullOrWhiteSpace(ddlResponse.SelectedValue))
-        //    {
-        //        lblMessage.Text = "Seleccione una respuesta válida para actualizar.";
-        //        lblMessage.ForeColor = System.Drawing.Color.Red;
-        //        return;
-        //    }
+            bool result = answersLog.saveAnswer(response, questionId, userId);
 
-        //    try
-        //    {
-        //        string response = ddlResponse.SelectedValue;
-        //        int questionId = Convert.ToInt32(ddlSurvey.SelectedValue);
-        //        int userId = Convert.ToInt32(Session["UserID"]);
+            if (result)
+            {
+                ShowSuccessMessage("¡Respuesta guardada exitosamente!");
+                LoadUserData();
+                ResetForm();
+            }
+            else
+            {
+                ShowErrorMessage("No se pudo guardar la respuesta. Intente nuevamente.");
+            }
 
-        //        bool result = answersLog.updateAnswer(answerId, response, questionId, userId);
-        //        lblMessage.Text = result ? "Respuesta actualizada exitosamente." : "Error al actualizar la respuesta.";
-        //        lblMessage.ForeColor = result ? System.Drawing.Color.Green : System.Drawing.Color.Red;
-        //        LoadUnansweredQuestions(userId);
-        //        //LoadAnswers(userId);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        lblMessage.Text = "Error al actualizar la respuesta: " + ex.Message;
-        //        lblMessage.ForeColor = System.Drawing.Color.Red;
-        //    }
-        //}
+            ResetSaveButton();
+        }
 
-        //protected void btnDeleteAnswer_Click(object sender, EventArgs e)
-        //{
-        //    if (ViewState["SelectedResId"] == null || !int.TryParse(ViewState["SelectedResId"].ToString(), out int answerId))
-        //    {
-        //        lblMessage.Text = "Seleccione una respuesta válida para eliminar.";
-        //        lblMessage.ForeColor = System.Drawing.Color.Red;
-        //        return;
-        //    }
+        private void ResetForm()
+        {
+            ddlResponse.SelectedIndex = 0;
+            ScriptManager.RegisterStartupScript(this, GetType(), "resetAnimation",
+                $"$('#{ddlResponse.ClientID}').addClass('animate__animated animate__pulse');", true);
+        }
 
-        //    try
-        //    {
-        //        int questionId = Convert.ToInt32(ddlSurvey.SelectedValue);
-        //        int userId = Convert.ToInt32(Session["UserID"]);
+        private void ResetSaveButton()
+        {
+            ScriptManager.RegisterStartupScript(this, GetType(), "resetButton",
+                $"document.getElementById('{btnSaveAnswer.ClientID}').innerHTML = '<i class=\"fas fa-save me-1\"></i> Guardar Respuesta';", true);
+        }
 
-        //        bool result = answersLog.deleteAnswer(answerId, questionId, userId);
-        //        lblMessage.Text = result ? "Respuesta eliminada exitosamente." : "Error al eliminar la respuesta.";
-        //        lblMessage.ForeColor = result ? System.Drawing.Color.Green : System.Drawing.Color.Red;
-        //        LoadUnansweredQuestions(userId);
-        //        //LoadAnswers(userId);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        lblMessage.Text = "Error al eliminar la respuesta: " + ex.Message;
-        //        lblMessage.ForeColor = System.Drawing.Color.Red;
-        //    }
-        //}
+        #region Message Handlers
+        private void ShowSuccessMessage(string message)
+        {
+            litSuccessMessage.Text = message;
+            successAlert.Visible = true;
+            errorAlert.Visible = false;
+            ScriptManager.RegisterStartupScript(this, GetType(), "hideSuccess",
+                $"setTimeout(function() {{ $('#{successAlert.ClientID}').fadeOut('slow'); }}, 5000);", true);
+        }
 
-        //protected void gvAnswers_SelectedIndexChanged(object sender, EventArgs e)
-        //{
-        //    if (gvAnswers.SelectedRow != null)
-        //    {
-        //        GridViewRow row = gvAnswers.SelectedRow;
-        //        try
-        //        {
-        //            string questionId = HttpUtility.HtmlDecode(row.Cells[1].Text.Trim());
-        //            string response = HttpUtility.HtmlDecode(row.Cells[3].Text.Trim());
+        private void ShowErrorMessage(string message)
+        {
+            litErrorMessage.Text = message;
+            errorAlert.Visible = true;
+            successAlert.Visible = false;
+        }
 
-        //            ddlSurvey.SelectedValue = questionId;
-        //            ddlResponse.SelectedValue = response;
-        //            ViewState["SelectedResId"] = int.Parse(row.Cells[0].Text.Trim());
-
-        //            lblMessage.Text = "Respuesta seleccionada para edición.";
-        //            lblMessage.ForeColor = System.Drawing.Color.Blue;
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            lblMessage.Text = "Error al seleccionar la respuesta: " + ex.Message;
-        //            lblMessage.ForeColor = System.Drawing.Color.Red;
-        //        }
-        //    }
-        //}
-
+        private void ShowInfoMessage(string message)
+        {
+            litSuccessMessage.Text = message;
+            successAlert.Attributes["class"] = successAlert.Attributes["class"].Replace("alert-success", "alert-info");
+            successAlert.Visible = true;
+            errorAlert.Visible = false;
+        }
+        #endregion
     }
 }

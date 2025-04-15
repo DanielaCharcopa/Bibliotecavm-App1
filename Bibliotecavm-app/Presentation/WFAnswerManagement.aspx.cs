@@ -1,12 +1,18 @@
 ﻿using Logic;
 using System;
 using System.Data;
+using System.Web.UI.WebControls;
 
 namespace Presentation
 {
     public partial class WFAnswerManagement : System.Web.UI.Page
     {
-        AnswersLog answersLog = new AnswersLog();
+        private readonly AnswersLog answersLog = new AnswersLog();
+        private DataTable AnswersData
+        {
+            get => ViewState["AnswersData"] as DataTable;
+            set => ViewState["AnswersData"] = value;
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -18,55 +24,71 @@ namespace Presentation
                     return;
                 }
 
-                string userRole = Session["UserRole"].ToString();
-
-                if (userRole == "Administrador")
-                {
-                    LoadAllAnswers(); // Cargar todas las respuestas si el usuario es Administrador
-                }
-                else
-                {
-                    int loggedInUserId = Convert.ToInt32(Session["UserID"]);
-                    LoadAnswersByUser(loggedInUserId); // Cargar solo las respuestas del usuario actual
-                }
+                LoadAnswersData();
+                ConfigureGridView();
             }
         }
 
-        private void LoadAnswersByUser(int userId)
+        private void LoadAnswersData()
         {
             try
             {
-                DataSet ds = answersLog.showAnswersByUser(userId);
+                DataSet ds = Session["UserRole"].ToString() == "Administrador"
+                    ? answersLog.showAnswers()
+                    : answersLog.showAnswersByUser(Convert.ToInt32(Session["UserID"]));
 
-                gvAnswers.DataSource = (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-                    ? ds.Tables[0]
-                    : null;
-
-                gvAnswers.DataBind();
+                AnswersData = ds?.Tables.Count > 0 ? ds.Tables[0] : CreateEmptyDataTable();
             }
             catch (Exception ex)
             {
-                lblMessage.Text = "Error al cargar respuestas: " + ex.Message;
+                lblMessage.Text = $"Error al cargar respuestas: {ex.Message}";
                 lblMessage.ForeColor = System.Drawing.Color.Red;
+                AnswersData = CreateEmptyDataTable();
             }
         }
 
-        private void LoadAllAnswers()
+        private DataTable CreateEmptyDataTable()
         {
-            try
-            {
-                DataSet ds = answersLog.showAnswers(); // Obtener todas las respuestas
+            var dt = new DataTable();
+            dt.Columns.Add("res_id");
+            dt.Columns.Add("tbl_encuesta_en_id");
+            dt.Columns.Add("en_descripcion_pregunta");
+            dt.Columns.Add("res_respuesta");
+            dt.Columns.Add("nombre_usuario");
+            return dt;
+        }
 
-                gvAnswers.DataSource = (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-                    ? ds.Tables[0]
-                    : null;
+        private void ConfigureGridView()
+        {
+            gvAnswers.DataSource = AnswersData;
+            gvAnswers.DataBind();
+            UpdatePaginationInfo();
+        }
 
-                gvAnswers.DataBind();
-            }
-            catch (Exception ex)
+        protected void gvAnswers_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvAnswers.PageIndex = e.NewPageIndex;
+            ConfigureGridView();
+        }
+
+        private void UpdatePaginationInfo()
+        {
+            if (AnswersData.Rows.Count == 0) return;
+
+            int currentPage = gvAnswers.PageIndex + 1;
+            int totalPages = gvAnswers.PageCount;
+            int startRecord = (gvAnswers.PageIndex * gvAnswers.PageSize) + 1;
+            int endRecord = Math.Min(startRecord + gvAnswers.PageSize - 1, AnswersData.Rows.Count);
+
+            lblPaginationInfo.Text = $"Mostrando {startRecord}-{endRecord} de {AnswersData.Rows.Count} registros | Página {currentPage} de {totalPages}";
+        }
+
+        protected void gvAnswers_PreRender(object sender, EventArgs e)
+        {
+            if (gvAnswers.Rows.Count > 0)
             {
-                lblMessage.Text = "Error al cargar todas las respuestas: " + ex.Message;
-                lblMessage.ForeColor = System.Drawing.Color.Red;
+                gvAnswers.UseAccessibleHeader = true;
+                gvAnswers.HeaderRow.TableSection = TableRowSection.TableHeader;
             }
         }
     }

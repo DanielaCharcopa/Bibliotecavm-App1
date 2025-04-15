@@ -1,44 +1,60 @@
 ﻿<%@ Page Title="Registro de Usuarios" Language="C#" MasterPageFile="~/Main.Master" AutoEventWireup="true" CodeBehind="WFUserRegistration.aspx.cs" Inherits="Presentation.WFUserRegistration" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-
-   
+    <style type="text/css">
+        /* Estilos para campos obligatorios */
+        .required-field::after {
+            content: " *";
+            color: #e53935; /* Rojo para destacar */
+            font-weight: bold;
+        }
+        
+        .required-note {
+            text-align: right;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+    </style>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="form-container">
         <h2>Registro de Usuarios</h2>
         
+        <!-- Nota sobre campos obligatorios -->
+        <div class="required-note">Los campos marcados con <span style="color: #e53935; font-weight: bold;">*</span> son obligatorios</div>
+        
         <!-- Mensaje de retroalimentación -->
         <asp:Label ID="LblMessage" runat="server" CssClass="message"></asp:Label>
 
         <!-- Campos del formulario -->
         <div class="form-group">
-            <label for="TBFirstName">Nombre:</label>
-            <asp:TextBox ID="TBFirstName" runat="server" CssClass="form-control"></asp:TextBox>
+            <label for="TBFirstName" class="required-field">Nombre:</label>
+            <asp:TextBox ID="TBFirstName" runat="server" CssClass="form-control" aria-required="true"></asp:TextBox>
             <asp:Label ID="LblNombreMessage" runat="server" CssClass="error-message" Visible="false" Text="El campo 'Nombre' es obligatorio."></asp:Label>
         </div>
         
         <div class="form-group">
-            <label for="TBLastName">Apellido:</label>
-            <asp:TextBox ID="TBLastName" runat="server" CssClass="form-control"></asp:TextBox>
+            <label for="TBLastName" class="required-field">Apellido:</label>
+            <asp:TextBox ID="TBLastName" runat="server" CssClass="form-control" aria-required="true"></asp:TextBox>
             <asp:Label ID="LblApellidoMessage" runat="server" CssClass="error-message" Visible="false" Text="El campo 'Apellido' es obligatorio."></asp:Label>
         </div>
         
         <div class="form-group">
-            <label for="TBEmail">Correo Electrónico:</label>
-            <asp:TextBox ID="TBEmail" runat="server" CssClass="form-control"></asp:TextBox>
+            <label for="TBEmail" class="required-field">Correo Electrónico:</label>
+            <asp:TextBox ID="TBEmail" runat="server" CssClass="form-control" aria-required="true"></asp:TextBox>
             <asp:Label ID="LblCorreoMessage" runat="server" CssClass="error-message" Visible="false" Text="Por favor, ingrese un correo electrónico válido de Gmail (ejemplo@gmail.com)."></asp:Label>
         </div>
         
         <div class="form-group">
-            <label for="TBPassword">Contraseña:</label>
-            <asp:TextBox ID="TBPassword" runat="server" TextMode="Password" CssClass="form-control"></asp:TextBox>
+            <label for="TBPassword" class="required-field">Contraseña:</label>
+            <asp:TextBox ID="TBPassword" runat="server" TextMode="Password" CssClass="form-control" aria-required="true"></asp:TextBox>
             <asp:Label ID="LblPasswordMessage" runat="server" CssClass="error-message" Visible="false" Text="Por favor ingrese la contraseña del usuario."></asp:Label>
         </div>
         
         <div class="form-group">
-            <label for="DDLRole">Rol:</label>
-            <asp:DropDownList ID="DDLRole" runat="server" CssClass="form-control">
+            <label for="DDLRole" class="required-field">Rol:</label>
+            <asp:DropDownList ID="DDLRole" runat="server" CssClass="form-control" aria-required="true">
                 <asp:ListItem Text="Seleccione un rol" Value="" />
                 <asp:ListItem Text="Docente" Value="Docente" />
                 <asp:ListItem Text="Estudiante" Value="Estudiante" />
@@ -46,7 +62,7 @@
         </div>
         
         <div class="form-group">
-            <label for="DDLEducationLevel">Nivel Educativo:</label>
+            <label for="DDLEducationLevel" class="required-field">Nivel Educativo:</label>
             <asp:DropDownList ID="DDLEducationLevel" runat="server" CssClass="form-control">
                 <asp:ListItem Text="Seleccione un nivel" Value="" />
                 <asp:ListItem Text="Primaria" Value="Primaria" />
@@ -67,25 +83,27 @@
             <asp:Button ID="BtnSave" runat="server" Text="Guardar" OnClientClick="return validateForm();" OnClick="BtnSave_Click" CssClass="btn-primary" />
         </div>
     </div>
-     <script>
-         function validateForm() {
-             // Obtener el valor del correo electrónico
-             var email = document.getElementById("<%= TBEmail.ClientID %>").value;
+    
+    <script>
+        function validateForm() {
+            // Obtener el valor del correo electrónico
+            var email = document.getElementById("<%= TBEmail.ClientID %>").value;
 
-             // Expresión regular para validar correos de Gmail
-             var regex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+            // Expresión regular para validar correos de Gmail
+            var regex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
 
-             // Validar el correo
-             if (!regex.test(email)) {
-                 alert("Por favor, ingrese un correo electrónico válido de Gmail (ejemplo@gmail.com).");
-                 return false; // Evita que el formulario se envíe
-             }
+            // Validar el correo
+            if (!regex.test(email)) {
+                alert("Por favor, ingrese un correo electrónico válido de Gmail (ejemplo@gmail.com).");
+                return false; // Evita que el formulario se envíe
+            }
 
-             // Si el correo es válido, permitir el envío del formulario
-             return true;
-         }
- </script>
-        <style type="text/css">
+            // Si el correo es válido, permitir el envío del formulario
+            return true;
+        }
+    </script>
+    
+    <style type="text/css">
         /* Estilos generales */
         .form-container {
             max-width: 800px;
@@ -185,5 +203,4 @@
             }
         }
     </style>
-    
 </asp:Content>

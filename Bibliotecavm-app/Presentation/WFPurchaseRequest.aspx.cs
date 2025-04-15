@@ -1,7 +1,9 @@
 ﻿using Logic;
 using System;
 using System.Data;
+using System.Globalization;
 using System.Linq;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -24,14 +26,47 @@ namespace Presentation
 
                 int loggedInUserId = Convert.ToInt32(Session["UserID"]);
                 string loggedInUserName = Session["UserName"]?.ToString();
+                TBQuantity.Text = "1";
 
-                TBFecha.Attributes["min"] = DateTime.Now.ToString("yyyy-MM-dd");
+                // Mostrar fecha en formato día/mes/año
+                LblFechaMostrar.Text = DateTime.Now.ToString("dd/MM/yyyy");
+
+                // También mantener el valor en el campo oculto para el procesamiento
                 TBFecha.Text = DateTime.Now.ToString("yyyy-MM-dd");
 
+                // Cargar material si viene de la página de materiales
+                if (!string.IsNullOrEmpty(Request.QueryString["matId"]))
+                {
+                    CargarMaterialSeleccionado();
+                }
 
                 showPurchaseRequestsByUser(loggedInUserId);
                 //showLoggedInUser(loggedInUserName);
 
+            }
+        }
+
+        private void CargarMaterialSeleccionado()
+        {
+            try
+            {
+                int matId = Convert.ToInt32(Request.QueryString["matId"]);
+                string nombre = HttpUtility.UrlDecode(Request.QueryString["nombre"]);
+                decimal precio = decimal.Parse(Request.QueryString["precio"], CultureInfo.InvariantCulture);
+                string formato = HttpUtility.UrlDecode(Request.QueryString["formato"]);
+
+                // Asignar valores a los controles
+                HdnMaterialId.Value = matId.ToString();
+                TxtMaterialSeleccionado.Text = $"{nombre} ({formato})"; // Ej: "Matemáticas Básicas (PDF)"
+                TBUnitPrice.Text = precio.ToString("C2", new CultureInfo("es-CO"));
+
+                // Calcular total inicial
+                UpdateTotal();
+            }
+            catch (Exception ex)
+            {
+                LblMsj.Text = $"Error al cargar el material: {ex.Message}";
+                LblMsj.ForeColor = System.Drawing.Color.Red;
             }
         }
 
@@ -43,10 +78,6 @@ namespace Presentation
             return $"T-{DateTime.Now:yyyyMMdd-HHmmss}-{rnd.Next(100, 999)}";
         }
 
-        //private void showLoggedInUser(string userName)
-        //{
-        //    LBLUser.Text = userName;
-        //}
 
 
         private void showPurchaseRequestsByUser(int userId)
@@ -63,12 +94,16 @@ namespace Presentation
 
                 if (data.Tables[0].Rows.Count > 0)
                 {
+                    // Guardar los datos en ViewState para la paginación
+                    ViewState["PurchaseRequests"] = data.Tables[0];
+
                     GVRequests.DataSource = data.Tables[0];
                     GVRequests.DataBind();
                     LblMsj.Text = "";
                 }
                 else
                 {
+                    ViewState["PurchaseRequests"] = null;
                     GVRequests.DataSource = null;
                     GVRequests.DataBind();
                     LblMsj.Text = "No hay solicitudes de compra registradas.";
@@ -79,12 +114,12 @@ namespace Presentation
                 LblMsj.Text = "Error inesperado: " + ex.Message;
             }
         }
-
         private void clear()
         {
             HFPurchaId.Value = "";
             TBTicket.Text = GenerateTicket();
             TBFecha.Text = DateTime.Now.ToString("yyyy-MM-dd");
+            TBQuantity.Text = "1"; // Restablecer a 1 al limpiar el formulario
             TBQuantity.Text = "";
             TxtMaterialSeleccionado.Text = "";
             HdnMaterialId.Value = "";
@@ -120,6 +155,40 @@ namespace Presentation
                 {
                     LblMsj.Text = $"Solicitud guardada exitosamente. Ticket: {TBTicket.Text}";
                     showPurchaseRequestsByUser(userId);
+
+                    // Obtener información para el mensaje de WhatsApp
+                    string material = TxtMaterialSeleccionado.Text;
+                    string cantidad = TBQuantity.Text;
+                    string precioUnitario = TBUnitPrice.Text;
+                    string total = TBTotal.Text;
+                    string ticket = TBTicket.Text;
+
+                    // Crear mensaje para WhatsApp
+                    string mensaje = System.Web.HttpUtility.UrlEncode(
+                        $"Nueva solicitud de compra:\n" +
+                        $"Material: {material}\n" +
+                        $"Cantidad: {cantidad}\n" +
+                        $"Precio Unitario: {precioUnitario}\n" +
+                        $"Total: {total}\n" +
+                        $"Ticket: {ticket}\n\n" +
+                        $"Por favor revisar esta solicitud y espere a ser contactado");
+
+                    // Número del vendedor (código de país + número)
+                    string numeroVendedor = "573218921973"; // Colombia es +57
+
+                    // Crear enlace de WhatsApp
+                    string urlWhatsApp = $"https://wa.me/{numeroVendedor}?text={mensaje}";
+
+                    // Registrar enlace en consola para depuración
+                    System.Diagnostics.Debug.WriteLine("Enlace WhatsApp: " + urlWhatsApp);
+
+                    // Abrir WhatsApp en una nueva pestaña
+                    ClientScript.RegisterStartupScript(
+                        this.GetType(),
+                        "OpenWhatsApp",
+                        $"window.open('{urlWhatsApp}', '_blank');",
+                        true);
+
                     clear();
                 }
                 else
@@ -135,24 +204,87 @@ namespace Presentation
 
         protected void BtnUpdate_Click(object sender, EventArgs e)
         {
-            int userId = Convert.ToInt32(Session["UserID"]);
-            if (string.IsNullOrEmpty(HFPurchaId.Value))
+            try
             {
-                LblMsj.Text = "Selecciona una solicitud para actualizar.";
-                return;
+                // 1. Validar sesión
+                if (Session["UserID"] == null)
+                {
+                    Response.Redirect("Default.aspx");
+                    return;
+                }
+
+                int userId = Convert.ToInt32(Session["UserID"]);
+
+                // 2. Validar que hay una solicitud seleccionada
+                if (string.IsNullOrEmpty(HFPurchaId.Value))
+                {
+                    LblMsj.Text = "Debe seleccionar una solicitud de la lista para actualizar.";
+                    LblMsj.ForeColor = System.Drawing.Color.Red;
+                    return;
+                }
+
+                // 3. Validar campos críticos
+                if (string.IsNullOrEmpty(TBQuantity.Text) || string.IsNullOrEmpty(HdnMaterialId.Value))
+                {
+                    LblMsj.Text = "Debe especificar la cantidad y seleccionar un material.";
+                    LblMsj.ForeColor = System.Drawing.Color.Red;
+                    return;
+                }
+
+                // 4. Validar formato de cantidad
+                if (!int.TryParse(TBQuantity.Text, out int cantidad) || cantidad <= 0)
+                {
+                    LblMsj.Text = "La cantidad debe ser un número entero positivo.";
+                    LblMsj.ForeColor = System.Drawing.Color.Red;
+                    return;
+                }
+
+                // 5. Validar ID de material
+                if (!int.TryParse(HdnMaterialId.Value, out int materialId))
+                {
+                    LblMsj.Text = "El material seleccionado no es válido.";
+                    LblMsj.ForeColor = System.Drawing.Color.Red;
+                    return;
+                }
+
+                // 6. Generar NUEVO ticket para la actualización
+                string nuevoTicket = GenerateTicket(); // Generamos un ticket nuevo
+
+                // 7. Obtener fecha (usar fecha actual si hay error)
+                DateTime fecha = DateTime.TryParse(TBFecha.Text, out DateTime f) ? f : DateTime.Now;
+
+                // 8. Ejecutar actualización con el nuevo ticket
+                bool resultado = objPur.updatePurchaseRequest(
+                    int.Parse(HFPurchaId.Value),
+                    nuevoTicket, // Usamos el ticket recién generado
+                    fecha,
+                    userId,
+                    cantidad,
+                    materialId);
+
+                // 9. Manejar resultado
+                if (resultado)
+                {
+                    // Actualizar el ticket mostrado en el formulario
+                    TBTicket.Text = nuevoTicket;
+
+                    LblMsj.Text = "¡Solicitud actualizada correctamente! Nuevo ticket generado.";
+                    LblMsj.ForeColor = System.Drawing.Color.Green;
+
+                    // Refrescar la lista para mostrar el nuevo ticket
+                    showPurchaseRequestsByUser(userId);
+                }
+                else
+                {
+                    LblMsj.Text = "No se pudo completar la actualización. Intente nuevamente.";
+                    LblMsj.ForeColor = System.Drawing.Color.Red;
+                }
             }
-
-            bool result = objPur.updatePurchaseRequest(
-                int.Parse(HFPurchaId.Value),
-                TBTicket.Text.Trim(),
-                DateTime.Parse(TBFecha.Text),
-                userId,
-                int.Parse(TBQuantity.Text),
-                int.Parse(HdnMaterialId.Value));
-
-            LblMsj.Text = result ? "¡Solicitud actualizada!" : "Error al actualizar.";
-            if (result) showPurchaseRequestsByUser(userId);
-            clear();
+            catch (Exception ex)
+            {
+                LblMsj.Text = $"Error inesperado: {ex.Message}";
+                LblMsj.ForeColor = System.Drawing.Color.Red;
+            }
         }
 
         protected void BtnDelete_Click(object sender, EventArgs e)
@@ -170,65 +302,6 @@ namespace Presentation
             clear();
         }
 
-
-        protected void TxtBuscarMaterial_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                string terminoBusqueda = TxtBuscarMaterial.Text.Trim().ToLower();
-
-                DataSet ds = objPur.showGetMaterials();
-
-                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-                {
-                    DataTable dtMateriales = ds.Tables[0];
-
-                    if (!dtMateriales.Columns.Contains("mat_titulo"))
-                    {
-                        LblMsj.Text = "Error: La columna 'mat_titulo' no existe en la base de datos.";
-                        return;
-                    }
-
-                    if (!string.IsNullOrEmpty(terminoBusqueda))
-                    {
-                        var resultados = dtMateriales.AsEnumerable()
-                            .Where(row => row.Field<string>("mat_titulo").ToLower().Contains(terminoBusqueda));
-
-                        if (resultados.Any())
-                        {
-                            GVMateriales.DataSource = resultados.CopyToDataTable();
-                            LblMsj.Text = ""; // Ocultar el mensaje si hay resultados
-                        }
-                        else
-                        {
-                            GVMateriales.DataSource = null;
-                            LblMsj.Text = "No se encontraron materiales educativos."; // Mostrar mensaje si no hay resultados
-                        }
-                    }
-                    else
-                    {
-                        GVMateriales.DataSource = dtMateriales;
-                        LblMsj.Text = ""; // Ocultar el mensaje si no hay término de búsqueda
-                    }
-
-                    GVMateriales.DataBind();
-                }
-                else
-                {
-                    GVMateriales.DataSource = null;
-                    GVMateriales.DataBind();
-                    LblMsj.Text = "No hay materiales educativos en la base de datos."; // Mostrar mensaje si no hay datos
-                }
-
-                // Recargar GVRequests después de la búsqueda
-                int loggedInUserId = Convert.ToInt32(Session["UserID"]);
-                showPurchaseRequestsByUser(loggedInUserId);
-            }
-            catch (Exception ex)
-            {
-                LblMsj.Text = "Error al buscar materiales educativos: " + ex.Message;
-            }
-        }
 
 
         protected void TBQuantity_TextChanged(object sender, EventArgs e)
@@ -267,34 +340,110 @@ namespace Presentation
         }
         protected void GVRequests_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Obtiene la fila seleccionada
-            GridViewRow row = GVRequests.SelectedRow;
-            if (row != null)
+            try
             {
-                // Asignar valores a los controles
-                HFPurchaId.Value = row.Cells[0].Text; // ID
-                TBTicket.Text = row.Cells[1].Text; // Ticket
-                TBFecha.Text = Convert.ToDateTime(row.Cells[2].Text).ToString("yyyy-MM-dd"); // Fecha
-                TBQuantity.Text = row.Cells[4].Text; // Cantidad
-                TxtMaterialSeleccionado.Text = row.Cells[5].Text; // Material
-                TBTotal.Text = row.Cells[6].Text; // Total
+                if (GVRequests.SelectedRow != null)
+                {
+                    GridViewRow row = GVRequests.SelectedRow;
+
+                    // 1. Validar estructura básica
+                    if (row.Cells.Count < 8 || GVRequests.DataKeys[row.RowIndex] == null)
+                    {
+                        LblMsj.Text = "Estructura de datos no válida. No se pueden cargar los detalles.";
+                        LblMsj.ForeColor = System.Drawing.Color.Red;
+                        return;
+                    }
+
+                    // 2. Asignar valores con validaciones
+                    // ID de la solicitud
+                    HFPurchaId.Value = row.Cells[0].Text;
+
+                    // Ticket
+                    TBTicket.Text = row.Cells[1].Text;
+
+                    // Fecha (formato dual)
+                    if (DateTime.TryParse(row.Cells[2].Text, out DateTime fecha))
+                    {
+                        TBFecha.Text = fecha.ToString("yyyy-MM-dd"); // Formato para BD
+                        LblFechaMostrar.Text = fecha.ToString("dd/MM/yyyy"); // Formato visual
+                    }
+                    else
+                    {
+                        TBFecha.Text = DateTime.Now.ToString("yyyy-MM-dd");
+                        LblFechaMostrar.Text = DateTime.Now.ToString("dd/MM/yyyy");
+                    }
+
+                    // Material (nombre e ID)
+                    TxtMaterialSeleccionado.Text = row.Cells[4].Text?.Trim() ?? string.Empty;
+
+                    // ID del material desde DataKeys con validación
+                    var materialId = GVRequests.DataKeys[row.RowIndex].Values["tbl_material_edu_mat_id"]?.ToString();
+                    HdnMaterialId.Value = !string.IsNullOrEmpty(materialId) ? materialId : string.Empty;
+
+                    // 3. Validación crítica del ID del material
+                    if (string.IsNullOrEmpty(HdnMaterialId.Value))
+                    {
+                        LblMsj.Text = "No se pudo obtener el ID del material. Seleccione nuevamente.";
+                        LblMsj.ForeColor = System.Drawing.Color.Red;
+                        return;
+                    }
+
+                    // 4. Cantidad con valor por defecto seguro
+                    if (int.TryParse(row.Cells[5].Text, out int cantidad) && cantidad > 0)
+                    {
+                        TBQuantity.Text = cantidad.ToString();
+                    }
+                    else
+                    {
+                        TBQuantity.Text = "1"; // Valor por defecto seguro
+                    }
+
+                    // 5. Valores monetarios con formato
+                    // Precio Unitario
+                    if (decimal.TryParse(row.Cells[6].Text.Replace("$", "").Trim(),
+                        System.Globalization.NumberStyles.Currency,
+                        System.Globalization.CultureInfo.CurrentCulture,
+                        out decimal precioUnitario))
+                    {
+                        TBUnitPrice.Text = precioUnitario.ToString("C2");
+                    }
+
+                    // Total
+                    if (decimal.TryParse(row.Cells[7].Text.Replace("$", "").Trim(),
+                        System.Globalization.NumberStyles.Currency,
+                        System.Globalization.CultureInfo.CurrentCulture,
+                        out decimal total))
+                    {
+                        TBTotal.Text = total.ToString("C2");
+                    }
+
+                    // 6. Limpiar mensajes de error si todo fue bien
+                    LblMsj.Text = string.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                // 7. Manejo centralizado de errores
+                LblMsj.Text = $"Error al cargar detalles: {ex.Message}";
+                LblMsj.ForeColor = System.Drawing.Color.Red;
+
+                // Registrar el error completo para diagnóstico
+                System.Diagnostics.Debug.WriteLine($"Error en GVRequests_SelectedIndexChanged: {ex.ToString()}");
             }
         }
 
-        protected void GVMateriales_SelectedIndexChanged(object sender, EventArgs e)
+        // Método para manejar el cambio de página
+        protected void GVRequests_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
-            // Obtiene la fila seleccionada
-            GridViewRow row = GVMateriales.SelectedRow;
-            if (row != null)
-            {
-                // Asigna valores a los controles
-                HdnMaterialId.Value = row.Cells[0].Text; // ID del material
-                TxtMaterialSeleccionado.Text = row.Cells[1].Text; // Nombre del material
-                TBUnitPrice.Text = row.Cells[2].Text; // Precio unitario
+            GVRequests.PageIndex = e.NewPageIndex;
+            int loggedInUserId = Convert.ToInt32(Session["UserID"]);
+            showPurchaseRequestsByUser(loggedInUserId);
+        }
 
-                // Actualizar el total después de asignar el precio unitario
-                UpdateTotal();
-            }
+        protected void BtnBuscarMaterial_Click(object sender, EventArgs e)
+        {
+            // Redirecciona al formulario de búsqueda de materiales
+            Response.Redirect("WFPresentationMaterial.aspx");
         }
 
     }

@@ -2,6 +2,7 @@
 using Model;
 using System;
 using System.Data;
+using System.Diagnostics;
 
 namespace Logic
 {
@@ -21,6 +22,7 @@ namespace Logic
             return objUserDat.showUsersDDL();
         }
 
+        // Método para guardar un nuevo Usuario
         // Método para guardar un nuevo Usuario
         public bool saveUser(string nombre, string apellido, string correo, string contrasena, string salt, string rol, string nivelEstudios)
         {
@@ -48,8 +50,6 @@ namespace Logic
             // Devolver el objeto User obtenido (sin validaciones adicionales)
             return objUser;
         }
-
-
         // Método para verificar si un correo ya está registrado
         public bool isEmailRegistered(string correo)
         {
@@ -81,5 +81,7 @@ namespace Logic
                 throw new Exception("Error en la capa lógica al buscar usuarios: " + ex.Message);
             }
         }
+
+
     }
 }

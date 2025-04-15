@@ -6,73 +6,429 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Sistema de Gestión - Plataforma de administración">
-    <title> </title>
+    <title></title>
     <asp:ContentPlaceHolder ID="head" runat="server" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
     <link href="styles/main.css" rel="stylesheet" type="text/css" />
-    
+    <style>
+        /* Variables y estilos base */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #1a237e;
+            --text-color: #333;
+            --light-bg: rgba(255, 255, 255, 0.9);
+            --spacing-unit: 1rem;
+            --nav-blur: 39px;
+            --nav-shadow: 0 5px 30px 0 rgba(22, 32, 220, 0.37);
+            --dropdown-bg: rgba(255, 255, 255, 0.95);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('../Recursos/Images/fondo.webp');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+        }
+        
+        /* Contenedor principal */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-unit);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--light-bg);
+        }
+        
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: var(--spacing-unit) 0;
+            background-color: var(--light-bg);
+        }
+
+        /* LOGO - VERSIÓN DESKTOP */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-img {
+            max-width: 50px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* USER INFO */
+        .user-info {
+            display: flex;
+            gap: var(--spacing-unit);
+            align-items: center;
+        }
+        
+        /* Navegación responsiva mejorada */
+        .responsive-nav {
+            backdrop-filter: blur(var(--nav-blur));
+            -webkit-backdrop-filter: blur(var(--nav-blur));
+            border-radius: 9px;
+            box-shadow: var(--nav-shadow);
+            padding: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            margin: 1rem auto;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        .nav-panel {
+            width: 100%;
+        }
+        
+        .nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-item {
+            margin: 0.25rem;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 600;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            white-space: nowrap;
+        }
+        
+        .nav-icon {
+            color: var(--accent-color);
+            margin-right: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover, 
+        .nav-link:focus {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--secondary-color);
+        }
+        
+        .nav-link:hover .nav-icon,
+        .nav-link:focus .nav-icon {
+            color: var(--secondary-color);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--secondary-color);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after,
+        .nav-link:focus::after {
+            width: calc(100% - 2rem);
+        }
+        
+        /* Contenido principal */
+        main {
+            flex: 1;
+            padding: var(--spacing-unit) 0;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: var(--spacing-unit) 0;
+            margin-top: auto;
+            background-color: var(--light-bg);
+        }
+        
+        footer p {
+            font-size: 0.9rem;
+            color: var(--primary-color);
+        }
+        
+        /* Botón menú móvil */
+        .btn-menu-mobile {
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: none;
+        }
+        
+        /* VERSIÓN MÓVIL - LOGOS A LA IZQUIERDA Y CERRAR SESIÓN A LA DERECHA */
+        @media (max-width: 767.98px) {
+            header {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px 0;
+            }
+            
+            /* Fila superior con botones y logo */
+            .header-top-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+            }
+            
+            /* Botón menú móvil */
+            .btn-menu-mobile {
+                display: block;
+                order: 1;
+                z-index: 1;
+            }
+            
+            /* Contenedor del logo alineado a la izquierda */
+            .logo-mobile-container {
+                display: flex;
+                justify-content: flex-start;
+                position: static;
+                transform: none;
+            }
+            
+            .logo-mobile-container a {
+                display: flex;
+                gap: 8px;
+            }
+            
+            /* Botón cerrar sesión alineado a la derecha */
+            .logout-btn-container {
+                display: flex;
+                justify-content: flex-end;
+            }
+            
+            /* Texto del logo */
+            .logo-text {
+                width: 100%;
+                text-align: center;
+                margin-top: 5px;
+            }
+            
+            /* Ocultar elementos no necesarios en móvil */
+            .logo-desktop {
+                display: none;
+            }
+            
+            .user-info .btn-link {
+                padding: 5px 10px;
+            }
+        }
+        
+        /* Estilos para pantallas medianas */
+        @media (min-width: 768px) {
+            .header-top-row,
+            .logo-mobile-container,
+            .logo-text {
+                display: none;
+            }
+            
+            .logo-desktop {
+                display: flex;
+            }
+        }
+        
+        /* Estilos activos */
+        .nav-link.active {
+            background-color: rgba(52, 152, 219, 0.2);
+            color: var(--secondary-color);
+        }
+        
+        .nav-link.active::after {
+            width: calc(100% - 2rem);
+        }
+        
+        .nav-link.active .nav-icon {
+            color: var(--secondary-color);
+        }
+        
+        /* Estilo para el botón de cerrar sesión */
+        .user-info a, 
+        .user-info .btn-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .user-info a:hover, 
+        .user-info .btn-link:hover {
+            color: var(--secondary-color);
+        }
+        
+        .logout-icon {
+            color: #e74c3c;
+        }
+    </style>
 </head>
 <body>
     <form id="form1" runat="server">
-        <!-- Enlace para saltar navegación (accesibilidad) -->
-        <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
-
         <div class="container">
             <!-- Header -->
             <header>
-                <div class="logo">
-                    <a href="Home2.aspx" aria-label="Ir a la página de inicio">
+                <!-- Versión móvil -->
+                <div class="header-top-row d-md-none">
+                    <!-- Logos alineados a la izquierda -->
+                    <div class="logo-mobile-container">
+                        <a href="HomeUsuario.aspx" aria-label="Ir a la página de inicio">
+                            <img class="logo-img" src="Recursos/Icons/Escudo.ico" alt="Escudo institucional">
+                            <img class="logo-img" src="Recursos/Icons/Sin-fondo.ico" alt="Logo del sistema">
+                        </a>
+                    </div>
+                    
+                    <!-- Botón cerrar sesión alineado a la derecha -->
+                    <div class="logout-btn-container">
+                        <asp:LinkButton
+                            ID="lnkLogout"
+                            runat="server"
+                            OnClick="lnkLogout_Click"
+                            Visible="true"
+                            role="button"
+                            CssClass="btn-link d-flex align-items-center text-danger fw-semibold">
+                            <i class="fas fa-door-open me-2 fa-lg logout-icon"></i> Cerrar Sesión
+                        </asp:LinkButton>
+                    </div>
+                </div>
+                
+                <!-- Texto del logo -->
+                <div class="logo-text d-md-none">
+                    <h3 style="line-height: 1.2;">Biblioteca Virtual Misak Web</h3>
+                    <span style="display: block; font-size: 0.5em; margin-top: -0.3em;">Asha mϴrϴp paya kusrep puinuk (AshMϴr)</span>
+                </div>
+
+                <!-- Versión desktop -->
+                <div class="logo logo-desktop">
+                    <a href="HomeUsuario.aspx" aria-label="Ir a la página de inicio">
                         <img class="logo-img" src="Recursos/Icons/Escudo.ico" alt="Escudo institucional">
                         <img class="logo-img" src="Recursos/Icons/Sin-fondo.ico" alt="Logo del sistema">
                     </a>
-                    <h3>Sistema de Gestión</h3>
+                    <h3 style="line-height: 1.2;">Biblioteca Virtual Misak Web
+                    <span style="display: block; font-size: 0.5em; margin-top: -0.3em;">Asha mϴrϴp paya kusrep puinuk (AshMϴr)</span>
+                    </h3>
                 </div>
 
-                <div class="user-info">
+                <div class="user-info d-none d-md-flex">
                     <asp:Label ID="lblUsername" runat="server" Text="Bienvenid@, Usuario" aria-live="polite"></asp:Label>
-                    <asp:LinkButton ID="lnkLogout" runat="server" OnClick="lnkLogout_Click" Visible="true" role="button" CssClass="btn-link">Cerrar Sesión</asp:LinkButton>
+                    <asp:LinkButton
+                        ID="lnkLogoutDesktop"
+                        runat="server"
+                        OnClick="lnkLogout_Click"
+                        Visible="true"
+                        role="button"
+                        CssClass="btn-link d-flex align-items-center text-danger fw-semibold">
+                        <i class="fas fa-door-open me-2 fa-lg logout-icon"></i> Cerrar Sesión
+                    </asp:LinkButton>
                 </div>
+
+                <%-- Navigation con íconos mejorada para responsividad --%> 
+                <nav aria-label="Navegación principal" class="responsive-nav">
+                    <%-- Panel para Docentes --%> 
+                    <asp:Panel ID="pnlDocente" runat="server" Visible="false" CssClass="nav-panel">
+                        <ul class="nav-list">
+                            <li class="nav-item">
+                                <a href="WFPresentationMaterial.aspx" class="nav-link">
+                                    <i class="fas fa-book-reader fa-lg nav-icon"></i> 
+                                    <span class="nav-text">Materiales Educativos</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="WFAnswer.aspx" class="nav-link">
+                                    <i class="fas fa-vote-yea fa-lg nav-icon"></i> 
+                                    <span class="nav-text">Preferencias</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="WFPurchaseRequest.aspx" class="nav-link">
+                                    <i class="fas fa-file-invoice-dollar fa-lg nav-icon"></i> 
+                                    <span class="nav-text">Solicitud compra</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="WFStatisticReport.aspx" class="nav-link">
+                                    <i class="fas fa-chart-line fa-lg nav-icon"></i> 
+                                    <span class="nav-text">Reporte estadístico</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </asp:Panel>
+
+                    <%-- Panel para Estudiantes --%> 
+                    <asp:Panel ID="pnlEstudiante" runat="server" Visible="false" CssClass="nav-panel">
+                        <ul class="nav-list">
+                            <li class="nav-item">
+                                <a href="HomeUsuario.aspx" class="nav-link">
+                                    <i class="fas fa-home fa-lg nav-icon"></i> 
+                                    <span class="nav-text">Inicio</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="WFPresentationMaterial.aspx" class="nav-link">
+                                    <i class="fas fa-book-reader fa-lg nav-icon"></i> 
+                                    <span class="nav-text">Materiales Educativos</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                               <a href="WFAnswer.aspx" class="nav-link">
+                               <i class="fas fa-vote-yea fa-lg nav-icon"></i> 
+                              <span class="nav-text">Preferencias</span>
+                               </a>
+
+                            </li>
+                            <li class="nav-item">
+                                <a href="WFPurchaseRequest.aspx" class="nav-link">
+                                    <i class="fas fa-file-invoice-dollar fa-lg nav-icon"></i> 
+                                    <span class="nav-text">Solicitud compra</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </asp:Panel>
+                </nav>
             </header>
 
-            <!-- Navigation - Versión definitiva horizontal -->
-            <nav aria-label="Navegación principal">
-                <ul>
-                    <li><a href="Home2.aspx" aria-current="page">Inicio</a></li>
-                    
-                    <!-- Paneles para roles específicos -->
-                    <asp:Panel ID="pnlAdmin" runat="server" Visible="false">
-                        <li><a href="WFUserManagement.aspx">Gestión de usuarios</a></li>
-                        <li><a href="WFPurchaseRequestManagement.aspx">Gestión de ventas</a></li>
-                        <li><a href="WFSurvey.aspx">Gestión de encuestas</a></li>
-                        <li><a href="WFStatisticReport.aspx">Gestión estadístico</a></li>
-                        <li><a href="WFAnswerManagement.aspx">Gestión de respuestas</a></li>
-                        <li><a href="WFAuthors.aspx">Gestión de Autores</a></li>
-                        <li><a href="WFCategory.aspx">Gestión de categorías</a></li>
-                        <li><a href="WFEditorial.aspx">Gestión de editoriales</a></li>
-                        <li><a href="WFMatEducativo.aspx">Gestión de materiales educativos</a></li>
-                    </asp:Panel>
-
-                    <asp:Panel ID="pnlDocente" runat="server" Visible="false">
-                        <li><a href="WFPresentationMaterial.aspx">Materiales Educativos</a></li>
-                        <li><a href="WFAnswer.aspx">Respuestas</a></li>
-                        <li><a href="WFPurchaseRequest.aspx">Solicitud compra</a></li>
-                        <li><a href="WFStatisticReport.aspx">Reporte estadístico</a></li>
-                    </asp:Panel>
-
-                    <asp:Panel ID="pnlEstudiante" runat="server" Visible="false">
-                        <li><a href="WFPresentationMaterial.aspx">Materiales Educativos</a></li>
-                        <li><a href="WFAnswer.aspx">Respuestas</a></li>
-                        <li><a href="WFPurchaseRequest.aspx">Solicitud compra</a></li>
-                    </asp:Panel>
-                </ul>
-            </nav>
-
-            <!-- Main Content -->
+            <%--Main Content--%> 
             <main id="main-content" tabindex="-1">
                 <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
             </main>
 
-            <!-- Footer -->
+            <%--Footer--%> 
             <footer>
                 <p>© <span id="current-year"></span> Sistema de Gestión - Todos los derechos reservados</p>
             </footer>
@@ -80,6 +436,7 @@
     </form>
     
     <%--Scripts--%> 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="scripts/main.js"></script>
     <script>
         // Añade el año actual al footer
@@ -102,217 +459,4 @@
         });
     </script>
 </body>
-    <style>
-    /* Variables y estilos base */
-    :root {
-        --primary-color: #2c3e50;
-        --secondary-color: #3498db;
-        --text-color: #333;
-        --light-bg: rgba(255, 255, 255, 0.9);
-        --spacing-unit: 1rem;
-        --nav-blur: 39px;
-        --nav-shadow: 0 5px 30px 0 rgba(22, 32, 220, 0.37);
-    }
-    
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
-    
-    body {
-        margin: 0;
-        padding: 0;
-        background-image: url('../Recursos/Images/fondo.webp');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        background-repeat: no-repeat;
-        font-family: 'Segoe UI', Arial, sans-serif;
-        line-height: 1.6;
-        color: var(--text-color);
-    }
-    
-    /* Contenedor principal */
-    .container {
-        width: 100%;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 var(--spacing-unit);
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        background-color: var(--light-bg);
-    }
-    
-    /* Header */
-    header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        padding: var(--spacing-unit) 0;
-        background-color: var(--light-bg);
-    }
-
-    .logo {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .logo-img {
-        max-width: 50px;
-        height: auto;
-        object-fit: contain;
-    }
-
-    .user-info {
-        display: flex;
-        gap: var(--spacing-unit);
-        align-items: center;
-    }
-    
-    /* Navegación mejorada - Solución definitiva horizontal */
-    nav {
-        backdrop-filter: blur(var(--nav-blur));
-        -webkit-backdrop-filter: blur(var(--nav-blur));
-        border-radius: 9px;
-        box-shadow: var(--nav-shadow);
-        padding: 0.75rem !important; /* Aumentado el padding interno */
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        margin: 1rem 0; /* Mayor margen vertical */
-        white-space: nowrap;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-    
-    nav ul {
-        list-style: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        gap: 2rem; /* Espaciado aumentado entre elementos */
-        align-items: center;
-        justify-content: center; /* Centrado horizontal */
-    }
-    
-    nav ul li {
-        display: inline-block !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        float: none !important;
-        position: relative;
-    }
-    
-    nav ul li a {
-        color: var(--primary-color);
-        text-decoration: none;
-        font-weight: 600;
-        padding: 0.5rem 0.5rem; /* Padding horizontal aumentado */
-        font-size: 0.95rem;
-        display: inline-block;
-        white-space: nowrap;
-        transition: all 0.3s ease;
-    }
-    
-    /* Subrayado que se expande desde el centro */
-    nav ul li a::after {
-        content: '';
-        position: absolute;
-        width: 0;
-        height: 2px;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: var(--secondary-color);
-        transition: width 0.3s ease;
-    }
-    
-    nav ul li a:hover::after,
-    nav ul li a:focus::after,
-    nav ul li a[aria-current="page"]::after {
-        width: 100%; /* Se expande al 100% del ancho del enlace */
-    }
-    
-    nav ul li a:hover,
-    nav ul li a:focus,
-    nav ul li a[aria-current="page"] {
-        color: var(--secondary-color);
-        outline: none;
-    }
-    /* Contenido principal */
-    main {
-        flex: 1;
-        padding: var(--spacing-unit) 0;
-    }
-    
-    /* Footer */
-    footer {
-        text-align: center;
-        padding: var(--spacing-unit) 0;
-        margin-top: auto;
-        background-color: var(--light-bg);
-    }
-    
-    footer p {
-        font-size: 0.9rem;
-        color: var(--primary-color);
-    }
-    
-    /* Estilos responsivos */
-    @media (max-width: 768px) {
-        header {
-            flex-direction: column;
-            gap: calc(var(--spacing-unit) * 0.5);
-            text-align: center;
-        }
-        
-        .user-info {
-            margin-top: calc(var(--spacing-unit) * 0.5);
-        }
-        
-        .container {
-            padding: 0 calc(var(--spacing-unit) * 0.5);
-        }
-        
-        nav ul li a {
-            padding: 0.5rem;
-            font-size: 0.85rem;
-        }
-    }
-    
-    /* Mejoras de accesibilidad */
-    .skip-link {
-        position: absolute;
-        top: -40px;
-        left: 0;
-        background: var(--primary-color);
-        color: white;
-        padding: 8px;
-        z-index: 100;
-        transition: top 0.3s;
-    }
-    
-    .skip-link:focus {
-        top: 0;
-    }
-    
-    [aria-hidden="true"] {
-        display: none;
-    }
-    
-    /* Estilo para el botón de cerrar sesión */
-    .user-info a, .user-info .btn-link {
-        color: var(--primary-color);
-        text-decoration: none;
-        transition: color 0.3s;
-    }
-    
-    .user-info a:hover, .user-info .btn-link:hover {
-        color: var(--secondary-color);
-    }
-</style>
 </html>

@@ -19,23 +19,23 @@ namespace Presentation
                     switch (userRole)
                     {
                         case "Administrador":
-                            pnlAdmin.Visible = true;
+                            //pnlAdmin.Visible = true;
                             pnlDocente.Visible = false;
                             pnlEstudiante.Visible = false;
                             break;
                         case "Docente":
-                            pnlAdmin.Visible = false;
+                            //pnlAdmin.Visible = false;
                             pnlDocente.Visible = true;
                             pnlEstudiante.Visible = false;
                             break;
                         case "Estudiante":
-                            pnlAdmin.Visible = false;
+                            //pnlAdmin.Visible = false;
                             pnlDocente.Visible = false;
                             pnlEstudiante.Visible = true;
                             break;
                         default:
                             // Si no tiene un rol válido, ocultar todos los paneles
-                            pnlAdmin.Visible = false;
+                            //pnlAdmin.Visible = false;
                             pnlDocente.Visible = false;
                             pnlEstudiante.Visible = false;
                             break;

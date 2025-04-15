@@ -1,5 +1,4 @@
 ﻿<%@ Page Title="Materiales Educativos" Language="C#" MasterPageFile="~/MainUsuario.Master" AutoEventWireup="true" CodeBehind="WFPresentationMaterial.aspx.cs" Inherits="Presentation.WFPresentationMaterial" %>
-
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -25,8 +24,23 @@
                         <asp:ListItem Text="Audio" Value="Audio"></asp:ListItem>
                         <asp:ListItem Text="Libro" Value="Libro"></asp:ListItem>
                         <asp:ListItem Text="ePub" Value="ePub"></asp:ListItem>
+                        <asp:ListItem Text="Otro" Value="Otro"></asp:ListItem>
                     </asp:DropDownList>
                 </div>
+                </div>
+        <div class="col-md-3">
+            <asp:Label ID="LblFiltrarCategoria" runat="server" Text="Filtrar por categoría:" CssClass="form-label"></asp:Label>
+            <asp:DropDownList ID="DdlCategoria" runat="server" CssClass="form-select">
+                <asp:ListItem Text="Todas las categorías" Value=""></asp:ListItem>
+                <asp:ListItem Text="Libro" Value="Libro"></asp:ListItem>
+                <asp:ListItem Text="Cartilla" Value="Cartilla"></asp:ListItem>
+                <asp:ListItem Text="Folleto" Value="Folleto"></asp:ListItem>
+                <asp:ListItem Text="Guía Didactica" Value="Guía Didactica"></asp:ListItem>
+                <asp:ListItem Text="Juego Lúdico" Value="Juego Lúdico"></asp:ListItem>
+                <asp:ListItem Text="Pendón" Value="Pendón"></asp:ListItem>
+                <asp:ListItem Text="Multimedia" Value="Multimedia"></asp:ListItem>
+            </asp:DropDownList>
+        </div>
                 <div class="col-md-2 d-flex align-items-end">
                     <asp:Button ID="BtnBuscar" runat="server" Text="Buscar" CssClass="btn btn-primary w-100" OnClick="BtnBuscar_Click" />
                 </div>
@@ -56,7 +70,8 @@
                                 
                                 <%-- Nuevo botón para comprar --%>
                                 <asp:Button ID="btnComprar" runat="server" Text="Comprar" CommandName="Comprar" 
-                                    CommandArgument='<%# Eval("mat_id") %>' CssClass="btn btn-success btn-sm" />
+                                 CommandArgument='<%# Eval("mat_id") %>' CssClass="btn btn-success btn-sm" 
+                                  OnClientClick="return confirm('¿Confirmar compra de este material?');" />
                             </div>
                         </ItemTemplate>
                     </asp:TemplateField>
@@ -64,7 +79,7 @@
                 <HeaderStyle CssClass="table-dark" />
             </asp:GridView>
         </div>
-    </div>
+    
 
     <style>
         .search-panel {
@@ -114,7 +129,7 @@
         }
 
         function RegistrarVisita(matId) {
-            // Registrar la visita mediante una solicitud AJAX
+            // Registrar la visita y obtener el ID de la visita
             $.ajax({
                 type: "POST",
                 url: "WFPresentationMaterial.aspx/RegistrarVisita",
@@ -122,12 +137,38 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (response) {
-                    console.log("Visita registrada correctamente.");
+                    var visitaId = response.d; // Obtenemos el ID de la visita
+                    console.log("Visita registrada. ID:", visitaId);
+
+                    // Configurar el evento para registrar la duración al cerrar
+                    window.onbeforeunload = function () {
+                        var fin = new Date();
+                        var inicio = new Date(response.d.fechaIngreso); // Usamos la fecha del servidor
+                        var duracionMs = fin - inicio;
+
+                        // Formatear a HH:MM:SS
+                        var horas = Math.floor(duracionMs / 3600000).toString().padStart(2, '0');
+                        var minutos = Math.floor((duracionMs % 3600000) / 60000).toString().padStart(2, '0');
+                        var segundos = Math.floor((duracionMs % 60000) / 1000).toString().padStart(2, '0');
+                        var duracion = `${horas}:${minutos}:${segundos}`;
+
+                        // Enviar la duración (usando AJAX síncrono para asegurar que se complete)
+                        $.ajax({
+                            type: "POST",
+                            url: "WFPresentationMaterial.aspx/ActualizarDuracionVisita",
+                            data: JSON.stringify({ visitaId: visitaId, duracion: duracion }),
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            async: false // Importante: hace la llamada síncrona
+                        });
+                    };
                 },
                 error: function (error) {
-                    console.log("Error al registrar la visita: " + error.responseText);
+                    console.log("Error al registrar visita:", error.responseText);
                 }
             });
         }
     </script>
+
+
 </asp:Content>

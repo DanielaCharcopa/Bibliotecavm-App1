@@ -395,12 +395,12 @@
         transform: scale(1.05);
     }
 </style>     <script type="text/javascript">
-        $(document).ready(function () {
-            // Configuración del carrusel principal
-            $('#mainCarousel').carousel({
-                interval: 3000, // Cambia de slide cada 3 segundos
-                //pause: "hover" // Pausa cuando el mouse está sobre el carrusel
-            });
-        });
+                 $(document).ready(function () {
+                     // Configuración del carrusel principal
+                     $('#mainCarousel').carousel({
+                         interval: 3000, // Cambia de slide cada 3 segundos
+                         //pause: "hover" // Pausa cuando el mouse está sobre el carrusel
+                     });
+                 });
 </script>
 </asp:Content>

@@ -15,31 +15,40 @@ namespace Presentation
     {
 
         /// <summary>
-        /// Control lblMessage.
+        /// Control successAlert.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblMessage;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl successAlert;
 
         /// <summary>
-        /// Control lblError.
+        /// Control litSuccessMessage.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblError;
+        protected global::System.Web.UI.WebControls.Literal litSuccessMessage;
 
         /// <summary>
-        /// Control lblSurvey.
+        /// Control errorAlert.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblSurvey;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl errorAlert;
+
+        /// <summary>
+        /// Control litErrorMessage.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litErrorMessage;
 
         /// <summary>
         /// Control ddlSurvey.
@@ -49,15 +58,6 @@ namespace Presentation
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlSurvey;
-
-        /// <summary>
-        /// Control lblResponse.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblResponse;
 
         /// <summary>
         /// Control ddlResponse.
