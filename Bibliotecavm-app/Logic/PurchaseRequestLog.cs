@@ -60,5 +60,27 @@ namespace Logic
         {
             return objPur.ListarMaterialesEducativos();
         }
+
+        // Método para alternar el estado de completado
+        public bool ToggleCompletada(int solicId)
+        {
+            try
+            {
+                return objPur.ToggleCompletada(solicId);
+            }
+            catch (Exception ex)
+            {
+                // Puedes registrar el error o manejarlo según tus necesidades
+                Console.WriteLine($"Error en PurchaseRequestLog.ToggleCompletada: {ex.Message}");
+                return false;
+            }
+        }
+
+        // Método para obtener un material por su ID
+        public DataTable GetMaterialById(int matId)
+        {
+            return objPur.GetMaterialById(matId);
+        }
+
     }
 }

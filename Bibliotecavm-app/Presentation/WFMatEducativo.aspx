@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MainUsuario.Master" AutoEventWireup="true" CodeBehind="WFMatEducativo.aspx.cs" Inherits="Presentation.WFMatEducativo" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MainAdmin.Master" AutoEventWireup="true" CodeBehind="WFMatEducativo.aspx.cs" Inherits="Presentation.WFMatEducativo" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </asp:Content>

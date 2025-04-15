@@ -55,5 +55,29 @@ namespace Logic
         {
             return objAnswerDat.showAnswersByUser(userId);
         }
+        public DataSet GetSurveyStatistics(int questionId)
+        {
+            try
+            {
+                return objAnswerDat.CountAnswersByQuestion(questionId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener estadísticas: " + ex.Message);
+            }
+        }
+
+        public DataTable GetAllSurveyQuestions()
+        {
+            try
+            {
+                DataSet ds = objAnswerDat.GetAllSurveyQuestions();
+                return ds.Tables.Count > 0 ? ds.Tables[0] : new DataTable();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener preguntas: " + ex.Message);
+            }
+        }
     }
 }

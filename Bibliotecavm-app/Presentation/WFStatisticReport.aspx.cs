@@ -7,9 +7,11 @@ namespace Presentation
 {
     public partial class WFStatisticReport : System.Web.UI.Page
     {
-        VisitsLog objVis = new VisitsLog(); // Instancia para lógica de visitas
+        // Instancias para lógicas 
+        VisitsLog objVis = new VisitsLog();
         UserLogic objUser = new UserLogic();
         MaterialEducativoLog objMat = new MaterialEducativoLog();
+        AnswersLog objAnswers = new AnswersLog();
 
         private int _usu_id;
 
@@ -17,36 +19,88 @@ namespace Presentation
         {
             if (!IsPostBack)
             {
-                // Obtener el ID del usuario logueado
-                _usu_id = GetLoggedUserId();
 
-                // Mostrar el nombre del usuario logueado en un Label
-                ShowLoggedInUserName();
 
                 // Cargar estadísticas
                 LoadStatistics();
                 LoadUserVisits();
+                LoadSurveyQuestions();
+
+            }
+        }
+        // Método para cargar el dropdown de preguntas
+        private void LoadSurveyQuestions()
+        {
+            try
+            {
+                DataTable dtQuestions = objAnswers.GetAllSurveyQuestions();
+                ddlSurveyQuestions.DataSource = dtQuestions;
+                ddlSurveyQuestions.DataTextField = "question_text";
+                ddlSurveyQuestions.DataValueField = "question_id";
+                ddlSurveyQuestions.DataBind();
+                ddlSurveyQuestions.Items.Insert(0, new ListItem("-- Seleccione una pregunta --", "0"));
+            }
+            catch (Exception ex)
+            {
+                lblSurveyMessage.Text = "Error al cargar preguntas: " + ex.Message;
+                lblSurveyMessage.ForeColor = System.Drawing.Color.Red;
             }
         }
 
-        // Obtener el ID del usuario logueado
-        private int GetLoggedUserId()
+        // Método para cargar estadísticas de una pregunta seleccionada
+        private void LoadSurveyStatistics(int questionId)
         {
-            return Convert.ToInt32(Session["UserID"]); // ⚠️ Ajusta esto según tu autenticación
+            try
+            {
+                DataSet dsStats = objAnswers.GetSurveyStatistics(questionId);
+
+                if (dsStats != null && dsStats.Tables.Count > 0 && dsStats.Tables[0].Rows.Count > 0)
+                {
+                    DataRow row = dsStats.Tables[0].Rows[0];
+
+                    // Mostrar los resultados
+                    lblQuestionText.Text = row["Pregunta"].ToString();
+                    lblYesCount.Text = row["Total Sí"].ToString();
+                    lblNoCount.Text = row["Total No"].ToString();
+                    lblTotalResponses.Text = row["Total Respuestas"].ToString();
+                    lblYesPercent.Text = row["Porcentaje Sí"].ToString() + "%";
+                    lblNoPercent.Text = row["Porcentaje No"].ToString() + "%";
+
+                    pnlSurveyStats.Visible = true;
+                    lblSurveyMessage.Text = "";
+                }
+                else
+                {
+                    pnlSurveyStats.Visible = false;
+                    lblSurveyMessage.Text = "No hay respuestas para esta pregunta.";
+                    lblSurveyMessage.ForeColor = System.Drawing.Color.Blue;
+                }
+            }
+            catch (Exception ex)
+            {
+                pnlSurveyStats.Visible = false;
+                lblSurveyMessage.Text = "Error al cargar estadísticas: " + ex.Message;
+                lblSurveyMessage.ForeColor = System.Drawing.Color.Red;
+            }
         }
 
-        // Mostrar el nombre del usuario logueado en un Label
-        private void ShowLoggedInUserName()
+        // Evento cuando se selecciona una pregunta del dropdown
+        protected void ddlSurveyQuestions_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Session["UserName"] != null)
+            if (ddlSurveyQuestions.SelectedValue != "0")
             {
-                LblUsuario.Text = Session["UserName"].ToString(); // Asignar el nombre al Label
+                int questionId = Convert.ToInt32(ddlSurveyQuestions.SelectedValue);
+                LoadSurveyStatistics(questionId);
             }
             else
             {
-                LblUsuario.Text = "Usuario no identificado"; // Mensaje por defecto si no hay nombre
+                pnlSurveyStats.Visible = false;
+                lblSurveyMessage.Text = "Seleccione una pregunta para ver las estadísticas";
+                lblSurveyMessage.ForeColor = System.Drawing.Color.Blue;
             }
         }
+
+
 
         // Cargar estadísticas
         private void LoadStatistics()
@@ -210,6 +264,9 @@ namespace Presentation
             lblSearchMessage.Text = "Mostrando todas las visitas";
             lblSearchMessage.ForeColor = System.Drawing.Color.Blue;
         }
+        // Nuevo método para cargar estadísticas de respuestas a encuestas
+
+
     }
 }
 

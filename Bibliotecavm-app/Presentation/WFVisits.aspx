@@ -28,9 +28,9 @@
             AutoGenerateColumns="False" DataKeyNames="vis_id"
             EmptyDataText="No hay visitas registradas.">
             <Columns>
-                <asp:BoundField DataField="vis_id" HeaderText="ID" />
+                <%--<asp:BoundField DataField="vis_id" HeaderText="ID" />--%>
                 <asp:BoundField DataField="vis_fecha_ingreso" HeaderText="Fecha Ingreso" DataFormatString="{0:yyyy-MM-dd}" />
-                <%--<asp:BoundField DataField="vis_duracion" HeaderText="Duración" />--%>
+                <asp:BoundField DataField="vis_duracion" HeaderText="Duración" />
                 <asp:BoundField DataField="usuario_nombre" HeaderText="Nombre Usuario" />
                 <asp:BoundField DataField="material_titulo" HeaderText="Material Educativo" />
             </Columns>

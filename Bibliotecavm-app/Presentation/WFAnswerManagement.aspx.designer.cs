@@ -24,6 +24,15 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.Label lblMessage;
 
         /// <summary>
+        /// Control lblPaginationInfo.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblPaginationInfo;
+
+        /// <summary>
         /// Control gvAnswers.
         /// </summary>
         /// <remarks>

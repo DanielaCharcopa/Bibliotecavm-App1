@@ -186,6 +186,65 @@ namespace Data
             return objData;
         }
 
+        // Método para obtener el conteo de respuestas por pregunta
+        public DataSet CountAnswersByQuestion(int questionId)
+        {
+            MySqlDataAdapter objAdapter = new MySqlDataAdapter();
+            DataSet objData = new DataSet();
+
+            try
+            {
+                MySqlCommand objCmd = new MySqlCommand();
+                objCmd.Connection = objPer.openConnection();
+                objCmd.CommandText = "procCountAnswersByQuestion";
+                objCmd.CommandType = CommandType.StoredProcedure;
+
+                // Agregar parámetro de entrada
+                objCmd.Parameters.AddWithValue("p_en_id", questionId);
+
+                objAdapter.SelectCommand = objCmd;
+                objAdapter.Fill(objData);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al contar respuestas: " + ex.Message);
+            }
+            finally
+            {
+                objPer.closeConnection();
+            }
+
+            return objData;
+        }
+
+        // Método para obtener todas las preguntas de encuestas
+        public DataSet GetAllSurveyQuestions()
+        {
+            MySqlDataAdapter objAdapter = new MySqlDataAdapter();
+            DataSet objData = new DataSet();
+
+            try
+            {
+                MySqlCommand objCmd = new MySqlCommand();
+                objCmd.Connection = objPer.openConnection();
+                objCmd.CommandText = "procGetAllSurveyQuestions";
+                objCmd.CommandType = CommandType.StoredProcedure;
+
+                objAdapter.SelectCommand = objCmd;
+                objAdapter.Fill(objData);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener preguntas de encuestas: " + ex.Message);
+            }
+            finally
+            {
+                objPer.closeConnection();
+            }
+
+            return objData;
+        }
 
     }
+
 }

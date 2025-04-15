@@ -21,12 +21,17 @@ namespace Presentation
             }
         }
 
-        private void showSurveys()
+        private void showSurveys(int pageIndex = 0)
         {
             try
             {
-                gvSurveys.DataSource = surveyLogic.showSurveys(); // Obtener las encuestas
-                gvSurveys.DataBind(); // Enlazar los datos al GridView
+                // Obtener todas las encuestas (considera implementar paginación en la capa lógica si hay muchos registros)
+                var encuestas = surveyLogic.showSurveys();
+
+                // Configurar el GridView
+                gvSurveys.DataSource = encuestas;
+                gvSurveys.PageIndex = pageIndex;
+                gvSurveys.DataBind();
             }
             catch (Exception ex)
             {
@@ -156,6 +161,12 @@ namespace Presentation
                 lblMessage.Text = $"Error: {ex.Message}";
                 lblMessage.ForeColor = System.Drawing.Color.Red;
             }
+        }
+        // Nuevo método para manejar el cambio de página
+        protected void gvSurveys_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvSurveys.PageIndex = e.NewPageIndex;
+            showSurveys(e.NewPageIndex);
         }
     }
 }

@@ -1,40 +1,7 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\main.master.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\main.master.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\mainusuario.master.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\mainusuario.master.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\wfanswer.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\wfanswer.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\wfanswermanagement.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\wfanswermanagement.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\wfmateducativo.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\wfmateducativo.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\wfpresentationmaterial.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\wfpresentationmaterial.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\wfpurchaserequest.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\wfpurchaserequest.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|c:\\users\\user\\desktop\\clon\\bibliotecavm-app1\\bibliotecavm-app\\presentation\\wfpurchaserequestmanagement.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1845E2BA-EB8B-48D1-84FD-F67410ED0DBD}|Presentation\\Presentation.csproj|solutionrelative:presentation\\wfpurchaserequestmanagement.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "WorkspaceRootPath": "C:\\Users\\User\\Desktop\\Nueva carpeta\\Bibliotecavm-App1\\Bibliotecavm-app\\",
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -42,112 +9,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": -1,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Main.Master.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\Main.Master.cs",
-              "RelativeDocumentMoniker": "Presentation\\Main.Master.cs",
-              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\Main.Master.cs",
-              "RelativeToolTip": "Presentation\\Main.Master.cs",
-              "ViewState": "AQIAABUAAAAAAAAAAAAiwCwAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-02T02:05:34.029Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "MainUsuario.Master.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\MainUsuario.Master.cs",
-              "RelativeDocumentMoniker": "Presentation\\MainUsuario.Master.cs",
-              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\MainUsuario.Master.cs*",
-              "RelativeToolTip": "Presentation\\MainUsuario.Master.cs*",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAEgAAAABAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-02T02:04:50.186Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "WFAnswer.aspx.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFAnswer.aspx.cs",
-              "RelativeDocumentMoniker": "Presentation\\WFAnswer.aspx.cs",
-              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFAnswer.aspx.cs",
-              "RelativeToolTip": "Presentation\\WFAnswer.aspx.cs",
-              "ViewState": "AQIAAFsAAAAAAAAAAAAAAN4AAAABAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-02T02:04:09.961Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "WFAnswerManagement.aspx.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFAnswerManagement.aspx.cs",
-              "RelativeDocumentMoniker": "Presentation\\WFAnswerManagement.aspx.cs",
-              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFAnswerManagement.aspx.cs",
-              "RelativeToolTip": "Presentation\\WFAnswerManagement.aspx.cs",
-              "ViewState": "AQIAACoAAAAAAAAAAAAQwEkAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-02T02:03:12.093Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "WFMatEducativo.aspx.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFMatEducativo.aspx.cs",
-              "RelativeDocumentMoniker": "Presentation\\WFMatEducativo.aspx.cs",
-              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFMatEducativo.aspx.cs",
-              "RelativeToolTip": "Presentation\\WFMatEducativo.aspx.cs",
-              "ViewState": "AQIAABwBAAAAAAAAAAAuwD0BAAABAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-02T02:02:54.821Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "WFPresentationMaterial.aspx.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFPresentationMaterial.aspx.cs",
-              "RelativeDocumentMoniker": "Presentation\\WFPresentationMaterial.aspx.cs",
-              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFPresentationMaterial.aspx.cs",
-              "RelativeToolTip": "Presentation\\WFPresentationMaterial.aspx.cs",
-              "ViewState": "AQIAAJQAAAAAAAAAAAAuwLUAAAABAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-02T02:02:47.887Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "WFPurchaseRequest.aspx.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFPurchaseRequest.aspx.cs",
-              "RelativeDocumentMoniker": "Presentation\\WFPurchaseRequest.aspx.cs",
-              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFPurchaseRequest.aspx.cs",
-              "RelativeToolTip": "Presentation\\WFPurchaseRequest.aspx.cs",
-              "ViewState": "AQIAAAwBAAAAAAAAAAAuwC0BAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-02T02:02:35.614Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "WFPurchaseRequestManagement.aspx.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFPurchaseRequestManagement.aspx.cs",
-              "RelativeDocumentMoniker": "Presentation\\WFPurchaseRequestManagement.aspx.cs",
-              "ToolTip": "C:\\Users\\User\\Desktop\\clon\\Bibliotecavm-App1\\Bibliotecavm-app\\Presentation\\WFPurchaseRequestManagement.aspx.cs",
-              "RelativeToolTip": "Presentation\\WFPurchaseRequestManagement.aspx.cs",
-              "ViewState": "AQIAADwAAAAAAAAAAAAuwF0AAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-02T02:02:18.648Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"

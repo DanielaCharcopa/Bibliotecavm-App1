@@ -27,7 +27,6 @@ namespace Data
         }
 
         // Guardar un nuevo material educativo
-        // Guardar un nuevo material educativo
         public bool saveMaterialEducativo(string _titulo, int _anoPublicacion, string _urlDescarga, decimal _precio,
                                          string _keywords, string _formato, int _editorialId, int _categoriaId)
         {

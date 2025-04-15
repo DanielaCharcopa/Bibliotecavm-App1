@@ -241,5 +241,70 @@ namespace Data
 
             return ds;
         }
+        // Alternar estado de completado (nuevo método)
+        public bool ToggleCompletada(int solicId)
+        {
+            MySqlCommand objCmd = new MySqlCommand();
+            try
+            {
+                objCmd.Connection = objPer.openConnection();
+                objCmd.CommandText = "proc_toggle_completada";
+                objCmd.CommandType = CommandType.StoredProcedure;
+
+                // Agregar parámetro
+                objCmd.Parameters.AddWithValue("@p_solic_id", solicId);
+
+                // Ejecutar procedimiento
+                int affectedRows = objCmd.ExecuteNonQuery();
+
+                return affectedRows > 0;
+            }
+            catch (Exception ex)
+            {
+                // Puedes registrar el error si es necesario
+                Console.WriteLine("Error en ToggleCompletada: " + ex.Message);
+                return false;
+            }
+            finally
+            {
+                objPer.closeConnection();
+            }
+        }
+
+        // Implementación del nuevo SP para obtener material por ID
+        public DataTable GetMaterialById(int matId)
+        {
+            DataTable dtResult = new DataTable();
+
+            try
+            {
+                using (MySqlConnection connection = objPer.openConnection())
+                {
+                    MySqlCommand command = new MySqlCommand("procGetMaterialById", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    // Agregar parámetro de entrada
+                    command.Parameters.AddWithValue("@p_mat_id", matId);
+
+                    // Ejecutar y llenar DataTable
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        dtResult.Load(reader);
+                    }
+                }
+
+                return dtResult;
+            }
+            catch (Exception ex)
+            {
+                // Manejo de errores (puedes personalizar según tus necesidades)
+                throw new Exception($"Error al obtener material por ID: {ex.Message}");
+            }
+            finally
+            {
+                objPer.closeConnection();
+            }
+        }
+
     }
 }

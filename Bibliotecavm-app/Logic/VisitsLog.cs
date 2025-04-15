@@ -77,6 +77,7 @@ namespace Logic
             VisitsDat datos = new VisitsDat();
             return datos.ObtenerUltimaVisitaId(usuId, matId);
         }
+
         public void ActualizarDuracionVisita(int visitaId, string duracion)
         {
             VisitsDat datos = new VisitsDat();
