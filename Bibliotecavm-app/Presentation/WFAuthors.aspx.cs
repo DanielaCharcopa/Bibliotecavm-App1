@@ -1,10 +1,15 @@
+<<<<<<< Updated upstream
 ﻿using Logic;
+=======
+﻿using Logic;  
+>>>>>>> Stashed changes
 using System;
 using System.Data;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml.Linq;
+
 
 namespace Presentation
 {
