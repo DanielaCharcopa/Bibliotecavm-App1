@@ -9,7 +9,11 @@ namespace Data
 {
     public class AuthorsDat
     {
+<<<<<<< Updated upstream
         Persistencia objPer = new Persistencia();
+=======
+        Persistencia objPer = new Persistencia(); 
+>>>>>>> Stashed changes
 
         // Método para mostrar todos los Autores
         public DataSet showAuthors()
