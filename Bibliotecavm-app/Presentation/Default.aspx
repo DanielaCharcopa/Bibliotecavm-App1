@@ -4,6 +4,25 @@
     <!-- Incluir Font Awesome para los íconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            const emailInput = document.getElementById('<%= TBCorreo.ClientID %>');
+
+            emailInput.addEventListener("blur", function () {
+                let value = emailInput.value.trim();
+
+                // Si está vacío o ya contiene un dominio, no hacemos nada
+                if (value === "" || value.includes("@")) return;
+
+                // Si no tiene dominio, le añadimos @gmail.com al perder foco
+                emailInput.value = value + "@gmail.com";
+            });
+        });
+</script>
+
+
+
     <style type="text/css">
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;500;600;700&display=swap');
         
@@ -415,4 +434,6 @@
             }
         }
     </script>
+    
+
 </asp:Content>
