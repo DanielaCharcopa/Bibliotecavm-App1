@@ -333,21 +333,21 @@
             </div>
         </div>
 
-        <!-- Miniaturas con flechas -->
+         <%--Miniaturas con flechas--%> 
         <div class="thumbnail-slider">
             <button class="thumb-btn prev-btn" aria-label="Diapositiva anterior">&lt;</button>
             <div class="thumbnail-wrapper" id="thumbnailWrapper">
-                <button class="thumbnail visible active-thumb" data-index="0" aria-label="Mostrar diapositiva 1: Marie Curie">
-                    <img src="Recursos/Biografias/M.MercedesTunubala.webp" alt="Miniatura de Marie Curie" />
+                <button class="thumbnail visible active-thumb" data-index="0" aria-label="Mostrar diapositiva 1: Mercedes Tunubala">
+                    <img src="Recursos/Biografias/M.MercedesTunubala.webp" alt="Miniatura de Mercedes Tunubala Velasco" />
                 </button>
-                <button class="thumbnail visible" data-index="1" aria-label="Mostrar diapositiva 2: Albert Einstein">
-                    <img src="Recursos/Biografias/T.LuisFelipeC.webp" alt="Miniatura de Albert Einstein" />
+                <button class="thumbnail visible" data-index="1" aria-label="Mostrar diapositiva 2: Felipe Calambás">
+                    <img src="Recursos/Biografias/T.LuisFelipeC.webp" alt="Miniatura de Luis Felipe Calambás" />
                 </button>
-                <button class="thumbnail visible" data-index="2" aria-label="Mostrar diapositiva 3: Frida Kahlo">
-                    <img src="Recursos/Biografias/T.AlvaroMorales.webp" alt="Miniatura de Frida Kahlo" />
+                <button class="thumbnail visible" data-index="2" aria-label="Mostrar diapositiva 3:Alvaro Morales ">
+                    <img src="Recursos/Biografias/T.AlvaroMorales.webp" alt="Miniatura Alvaro Morales Tombé" />
                 </button>
-                <button class="thumbnail" data-index="3" aria-label="Mostrar diapositiva 4: Nikola Tesla">
-                    <img src="Recursos/Biografias/T. Avelino Dagua.webp" alt="Miniatura de Nikola Tesla" />
+                <button class="thumbnail" data-index="3" aria-label="Mostrar diapositiva 4:Avelino Dagua">
+                    <img src="Recursos/Biografias/T. Avelino Dagua.webp" alt="Miniatura de Avelino Dagua" />
                 </button>
             </div>
             <button class="thumb-btn next-btn" aria-label="Diapositiva siguiente">&gt;</button>
