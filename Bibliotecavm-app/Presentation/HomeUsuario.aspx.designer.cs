@@ -11,7 +11,7 @@ namespace Presentation
 {
 
 
-    public partial class Home2
+    public partial class HomeUsuario
     {
     }
 }
