@@ -15,9 +15,17 @@ namespace Logic
         }
 
         // Método para guardar una nueva visita
-        public bool saveVisits(DateTime fechaIngreso, TimeSpan duracion, int usuId, int matId)
+        public int saveVisits(DateTime fechaIngreso, TimeSpan duracion, int usuId, int matId)
         {
-            return objVis.saveVisits(fechaIngreso, duracion, usuId, matId); // Llamamos al método correcto en la capa de datos
+            try
+            {
+                // Asegúrate que VisitsDat.saveVisits ahora devuelva el ID
+                return new VisitsDat().saveVisits(fechaIngreso, duracion, usuId, matId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al guardar visita: " + ex.Message);
+            }
         }
 
         // Método para actualizar una visita existente
@@ -71,17 +79,10 @@ namespace Logic
         {
             return objVis.ListarMaterialesEducativos();
         }
-
-        public int ObtenerUltimaVisitaId(int usuId, int matId)
+        public bool ActualizarDuracionVisita(int visitaId, string duracion)
         {
             VisitsDat datos = new VisitsDat();
-            return datos.ObtenerUltimaVisitaId(usuId, matId);
-        }
-
-        public void ActualizarDuracionVisita(int visitaId, string duracion)
-        {
-            VisitsDat datos = new VisitsDat();
-            datos.ActualizarDuracionVisita(visitaId, duracion);
+            return datos.ActualizarDuracionVisita(visitaId, duracion);
         }
 
         // Método para buscar visitas por correo electrónico
