@@ -14,6 +14,7 @@ namespace Presentation
             // Cerrar la autenticación de formularios
             FormsAuthentication.SignOut(); // Elimina el ticket de autenticación del navegador
 
+
             // Redirigir al usuario a la página de inicio (Default.aspx)
             HttpContext.Current.Response.Redirect("Default.aspx");
         }
