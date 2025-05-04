@@ -1,8 +1,5 @@
-<<<<<<< Updated upstream
-﻿using Logic;
-=======
+
 ﻿using Logic;  
->>>>>>> Stashed changes
 using System;
 using System.Data;
 using System.Web;
