@@ -34,6 +34,9 @@ namespace Presentation
                 // También mantener el valor en el campo oculto para el procesamiento
                 TBFecha.Text = DateTime.Now.ToString("yyyy-MM-dd");
 
+                // Generar ticket inicial
+                TBTicket.Text = GenerateTicket();
+
                 // Cargar material si viene de la página de materiales
                 if (!string.IsNullOrEmpty(Request.QueryString["matId"]))
                 {
@@ -41,8 +44,10 @@ namespace Presentation
                 }
 
                 showPurchaseRequestsByUser(loggedInUserId);
-                //showLoggedInUser(loggedInUserName);
 
+                // Configurar mensaje inicial
+                LblMsj.Text = "Modo de creación de nuevo registro. Completa los campos y haz clic en 'Comprar'.";
+                LblMsj.CssClass = "message info-message";
             }
         }
 
@@ -66,7 +71,7 @@ namespace Presentation
             catch (Exception ex)
             {
                 LblMsj.Text = $"Error al cargar el material: {ex.Message}";
-                LblMsj.ForeColor = System.Drawing.Color.Red;
+                LblMsj.CssClass = "message error-message";
             }
         }
 
@@ -78,8 +83,6 @@ namespace Presentation
             return $"T-{DateTime.Now:yyyyMMdd-HHmmss}-{rnd.Next(100, 999)}";
         }
 
-
-
         private void showPurchaseRequestsByUser(int userId)
         {
             try
@@ -89,6 +92,7 @@ namespace Presentation
                 if (data == null || data.Tables.Count == 0)
                 {
                     LblMsj.Text = "No se obtuvo información de la base de datos.";
+                    LblMsj.CssClass = "message error-message";
                     return;
                 }
 
@@ -99,7 +103,6 @@ namespace Presentation
 
                     GVRequests.DataSource = data.Tables[0];
                     GVRequests.DataBind();
-                    LblMsj.Text = "";
                 }
                 else
                 {
@@ -107,58 +110,84 @@ namespace Presentation
                     GVRequests.DataSource = null;
                     GVRequests.DataBind();
                     LblMsj.Text = "No hay solicitudes de compra registradas.";
+                    LblMsj.CssClass = "message info-message";
                 }
             }
             catch (Exception ex)
             {
                 LblMsj.Text = "Error inesperado: " + ex.Message;
+                LblMsj.CssClass = "message error-message";
             }
         }
+
         private void clear()
         {
             HFPurchaId.Value = "";
             TBTicket.Text = GenerateTicket();
             TBFecha.Text = DateTime.Now.ToString("yyyy-MM-dd");
             TBQuantity.Text = "1"; // Restablecer a 1 al limpiar el formulario
-            TBQuantity.Text = "";
             TxtMaterialSeleccionado.Text = "";
             HdnMaterialId.Value = "";
             TBUnitPrice.Text = "";
             TBTotal.Text = "";
+
+            // Configurar mensaje
+            LblMsj.Text = "Modo de creación de nuevo registro. Completa los campos y haz clic en 'Comprar'.";
+            LblMsj.CssClass = "message info-message";
+
+            // Registrar script para cambiar los botones
+            ScriptManager.RegisterStartupScript(this, GetType(), "ToggleButtons", "onFormCleared();", true);
         }
 
         protected void BtnSave_Click(object sender, EventArgs e)
         {
             try
             {
+                // Validar que no estamos intentando guardar un registro existente como nuevo
+                if (!string.IsNullOrEmpty(HFPurchaId.Value))
+                {
+                    LblMsj.Text = "Error: Estás intentando guardar un registro existente como nuevo. Usa el botón 'Actualizar' en su lugar.";
+                    LblMsj.CssClass = "message error-message";
+
+                    // Forzar modo edición
+                    ScriptManager.RegisterStartupScript(this, GetType(), "ToggleButtons", "toggleSaveUpdateButtons(true);", true);
+                    return;
+                }
+
                 int userId = Convert.ToInt32(Session["UserID"]);
                 if (string.IsNullOrEmpty(TBQuantity.Text) ||
                     string.IsNullOrEmpty(HdnMaterialId.Value))
                 {
                     LblMsj.Text = "Por favor, completa todos los campos.";
+                    LblMsj.CssClass = "message error-message";
                     return;
                 }
 
-                // Generar el ticket justo antes de guardar
-                TBTicket.Text = GenerateTicket();
+                // Validar que la cantidad sea un número positivo
+                if (!int.TryParse(TBQuantity.Text, out int cantidad) || cantidad <= 0)
+                {
+                    LblMsj.Text = "La cantidad debe ser un número entero positivo.";
+                    LblMsj.CssClass = "message error-message";
+                    return;
+                }
 
                 string errorMessage;
                 bool result = objPur.savePurchaseRequest(
                     TBTicket.Text.Trim(),
                     DateTime.Parse(TBFecha.Text),
                     userId,
-                    int.Parse(TBQuantity.Text),
+                    cantidad,
                     int.Parse(HdnMaterialId.Value),
                     out errorMessage);
 
                 if (result)
                 {
                     LblMsj.Text = $"Solicitud guardada exitosamente. Ticket: {TBTicket.Text}";
+                    LblMsj.CssClass = "message info-message";
                     showPurchaseRequestsByUser(userId);
 
                     // Obtener información para el mensaje de WhatsApp
                     string material = TxtMaterialSeleccionado.Text;
-                    string cantidad = TBQuantity.Text;
                     string precioUnitario = TBUnitPrice.Text;
                     string total = TBTotal.Text;
                     string ticket = TBTicket.Text;
@@ -194,11 +223,13 @@ namespace Presentation
                 else
                 {
                     LblMsj.Text = errorMessage;
+                    LblMsj.CssClass = "message error-message";
                 }
             }
             catch (Exception ex)
             {
                 LblMsj.Text = "Error inesperado: " + ex.Message;
+                LblMsj.CssClass = "message error-message";
             }
         }
 
@@ -219,7 +250,7 @@ namespace Presentation
                 if (string.IsNullOrEmpty(HFPurchaId.Value))
                 {
                     LblMsj.Text = "Debe seleccionar una solicitud de la lista para actualizar.";
-                    LblMsj.ForeColor = System.Drawing.Color.Red;
+                    LblMsj.CssClass = "message error-message";
                     return;
                 }
 
@@ -227,7 +258,7 @@ namespace Presentation
                 if (string.IsNullOrEmpty(TBQuantity.Text) || string.IsNullOrEmpty(HdnMaterialId.Value))
                 {
                     LblMsj.Text = "Debe especificar la cantidad y seleccionar un material.";
-                    LblMsj.ForeColor = System.Drawing.Color.Red;
+                    LblMsj.CssClass = "message error-message";
                     return;
                 }
 
@@ -235,7 +266,7 @@ namespace Presentation
                 if (!int.TryParse(TBQuantity.Text, out int cantidad) || cantidad <= 0)
                 {
                     LblMsj.Text = "La cantidad debe ser un número entero positivo.";
-                    LblMsj.ForeColor = System.Drawing.Color.Red;
+                    LblMsj.CssClass = "message error-message";
                     return;
                 }
 
@@ -243,12 +274,12 @@ namespace Presentation
                 if (!int.TryParse(HdnMaterialId.Value, out int materialId))
                 {
                     LblMsj.Text = "El material seleccionado no es válido.";
-                    LblMsj.ForeColor = System.Drawing.Color.Red;
+                    LblMsj.CssClass = "message error-message";
                     return;
                 }
 
                 // 6. Generar NUEVO ticket para la actualización
-                string nuevoTicket = GenerateTicket(); // Generamos un ticket nuevo
+                string nuevoTicket = GenerateTicket();
 
                 // 7. Obtener fecha (usar fecha actual si hay error)
                 DateTime fecha = DateTime.TryParse(TBFecha.Text, out DateTime f) ? f : DateTime.Now;
@@ -256,7 +287,7 @@ namespace Presentation
                 // 8. Ejecutar actualización con el nuevo ticket
                 bool resultado = objPur.updatePurchaseRequest(
                     int.Parse(HFPurchaId.Value),
-                    nuevoTicket, // Usamos el ticket recién generado
+                    nuevoTicket,
                     fecha,
                     userId,
                     cantidad,
@@ -269,7 +300,7 @@ namespace Presentation
                     TBTicket.Text = nuevoTicket;
 
                     LblMsj.Text = "¡Solicitud actualizada correctamente! Nuevo ticket generado.";
-                    LblMsj.ForeColor = System.Drawing.Color.Green;
+                    LblMsj.CssClass = "message info-message";
 
                     // Refrescar la lista para mostrar el nuevo ticket
                     showPurchaseRequestsByUser(userId);
@@ -277,32 +308,48 @@ namespace Presentation
                 else
                 {
                     LblMsj.Text = "No se pudo completar la actualización. Intente nuevamente.";
-                    LblMsj.ForeColor = System.Drawing.Color.Red;
+                    LblMsj.CssClass = "message error-message";
                 }
             }
             catch (Exception ex)
             {
                 LblMsj.Text = $"Error inesperado: {ex.Message}";
-                LblMsj.ForeColor = System.Drawing.Color.Red;
+                LblMsj.CssClass = "message error-message";
             }
         }
 
         protected void BtnDelete_Click(object sender, EventArgs e)
         {
-            int userId = Convert.ToInt32(Session["UserID"]);
-            if (string.IsNullOrEmpty(HFPurchaId.Value))
+            try
             {
-                LblMsj.Text = "Selecciona una solicitud válida para eliminar.";
-                return;
+                int userId = Convert.ToInt32(Session["UserID"]);
+                if (string.IsNullOrEmpty(HFPurchaId.Value))
+                {
+                    LblMsj.Text = "Selecciona una solicitud válida para eliminar.";
+                    LblMsj.CssClass = "message error-message";
+                    return;
+                }
+
+                bool result = objPur.deletePurchaseRequest(int.Parse(HFPurchaId.Value));
+                if (result)
+                {
+                    LblMsj.Text = "¡Solicitud eliminada correctamente!";
+                    LblMsj.CssClass = "message info-message";
+                    showPurchaseRequestsByUser(userId);
+                    clear();
+                }
+                else
+                {
+                    LblMsj.Text = "Error al eliminar la solicitud. Intente nuevamente.";
+                    LblMsj.CssClass = "message error-message";
+                }
             }
-
-            bool result = objPur.deletePurchaseRequest(int.Parse(HFPurchaId.Value));
-            LblMsj.Text = result ? "¡Solicitud eliminada!" : "Error al eliminar.";
-            if (result) showPurchaseRequestsByUser(userId);
-            clear();
+            catch (Exception ex)
+            {
+                LblMsj.Text = $"Error inesperado al eliminar: {ex.Message}";
+                LblMsj.CssClass = "message error-message";
+            }
         }
-
-
 
         protected void TBQuantity_TextChanged(object sender, EventArgs e)
         {
@@ -314,7 +361,7 @@ namespace Presentation
             // Verificar que los campos no estén vacíos
             if (string.IsNullOrEmpty(TBQuantity.Text) || string.IsNullOrEmpty(TBUnitPrice.Text))
             {
-                TBTotal.Text = "$0,00"; // Formato inicial con signo de pesos y coma decimal
+                TBTotal.Text = "$0,00";
                 return;
             }
 
@@ -325,19 +372,21 @@ namespace Presentation
             string precioUnitarioTexto = TBUnitPrice.Text.Replace("$", "").Trim();
 
             // Intentar parsear los valores
-            if (int.TryParse(TBQuantity.Text, out int cantidad) && decimal.TryParse(precioUnitarioTexto, System.Globalization.NumberStyles.Currency, cultureInfo, out decimal precioUnitario))
+            if (int.TryParse(TBQuantity.Text, out int cantidad) &&
+                decimal.TryParse(precioUnitarioTexto, System.Globalization.NumberStyles.Currency, cultureInfo, out decimal precioUnitario))
             {
                 // Realizar la multiplicación
                 decimal total = cantidad * precioUnitario;
 
                 // Formatear el total con separadores de miles, dos decimales y el signo de pesos
-                TBTotal.Text = total.ToString("C2", cultureInfo).Replace("$", "$ "); // Agregar espacio después del signo de pesos
+                TBTotal.Text = total.ToString("C2", cultureInfo).Replace("$", "$ ");
             }
             else
             {
-                TBTotal.Text = "$0,00"; // Mostrar $0,00 si no se pueden parsear los valores
+                TBTotal.Text = "$0,00";
             }
         }
+
         protected void GVRequests_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
@@ -350,7 +399,7 @@ namespace Presentation
                     if (row.Cells.Count < 8 || GVRequests.DataKeys[row.RowIndex] == null)
                     {
                         LblMsj.Text = "Estructura de datos no válida. No se pueden cargar los detalles.";
-                        LblMsj.ForeColor = System.Drawing.Color.Red;
+                        LblMsj.CssClass = "message error-message";
                         return;
                     }
 
@@ -364,8 +413,8 @@ namespace Presentation
                     // Fecha (formato dual)
                     if (DateTime.TryParse(row.Cells[2].Text, out DateTime fecha))
                     {
-                        TBFecha.Text = fecha.ToString("yyyy-MM-dd"); // Formato para BD
-                        LblFechaMostrar.Text = fecha.ToString("dd/MM/yyyy"); // Formato visual
+                        TBFecha.Text = fecha.ToString("yyyy-MM-dd");
+                        LblFechaMostrar.Text = fecha.ToString("dd/MM/yyyy");
                     }
                     else
                     {
@@ -384,7 +433,7 @@ namespace Presentation
                     if (string.IsNullOrEmpty(HdnMaterialId.Value))
                     {
                         LblMsj.Text = "No se pudo obtener el ID del material. Seleccione nuevamente.";
-                        LblMsj.ForeColor = System.Drawing.Color.Red;
+                        LblMsj.CssClass = "message error-message";
                         return;
                     }
 
@@ -395,7 +444,7 @@ namespace Presentation
                     }
                     else
                     {
-                        TBQuantity.Text = "1"; // Valor por defecto seguro
+                        TBQuantity.Text = "1";
                     }
 
                     // 5. Valores monetarios con formato
@@ -417,22 +466,22 @@ namespace Presentation
                         TBTotal.Text = total.ToString("C2");
                     }
 
-                    // 6. Limpiar mensajes de error si todo fue bien
-                    LblMsj.Text = string.Empty;
+                    // 6. Configurar mensaje y botones
+                    LblMsj.Text = "Estás editando un registro existente. Usa el botón 'Actualizar' para guardar los cambios.";
+                    LblMsj.CssClass = "message info-message";
+
+                    // Registrar script para cambiar los botones
+                    ScriptManager.RegisterStartupScript(this, GetType(), "ToggleButtons", "onRecordSelected();", true);
                 }
             }
             catch (Exception ex)
             {
-                // 7. Manejo centralizado de errores
                 LblMsj.Text = $"Error al cargar detalles: {ex.Message}";
-                LblMsj.ForeColor = System.Drawing.Color.Red;
-
-                // Registrar el error completo para diagnóstico
+                LblMsj.CssClass = "message error-message";
                 System.Diagnostics.Debug.WriteLine($"Error en GVRequests_SelectedIndexChanged: {ex.ToString()}");
             }
         }
 
-        // Método para manejar el cambio de página
         protected void GVRequests_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             GVRequests.PageIndex = e.NewPageIndex;
@@ -442,9 +491,7 @@ namespace Presentation
 
         protected void BtnBuscarMaterial_Click(object sender, EventArgs e)
         {
-            // Redirecciona al formulario de búsqueda de materiales
             Response.Redirect("WFPresentationMaterial.aspx");
         }
-
     }
 }

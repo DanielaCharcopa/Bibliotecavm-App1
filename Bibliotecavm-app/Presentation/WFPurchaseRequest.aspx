@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="Solicitudes de compras" Language="C#" MasterPageFile="~/MainUsuario.Master" AutoEventWireup="true" CodeBehind="WFPurchaseRequest.aspx.cs" Inherits="Presentation.WFPurchaseRequest" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
     <style type="text/css">
         /* Estilos generales */
@@ -229,6 +229,20 @@
             color: #c62828;
             border: 1px solid #ef9a9a;
         }
+
+        .info-message {
+            background-color: #e3f2fd;
+            color: #1565c0;
+            border: 1px solid #90caf9;
+        }
+        
+        /* Estilos para los botones ocultos */
+        .btn-hidden {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
         
         /* Responsive */
         @media (max-width: 768px) {
@@ -273,9 +287,9 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="form-container">
-        <h1>Registro de Compras</h1>
+        <h3>Registro de Compras</h3>
         
-        <asp:Label ID="LblMsj" runat="server" CssClass="message error-message"></asp:Label>
+        <asp:Label ID="LblMsj" runat="server" CssClass="message info-message"></asp:Label>
         <asp:HiddenField ID="HFPurchaId" runat="server" />
         <asp:TextBox ID="TBTicket" runat="server" style="display:none;"></asp:TextBox>
 
@@ -336,10 +350,10 @@
             <asp:LinkButton ID="BtnSave" runat="server" OnClick="BtnSave_Click" CssClass="btn btn-primary" OnClientClick="return confirm('¿Confirmar compra?');">
                 <i class="fas fa-shopping-cart"></i> Comprar
             </asp:LinkButton>
-            <asp:LinkButton ID="BtnUpdate" runat="server" OnClick="BtnUpdate_Click" CssClass="btn btn-secondary" OnClientClick="return confirm('¿Confirmar actualización?');">
+            <asp:LinkButton ID="BtnUpdate" runat="server" OnClick="BtnUpdate_Click" CssClass="btn btn-secondary btn-hidden" OnClientClick="return confirm('¿Confirmar actualización?');">
                 <i class="fas fa-sync-alt"></i> Actualizar
             </asp:LinkButton>
-            <asp:LinkButton ID="BtnDelete" runat="server" OnClick="BtnDelete_Click" CssClass="btn btn-danger" OnClientClick="return confirm('¿Eliminar esta solicitud?');">
+            <asp:LinkButton ID="BtnDelete" runat="server" OnClick="BtnDelete_Click" CssClass="btn btn-danger btn-hidden" OnClientClick="return confirm('¿Eliminar esta solicitud?');">
                 <i class="fas fa-trash-alt"></i> Eliminar
             </asp:LinkButton>
         </div>
@@ -365,4 +379,48 @@
             </asp:GridView>
         </div>
     </div>
+
+    <script type="text/javascript">
+        function toggleSaveUpdateButtons(isEditing) {
+            var btnSave = document.getElementById('<%= BtnSave.ClientID %>');
+            var btnUpdate = document.getElementById('<%= BtnUpdate.ClientID %>');
+            var btnDelete = document.getElementById('<%= BtnDelete.ClientID %>');
+            
+            if (isEditing) {
+                // Modo edición
+                btnSave.classList.add('btn-hidden');
+                btnUpdate.classList.remove('btn-hidden');
+                btnDelete.classList.remove('btn-hidden');
+                
+                // Mostrar mensaje al usuario
+                document.getElementById('<%= LblMsj.ClientID %>').textContent = 'Estás editando un registro existente. Usa el botón "Actualizar" para guardar los cambios.';
+                document.getElementById('<%= LblMsj.ClientID %>').className = 'message info-message';
+            } else {
+                // Modo nuevo registro
+                btnSave.classList.remove('btn-hidden');
+                btnUpdate.classList.add('btn-hidden');
+                btnDelete.classList.add('btn-hidden');
+                
+                // Mostrar mensaje al usuario
+                document.getElementById('<%= LblMsj.ClientID %>').textContent = 'Modo de creación de nuevo registro. Completa los campos y haz clic en "Comprar".';
+                document.getElementById('<%= LblMsj.ClientID %>').className = 'message info-message';
+            }
+        }
+
+        // Llamar a esta función cuando se selecciona un registro
+        function onRecordSelected() {
+            toggleSaveUpdateButtons(true);
+        }
+
+        // Llamar a esta función cuando se limpia el formulario
+        function onFormCleared() {
+            toggleSaveUpdateButtons(false);
+        }
+
+        // Verificar estado al cargar la página
+        window.onload = function() {
+            var purchaseId = document.getElementById('<%= HFPurchaId.ClientID %>').value;
+            toggleSaveUpdateButtons(purchaseId !== '');
+        };
+    </script>
 </asp:Content>
