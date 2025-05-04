@@ -13,20 +13,21 @@
             border: none !important;
         }
         
-        /* Estilos de paginación */
-        .pagination a, .pagination span {
-            padding: 5px 10px;
+        /* Estilos de paginación  */
+        .pagination a {
+            padding: 6px 12px;
             margin: 0 3px;
             border: 1px solid #ddd;
             text-decoration: none;
+            color: #007bff;
         }
-        .pagination a:hover {
-            background-color: #f5f5f5;
-        }
-        .pagination .active {
-            background-color: #337ab7;
+        
+        .pagination span {
+            padding: 6px 12px;
+            margin: 0 3px;
+            border: 1px solid #007bff;
+            background-color: #007bff;
             color: white;
-            border-color: #337ab7;
         }
         
         /* Estilos generales */
@@ -83,8 +84,7 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-    <h1>Registro de Respuestas</h1>
-    
+  
     <div class="container-fluid">
         <div class="row">
             <div class="col">
@@ -99,17 +99,19 @@
                 <h3>Listado de Respuestas</h3>
                 <asp:GridView ID="gvAnswers" runat="server" AutoGenerateColumns="False" 
                     CssClass="table table-hover table-bordered" AllowPaging="True" PageSize="10"
-                    OnPageIndexChanging="gvAnswers_PageIndexChanging" PagerStyle-CssClass="pagination"
-                    PagerSettings-Mode="NumericFirstLast" EmptyDataText="No se encontraron registros">
+                    OnPageIndexChanging="gvAnswers_PageIndexChanging" 
+                    PagerStyle-CssClass="pagination"
+                    PagerSettings-Mode="NumericFirstLast" 
+                    PagerSettings-Position="Bottom"
+                    PagerSettings-PageButtonCount="5"
+                    EmptyDataText="No se encontraron registros">
                     <Columns>
-                        
                         <asp:BoundField DataField="res_id" HeaderText="ID Respuesta" 
                             ItemStyle-CssClass="hidden-id-column" HeaderStyle-CssClass="hidden-id-column" />
                             
                         <asp:BoundField DataField="tbl_encuesta_en_id" HeaderText="ID Pregunta" 
                             ItemStyle-CssClass="hidden-id-column" HeaderStyle-CssClass="hidden-id-column" />
                             
-                        
                         <asp:BoundField DataField="en_descripcion_pregunta" HeaderText="Descripción Pregunta" />
                         <asp:BoundField DataField="res_respuesta" HeaderText="Respuesta" />
                         <asp:BoundField DataField="nombre_usuario" HeaderText="Usuario" />
