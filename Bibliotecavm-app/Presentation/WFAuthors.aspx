@@ -4,6 +4,7 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div>
+
         <h2>Registro de Autor</h2>
 
          <asp:HiddenField ID="HFAuthorsId" runat="server" />
@@ -45,4 +46,5 @@
             </Columns>
         </asp:GridView>
     </div>
+
 </asp:Content>
