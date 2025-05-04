@@ -8,175 +8,139 @@ namespace Presentation
 {
     public partial class WFAnswer : System.Web.UI.Page
     {
-        private readonly AnswersLog answersLog = new AnswersLog();
+        private AnswersLog objAnswerLog = new AnswersLog();
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                ValidateUserSession();
-                InitializeControls();
-                LoadUserData();
+                LoadUnansweredQuestions();
             }
         }
 
-        private void ValidateUserSession()
-        {
-            if (Session["UserID"] == null)
-            {
-                Response.Redirect("~/Default.aspx", true);
-                Context.ApplicationInstance.CompleteRequest();
-            }
-        }
-
-        private void InitializeControls()
-        {
-            successAlert.Visible = false;
-            errorAlert.Visible = false;
-            btnSaveAnswer.Enabled = true;
-        }
-
-        private void LoadUserData()
-        {
-            int userId = Convert.ToInt32(Session["UserID"]);
-            LoadUnansweredQuestions(userId);
-        }
-
-        private void LoadUnansweredQuestions(int userId)
+        private void LoadUnansweredQuestions()
         {
             try
             {
-                DataSet ds = answersLog.showUnansweredQuestionsByUser(userId);
+                int userId = GetCurrentUserId();
 
-                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                DataSet dsQuestions = objAnswerLog.showUnansweredQuestionsByUser(userId);
+
+                if (dsQuestions != null && dsQuestions.Tables.Count > 0 && dsQuestions.Tables[0].Rows.Count > 0)
                 {
-                    ddlSurvey.DataSource = ds.Tables[0];
-                    ddlSurvey.DataTextField = "en_descripcion_pregunta";
-                    ddlSurvey.DataValueField = "en_id";
-                    ddlSurvey.DataBind();
-                    ddlSurvey.Items.Insert(0, new ListItem("-- Seleccione una Pregunta --", "0"));
-
-                    ToggleFormControls(true);
+                    rptQuestions.DataSource = dsQuestions;
+                    rptQuestions.DataBind();
+                    pnlQuestions.Visible = true;
+                    pnlNoQuestions.Visible = false;
                 }
                 else
                 {
-                    ddlSurvey.Items.Clear();
-                    ddlSurvey.Items.Add(new ListItem("-- No hay preguntas disponibles --", "0"));
-                    ToggleFormControls(false);
-                    ShowInfoMessage("No hay preguntas disponibles para responder o ya has contestado todas.");
+                    pnlQuestions.Visible = false;
+                    pnlNoQuestions.Visible = true;
                 }
             }
             catch (Exception ex)
             {
-                ShowErrorMessage($"Error al cargar preguntas: {ex.Message}");
-                ddlSurvey.Items.Add(new ListItem("-- Error al cargar --", "0"));
-                ToggleFormControls(false);
+                ShowError("Error al cargar las preguntas: " + ex.Message);
             }
         }
 
-        private void ToggleFormControls(bool enabled)
+        protected void rptQuestions_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
-            ddlSurvey.Enabled = enabled;
-            ddlResponse.Enabled = enabled;
-            btnSaveAnswer.Enabled = enabled;
+            // Este método se puede usar para configurar controles adicionales durante el databinding
+            // Por ahora está vacío, pero puede ser útil si necesitas más funcionalidad
         }
 
-        protected void btnSaveAnswer_Click(object sender, EventArgs e)
+        protected void btnResponder_Click(object sender, EventArgs e)
         {
-            if (!ValidateForm())
+            // Obtener información del botón que se hizo clic
+            Button btnClicked = (Button)sender;
+            int questionId = Convert.ToInt32(btnClicked.CommandArgument);
+
+            // Encontrar el contenedor del ítem del Repeater
+            RepeaterItem item = (RepeaterItem)btnClicked.NamingContainer;
+
+            // Encontrar los RadioButtons en el contenedor
+            RadioButton rbSi = (RadioButton)item.FindControl("rbSi");
+            RadioButton rbNo = (RadioButton)item.FindControl("rbNo");
+            Label lblMessage = (Label)item.FindControl("lblMessage");
+
+            // Verificar si se seleccionó una respuesta
+            if (!rbSi.Checked && !rbNo.Checked)
+            {
+                lblMessage.Text = "Por favor seleccione una respuesta";
+                lblMessage.CssClass = "text-danger";
                 return;
+            }
+
+            // Determinar la respuesta seleccionada
+            string respuesta = rbSi.Checked ? "Sí" : "No";
 
             try
             {
-                SaveAnswer();
+                // Guardar la respuesta
+                int userId = GetCurrentUserId();
+                bool result = objAnswerLog.saveAnswer(respuesta, questionId, userId);
+
+                if (result)
+                {
+                    // Deshabilitar los controles después de responder
+                    rbSi.Enabled = false;
+                    rbNo.Enabled = false;
+                    btnClicked.Enabled = false;
+                    btnClicked.Text = "Respondido";
+                    btnClicked.CssClass = "btn btn-success";
+                    lblMessage.Text = "¡Respuesta guardada!";
+                    lblMessage.CssClass = "text-success";
+
+                    // También puedes mostrar un mensaje global
+                    ShowSuccess("La respuesta ha sido guardada exitosamente.");
+                }
+                else
+                {
+                    lblMessage.Text = "No se pudo guardar la respuesta";
+                    lblMessage.CssClass = "text-danger";
+                }
             }
             catch (Exception ex)
             {
-                ShowErrorMessage($"Error inesperado: {ex.Message}");
-                ResetSaveButton();
+                lblMessage.Text = "Error: " + ex.Message;
+                lblMessage.CssClass = "text-danger";
+                ShowError("Error al guardar la respuesta: " + ex.Message);
             }
         }
 
-        private bool ValidateForm()
+        private int GetCurrentUserId()
         {
-            if (ddlSurvey.SelectedValue == "0")
+            // En una aplicación real, este método obtendría el ID del usuario de la sesión
+            // Por ejemplo: return Convert.ToInt32(Session["UserId"]);
+
+            // Por ahora, retornamos un valor de ejemplo (reemplaza esto)
+            if (Session["UserId"] != null)
             {
-                ShowErrorMessage("Por favor, seleccione una pregunta válida");
-                ScriptManager.RegisterStartupScript(this, GetType(), "focusQuestion",
-                    $"document.getElementById('{ddlSurvey.ClientID}').focus();", true);
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(ddlResponse.SelectedValue))
-            {
-                ShowErrorMessage("Debe seleccionar una respuesta");
-                ScriptManager.RegisterStartupScript(this, GetType(), "focusResponse",
-                    $"document.getElementById('{ddlResponse.ClientID}').focus();", true);
-                return false;
-            }
-
-            return true;
-        }
-
-        private void SaveAnswer()
-        {
-            string response = ddlResponse.SelectedValue;
-            int questionId = Convert.ToInt32(ddlSurvey.SelectedValue);
-            int userId = Convert.ToInt32(Session["UserID"]);
-
-            bool result = answersLog.saveAnswer(response, questionId, userId);
-
-            if (result)
-            {
-                ShowSuccessMessage("¡Respuesta guardada exitosamente!");
-                LoadUserData();
-                ResetForm();
+                return Convert.ToInt32(Session["UserId"]);
             }
             else
             {
-                ShowErrorMessage("No se pudo guardar la respuesta. Intente nuevamente.");
+                // Si no hay usuario en sesión, puedes redirigir al login
+                // Response.Redirect("Login.aspx");
+                // O usar un valor por defecto para pruebas
+                return 1; // Usuario de prueba
             }
-
-            ResetSaveButton();
         }
 
-        private void ResetForm()
+        private void ShowSuccess(string message)
         {
-            ddlResponse.SelectedIndex = 0;
-            ScriptManager.RegisterStartupScript(this, GetType(), "resetAnimation",
-                $"$('#{ddlResponse.ClientID}').addClass('animate__animated animate__pulse');", true);
+            lblSuccess.Text = message;
+            pnlSuccess.Visible = true;
+            pnlError.Visible = false;
         }
 
-        private void ResetSaveButton()
+        private void ShowError(string message)
         {
-            ScriptManager.RegisterStartupScript(this, GetType(), "resetButton",
-                $"document.getElementById('{btnSaveAnswer.ClientID}').innerHTML = '<i class=\"fas fa-save me-1\"></i> Guardar Respuesta';", true);
+            lblError.Text = message;
+            pnlError.Visible = true;
+            pnlSuccess.Visible = false;
         }
-
-        #region Message Handlers
-        private void ShowSuccessMessage(string message)
-        {
-            litSuccessMessage.Text = message;
-            successAlert.Visible = true;
-            errorAlert.Visible = false;
-            ScriptManager.RegisterStartupScript(this, GetType(), "hideSuccess",
-                $"setTimeout(function() {{ $('#{successAlert.ClientID}').fadeOut('slow'); }}, 5000);", true);
-        }
-
-        private void ShowErrorMessage(string message)
-        {
-            litErrorMessage.Text = message;
-            errorAlert.Visible = true;
-            successAlert.Visible = false;
-        }
-
-        private void ShowInfoMessage(string message)
-        {
-            litSuccessMessage.Text = message;
-            successAlert.Attributes["class"] = successAlert.Attributes["class"].Replace("alert-success", "alert-info");
-            successAlert.Visible = true;
-            errorAlert.Visible = false;
-        }
-        #endregion
     }
 }
