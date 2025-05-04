@@ -495,5 +495,7 @@
             resetUserActivity();
             handleVisibility();
         });
-    </script>
+
+        </script>
+
 </asp:Content>
