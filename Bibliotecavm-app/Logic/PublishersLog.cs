@@ -12,7 +12,7 @@ namespace Logic
     {
         PublishersDat objPub = new PublishersDat();
 
-
+        // metodo para mostrar todos los editoriales
         public DataSet showEditorials()
         {
             return objPub.showEditorials();
