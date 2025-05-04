@@ -75,7 +75,7 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="container-fluid">
-        <h1>Gestión de Encuestas</h1>
+        <h3>Gestión de Encuestas</h3>
         
         <%-- Mensaje de alerta o éxito --%>
         <div class="row">
@@ -108,6 +108,7 @@
         <br />
 
         <%-- Listado de encuestas --%>
+
         <div class="row">
             <div class="col">
                 <h3>Listado de Encuestas</h3>
@@ -122,7 +123,9 @@
                     PagerSettings-Position="Bottom"
                     PagerSettings-PageButtonCount="5">
                     <Columns>
+
                         <%-- Columna ID oculta visualmente pero funcional --%>
+
                         <asp:BoundField DataField="en_id" HeaderText="ID" 
                             ItemStyle-CssClass="hidden-id-column" 
                             HeaderStyle-CssClass="hidden-id-column" />
