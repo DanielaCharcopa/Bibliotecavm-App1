@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Gestión de Compras" Language="C#" MasterPageFile="~/MainAdmin.Master" AutoEventWireup="true" 
+﻿ <%@ Page Title="Gestión de Compras" Language="C#" MasterPageFile="~/MainAdmin.Master" AutoEventWireup="true" 
     CodeBehind="WFPurchaseRequestManagement.aspx.cs" Inherits="Presentation.WFPurchaseRequestManagement" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -138,29 +138,21 @@
             display: block;
         }
         
-        /* Paginación responsiva */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin: 20px 0;
-            padding: 0;
-            gap: 5px;
-        }
-        
-        .pagination a, .pagination span {
-            padding: 6px 10px;
-            margin: 0;
-            border: 1px solid #dee2e6;
+        /* Paginación  */
+        .pagination a {
+            padding: 6px 12px;
+            margin: 0 3px;
+            border: 1px solid #ddd;
+            text-decoration: none;
             color: #007bff;
-            border-radius: 4px;
-            font-size: clamp(12px, 2vw, 14px);
         }
         
-        .pagination .active {
+        .pagination span {
+            padding: 6px 12px;
+            margin: 0 3px;
+            border: 1px solid #007bff;
             background-color: #007bff;
             color: white;
-            border-color: #007bff;
         }
         
         /* Estilos para móviles */
@@ -175,6 +167,12 @@
             
             .ticket-column, .user-column, .material-column {
                 word-break: break-all;
+            }
+            
+            /* Ajuste para paginación en móviles */
+            .pagination a, .pagination span {
+                padding: 4px 8px;
+                margin: 0 2px;
             }
         }
         
@@ -193,7 +191,7 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="container">
-        <h1>Gestión de Solicitudes de Compra</h1>
+        <h3>Gestión de Solicitudes de Compra</h3>
         
         <asp:Label ID="LblMsj" runat="server" ForeColor="Red"></asp:Label>
 
@@ -205,7 +203,10 @@
                     <asp:GridView ID="GVRequests" runat="server" AutoGenerateColumns="False" CssClass="gridview"
                         OnRowDataBound="GVRequests_RowDataBound" DataKeyNames="solic_id"
                         AllowPaging="True" PageSize="8" OnPageIndexChanging="GVRequests_PageIndexChanging"
-                        PagerStyle-CssClass="pagination">
+                        PagerStyle-CssClass="pagination"
+                        PagerSettings-Mode="NumericFirstLast"
+                        PagerSettings-Position="Bottom"
+                        PagerSettings-PageButtonCount="5">
                         <Columns>
                             <asp:BoundField DataField="solic_id" HeaderText="ID" 
                                 ItemStyle-CssClass="hidden-id-column" 
