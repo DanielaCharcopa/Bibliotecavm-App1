@@ -45,7 +45,48 @@ namespace Presentation
 
         protected void BtnSave_Click(object sender, EventArgs e)
         {
-            // Decodificar los datos ingresados antes de procesarlos
+            if (!ValidarCampos())
+                return;
+
+            try
+            {
+                // Verificar si el correo ya está registrado
+                if (objUser.isEmailRegistered(correo))
+                {
+                    LblMessage.Text = "❌ El correo electrónico ya está registrado. Por favor, use otro correo.";
+                    LblMessage.ForeColor = System.Drawing.Color.Red;
+                    return;
+                }
+
+                // Generar el salt y encriptar la contraseña
+                ICryptoService cryptoService = new PBKDF2();
+                salt = cryptoService.GenerateSalt();
+                string encryptedPassword = cryptoService.Compute(contrasena, salt);
+
+                // Guardar usuario con los datos decodificados
+                bool success = objUser.saveUser(nombre, apellido, correo, encryptedPassword, salt, rol, nivelEstudios);
+
+                if (success)
+                {
+                    // Redirigir a Default.aspx con parámetro de éxito
+                    Response.Redirect("~/Default.aspx?reg=success", false);
+                }
+                else
+                {
+                    LblMessage.Text = "❌ Error al guardar el usuario. Por favor, intente nuevamente.";
+                    LblMessage.ForeColor = System.Drawing.Color.Red;
+                }
+            }
+            catch (Exception ex)
+            {
+                LblMessage.Text = $"❌ Error inesperado: {ex.Message}";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+            }
+        }
+
+        private bool ValidarCampos()
+        {
+            // Obtener y decodificar valores del formulario
             nombre = HttpUtility.HtmlDecode(TBFirstName.Text.Trim());
             apellido = HttpUtility.HtmlDecode(TBLastName.Text.Trim());
             correo = HttpUtility.HtmlDecode(TBEmail.Text.Trim());
@@ -53,93 +94,95 @@ namespace Presentation
             rol = DDLRole.SelectedValue;
             nivelEstudios = DDLEducationLevel.SelectedValue;
 
-            // Validar campos obligatorios
+            // Resetear mensajes de error
+            LblNombreMessage.Visible = false;
+            LblApellidoMessage.Visible = false;
+            LblCorreoMessage.Visible = false;
+            LblPasswordMessage.Visible = false;
+            LblMessage.Text = "";
+
+            // Validar nombre
             if (string.IsNullOrEmpty(nombre))
             {
-                LblMessage.Text = "El campo 'Nombre' es obligatorio.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-                return;
+                LblNombreMessage.Text = "❌ El campo 'Nombre' es obligatorio.";
+                LblNombreMessage.Visible = true;
+                return false;
             }
 
+            // Validar apellido
             if (string.IsNullOrEmpty(apellido))
             {
-                LblMessage.Text = "El campo 'Apellido' es obligatorio.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-                return;
+                LblApellidoMessage.Text = "❌ El campo 'Apellido' es obligatorio.";
+                LblApellidoMessage.Visible = true;
+                return false;
             }
 
+            // Validar correo electrónico
             if (string.IsNullOrEmpty(correo))
             {
-                LblMessage.Text = "El campo 'Correo Electrónico' es obligatorio.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-                return;
+                LblCorreoMessage.Text = "❌ El campo 'Correo Electrónico' es obligatorio.";
+                LblCorreoMessage.Visible = true;
+                return false;
             }
 
-            // Validar que el correo sea de Gmail
             if (!IsGmailEmail(correo))
             {
-                LblMessage.Text = "Por favor, ingrese un correo electrónico válido de Gmail (ejemplo@gmail.com).";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-                return;
+                LblCorreoMessage.Text = "❌ Por favor, ingrese un correo electrónico válido de Gmail (ejemplo@gmail.com).";
+                LblCorreoMessage.Visible = true;
+                return false;
             }
 
+            // Validar contraseña
             if (string.IsNullOrEmpty(contrasena))
             {
-                LblMessage.Text = "El campo 'Contraseña' es obligatorio.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-                return;
+                LblPasswordMessage.Text = "❌ El campo 'Contraseña' es obligatorio.";
+                LblPasswordMessage.Visible = true;
+                return false;
             }
 
-            if (string.IsNullOrEmpty(rol) || string.IsNullOrEmpty(nivelEstudios))
+            if (contrasena.Length < 6)
             {
-                LblMessage.Text = "Por favor seleccione un rol y un nivel educativo.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-                return;
+                LblPasswordMessage.Text = "❌ La contraseña debe tener al menos 6 caracteres.";
+                LblPasswordMessage.Visible = true;
+                return false;
             }
 
-            // Verificar si ya existe un administrador
+            // Validar rol
+            if (string.IsNullOrEmpty(rol))
+            {
+                LblMessage.Text = "❌ Por favor seleccione un rol.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return false;
+            }
+
+            // Validar nivel educativo
+            if (string.IsNullOrEmpty(nivelEstudios))
+            {
+                LblMessage.Text = "❌ Por favor seleccione un nivel educativo.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return false;
+            }
+
+            // Validar si ya existe administrador
             if (rol == "Administrador" && objUser.CheckAdminExists())
             {
-                LblMessage.Text = "Ya existe un Administrador. Por favor, designe otro rol o elimine el actual administrador.";
+                LblMessage.Text = "❌ Ya existe un Administrador. Por favor, designe otro rol.";
                 LblMessage.ForeColor = System.Drawing.Color.Red;
-                return;
+                return false;
             }
 
-            // Verificar si el correo ya está registrado
-            if (objUser.isEmailRegistered(correo))
-            {
-                LblMessage.Text = "El correo electrónico ya está registrado. Por favor, use otro correo.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-                return;
-            }
-
-            // Generar el salt y encriptar la contraseña
-            ICryptoService cryptoService = new PBKDF2(); // Asume que tienes una clase PBKDF2 para encriptación
-            salt = cryptoService.GenerateSalt();
-            string encryptedPassword = cryptoService.Compute(contrasena, salt);
-
-            // Guardar usuario con los datos decodificados
-            bool success = objUser.saveUser(nombre, apellido, correo, encryptedPassword, salt, rol, nivelEstudios);
-
-            if (success)
-            {
-                LblMessage.Text = "Usuario guardado exitosamente.";
-                LblMessage.ForeColor = System.Drawing.Color.Green;
-                ClearForm(); // Limpiar el formulario después de guardar
-            }
-            else
-            {
-                LblMessage.Text = "Error al guardar el usuario.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-            }
+            return true;
         }
 
         // Método para validar si el correo es de Gmail
         private bool IsGmailEmail(string email)
         {
-            // Expresión regular para validar correos de Gmail
-            string pattern = @"^[a-zA-Z0-9._%+-]+@gmail\.com$";
-            return Regex.IsMatch(email, pattern);
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            // Expresión regular mejorada para Gmail
+            string pattern = @"^[a-zA-Z0-9]+(?:[._%+-][a-zA-Z0-9]+)*@gmail\.com$";
+            return Regex.IsMatch(email, pattern, RegexOptions.IgnoreCase);
         }
 
         private void ClearForm()
@@ -151,6 +194,13 @@ namespace Presentation
             TBPassword.Text = string.Empty;
             DDLRole.SelectedIndex = 0;
             DDLEducationLevel.SelectedIndex = 0;
+
+            // Limpiar mensajes
+            LblNombreMessage.Visible = false;
+            LblApellidoMessage.Visible = false;
+            LblCorreoMessage.Visible = false;
+            LblPasswordMessage.Visible = false;
+            LblMessage.Text = string.Empty;
         }
     }
 }

@@ -4,7 +4,7 @@
         /* Estilos para campos obligatorios */
         .required-field::after {
             content: " *";
-            color: #e53935; /* Rojo para destacar */
+            color: #e53935;
             font-weight: bold;
         }
         
@@ -14,6 +14,73 @@
             color: #666;
             margin-bottom: 20px;
         }
+        
+        /* Estilos para mensajes de validación */
+        .error-message {
+            color: #e53935;
+            font-size: 14px;
+            margin-top: 5px;
+            display: block;
+            transition: all 0.3s ease;
+        }
+        
+        .success-message {
+            color: #4CAF50;
+            font-size: 14px;
+            margin-top: 5px;
+            display: block;
+            transition: all 0.3s ease;
+        }
+        
+        .password-hint {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            display: block;
+        }
+        
+        /* Estilos para indicador de fortaleza de contraseña */
+        .password-strength {
+            height: 5px;
+            margin-top: 5px;
+            background-color: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s, background-color 0.3s;
+        }
+
+        /* Estilo para el placeholder */
+        ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+            color: #999;
+            font-style: italic;
+        }
+
+        ::-moz-placeholder { /* Firefox 19+ */
+            color: #999;
+            font-style: italic;
+        }
+
+        :-ms-input-placeholder { /* IE 10+ */
+            color: #999;
+            font-style: italic;
+        }
+
+        :-moz-placeholder { /* Firefox 18- */
+            color: #999;
+            font-style: italic;
+        }
+
+        /* Estilo cuando el campo está enfocado */
+        .form-control:focus::-webkit-input-placeholder {
+            color: #ddd;
+        }
+
+
     </style>
 </asp:Content>
 
@@ -24,32 +91,42 @@
         <!-- Nota sobre campos obligatorios -->
         <div class="required-note">Los campos marcados con <span style="color: #e53935; font-weight: bold;">*</span> son obligatorios</div>
         
-        <!-- Mensaje de retroalimentación -->
+        <!-- Mensaje de retroalimentación general -->
         <asp:Label ID="LblMessage" runat="server" CssClass="message"></asp:Label>
 
         <!-- Campos del formulario -->
         <div class="form-group">
             <label for="TBFirstName" class="required-field">Nombre:</label>
             <asp:TextBox ID="TBFirstName" runat="server" CssClass="form-control" aria-required="true"></asp:TextBox>
-            <asp:Label ID="LblNombreMessage" runat="server" CssClass="error-message" Visible="false" Text="El campo 'Nombre' es obligatorio."></asp:Label>
+            <asp:Label ID="LblNombreMessage" runat="server" CssClass="error-message" Visible="false"></asp:Label>
         </div>
         
         <div class="form-group">
             <label for="TBLastName" class="required-field">Apellido:</label>
             <asp:TextBox ID="TBLastName" runat="server" CssClass="form-control" aria-required="true"></asp:TextBox>
-            <asp:Label ID="LblApellidoMessage" runat="server" CssClass="error-message" Visible="false" Text="El campo 'Apellido' es obligatorio."></asp:Label>
+            <asp:Label ID="LblApellidoMessage" runat="server" CssClass="error-message" Visible="false"></asp:Label>
         </div>
-        
-        <div class="form-group">
-            <label for="TBEmail" class="required-field">Correo Electrónico:</label>
-            <asp:TextBox ID="TBEmail" runat="server" CssClass="form-control" aria-required="true"></asp:TextBox>
-            <asp:Label ID="LblCorreoMessage" runat="server" CssClass="error-message" Visible="false" Text="Por favor, ingrese un correo electrónico válido de Gmail (ejemplo@gmail.com)."></asp:Label>
-        </div>
+
+    <div class="form-group">
+        <label for="TBEmail" class="required-field">Correo Electrónico:</label>
+        <asp:TextBox ID="TBEmail" runat="server" CssClass="form-control"
+            aria-required="true" placeholder="ejemplo@gmail.com"
+            autocomplete="email"></asp:TextBox>
+        <asp:Label ID="LblCorreoMessage" runat="server" CssClass="error-message" Visible="false"></asp:Label>
+    </div>
         
         <div class="form-group">
             <label for="TBPassword" class="required-field">Contraseña:</label>
-            <asp:TextBox ID="TBPassword" runat="server" TextMode="Password" CssClass="form-control" aria-required="true"></asp:TextBox>
-            <asp:Label ID="LblPasswordMessage" runat="server" CssClass="error-message" Visible="false" Text="Por favor ingrese la contraseña del usuario."></asp:Label>
+            <asp:TextBox ID="TBPassword" runat="server" TextMode="Password" CssClass="form-control" 
+                aria-required="true" aria-describedby="passwordHelp"></asp:TextBox>
+            <!-- Barra de fortaleza de contraseña -->
+            <div class="password-strength">
+                <div id="strengthBar" class="strength-bar"></div>
+            </div>
+            <!-- Mensaje de validación -->
+            <asp:Label ID="LblPasswordMessage" runat="server" CssClass="error-message" 
+                Text="La contraseña debe tener al menos 6 caracteres."></asp:Label>
+            <small id="passwordHelp" class="password-hint">Mínimo 6 caracteres</small>
         </div>
         
         <div class="form-group">
@@ -80,27 +157,147 @@
 
         <!-- Botón de Guardar -->
         <div class="form-group" style="margin-top: 30px;">
-            <asp:Button ID="BtnSave" runat="server" Text="Guardar" OnClientClick="return validateForm();" OnClick="BtnSave_Click" CssClass="btn-primary" />
+            <asp:Button ID="BtnSave" runat="server" Text="Registrarse" OnClick="BtnSave_Click" CssClass="btn-primary" />
         </div>
     </div>
     
     <script>
-        function validateForm() {
-            // Obtener el valor del correo electrónico
+        // Validación en tiempo real de la contraseña
+        document.getElementById("<%= TBPassword.ClientID %>").addEventListener('input', function () {
+            var password = this.value;
+            var message = document.getElementById("<%= LblPasswordMessage.ClientID %>");
+            var strengthBar = document.getElementById("strengthBar");
+
+            // Validar longitud mínima
+            if (password.length > 0 && password.length < 6) {
+                message.textContent = "❌ La contraseña es muy corta (mínimo 6 caracteres)";
+                message.className = "error-message";
+                strengthBar.style.width = (password.length * 10) + "%";
+                strengthBar.style.backgroundColor = "#e53935";
+            }
+            else if (password.length >= 6) {
+                // Calcular fortaleza de la contraseña
+                var strength = calculatePasswordStrength(password);
+
+                // Actualizar mensaje y barra de fortaleza
+                if (strength < 40) {
+                    message.textContent = "⚠️ Contraseña débil";
+                    message.className = "error-message";
+                    strengthBar.style.backgroundColor = "#ff9800";
+                } else if (strength < 70) {
+                    message.textContent = "👍 Contraseña aceptable";
+                    message.className = "success-message";
+                    strengthBar.style.backgroundColor = "#ffc107";
+                } else {
+                    message.textContent = "✅ Contraseña fuerte";
+                    message.className = "success-message";
+                    strengthBar.style.backgroundColor = "#4CAF50";
+                }
+                strengthBar.style.width = strength + "%";
+            }
+            else {
+                message.textContent = "La contraseña debe tener al menos 6 caracteres.";
+                message.className = "error-message";
+                strengthBar.style.width = "0%";
+            }
+        });
+
+        // Función para calcular fortaleza de contraseña
+        function calculatePasswordStrength(password) {
+            var strength = 0;
+
+            // Longitud
+            strength += Math.min(password.length * 5, 30);
+
+            // Contiene números
+            if (password.match(/\d/)) strength += 10;
+
+            // Contiene mayúsculas y minúsculas
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength += 15;
+
+            // Contiene caracteres especiales
+            if (password.match(/[^a-zA-Z0-9]/)) strength += 15;
+
+            // No es una palabra común
+            if (!password.match(/password|123456|qwerty/i)) strength += 10;
+
+            return Math.min(strength, 100);
+        }
+
+        // Validación del formulario antes de enviar
+        document.getElementById("<%= BtnSave.ClientID %>").addEventListener('click', function (e) {
+            var password = document.getElementById("<%= TBPassword.ClientID %>").value;
             var email = document.getElementById("<%= TBEmail.ClientID %>").value;
-
-            // Expresión regular para validar correos de Gmail
             var regex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+            var isValid = true;
 
-            // Validar el correo
+            // Validar correo
             if (!regex.test(email)) {
                 alert("Por favor, ingrese un correo electrónico válido de Gmail (ejemplo@gmail.com).");
-                return false; // Evita que el formulario se envíe
+                isValid = false;
             }
 
-            // Si el correo es válido, permitir el envío del formulario
-            return true;
-        }
+            // Validar contraseña
+            if (password.length < 6) {
+                document.getElementById("<%= LblPasswordMessage.ClientID %>").textContent = "❌ La contraseña debe tener al menos 6 caracteres.";
+                document.getElementById("<%= LblPasswordMessage.ClientID %>").style.display = "block";
+                isValid = false;
+            }
+
+            if (!isValid) {
+                e.preventDefault(); // Evitar envío del formulario
+            }
+        });
+
+        // Autocompletado para correo Gmail
+        document.getElementById("<%= TBEmail.ClientID %>").addEventListener('input', function (e) {
+            var emailInput = this;
+            var value = emailInput.value.trim();
+
+            // Solo autocompletar si no contiene @
+            if (!value.includes('@') && value.length > 0) {
+                emailInput.value = value + '@gmail.com';
+
+                // Colocar el cursor antes del @gmail.com
+                var cursorPos = value.length;
+                emailInput.setSelectionRange(cursorPos, cursorPos);
+            }
+
+            // Validación visual en tiempo real
+            var message = document.getElementById("<%= LblCorreoMessage.ClientID %>");
+    if (value.includes('@') && !value.endsWith('@gmail.com')) {
+        message.textContent = "❌ Solo se permiten correos de Gmail";
+        message.style.display = "block";
+    } else {
+        message.style.display = "none";
+    }
+});
+
+// Evitar que el usuario modifique el dominio @gmail.com
+        document.getElementById("<%= TBEmail.ClientID %>").addEventListener('keydown', function (e) {
+            var emailInput = this;
+            var value = emailInput.value;
+            var cursorPos = emailInput.selectionStart;
+
+            // Si el cursor está después del @ y presiona backspace o delete
+            if ((e.key === 'Backspace' || e.key === 'Delete') &&
+                cursorPos > value.indexOf('@') && value.includes('@')) {
+                e.preventDefault();
+            }
+
+            // Si intenta pegar texto
+            if (e.ctrlKey && e.key === 'v') {
+                setTimeout(function () {
+                    if (!emailInput.value.endsWith('@gmail.com')) {
+                        var userPart = emailInput.value.split('@')[0];
+                        if (userPart) {
+                            emailInput.value = userPart + '@gmail.com';
+                        }
+                    }
+                }, 10);
+            }
+        });
+
     </script>
     
     <style type="text/css">
@@ -116,7 +313,7 @@
         
         h2 {
             text-align: center;
-            color: #1a237e; /* Azul oscuro */
+            color: #1a237e;
             margin-bottom: 30px;
         }
         
@@ -128,7 +325,7 @@
         label {
             display: block;
             margin-bottom: 8px;
-            color: #1a237e; /* Azul oscuro */
+            color: #1a237e;
             font-weight: 500;
         }
         
@@ -142,13 +339,13 @@
         }
         
         .form-control:focus {
-            border-color: #1a237e; /* Azul oscuro */
+            border-color: #1a237e;
             outline: none;
         }
         
         /* Botones */
         .btn-primary {
-            background-color: #1a237e; /* Azul oscuro */
+            background-color: #1a237e;
             color: white;
             border: none;
             padding: 12px 25px;
@@ -160,7 +357,7 @@
         }
         
         .btn-primary:hover {
-            background-color: #303f9f; /* Azul un poco más claro */
+            background-color: #303f9f;
         }
         
         /* Mensajes */
@@ -170,13 +367,6 @@
             margin-bottom: 20px;
             border-radius: 5px;
             text-align: center;
-        }
-        
-        .error-message {
-            color: #e53935;
-            font-size: 14px;
-            margin-top: 5px;
-            display: block;
         }
         
         /* Dropdowns */
