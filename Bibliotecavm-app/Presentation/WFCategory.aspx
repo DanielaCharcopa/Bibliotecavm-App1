@@ -2,9 +2,11 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+  
     <h2>Gestión de Categorías</h2>
 
   <%-- Formulario para Agregar o Editar Categoría --%>
+  
     <div>
         <asp:HiddenField ID="HFCategoryId" runat="server" />
         <%-- ID oculto para categorías --%>
