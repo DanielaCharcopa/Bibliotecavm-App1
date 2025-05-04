@@ -215,6 +215,7 @@ namespace Data
             return objData;
         }
 
+        //listar los materiales educativos
         public DataSet ListarMaterialesEducativos()
         {
             DataSet ds = new DataSet();
@@ -297,7 +298,7 @@ namespace Data
             }
             catch (Exception ex)
             {
-                // Manejo de errores (puedes personalizar según tus necesidades)
+                // Manejo de errores 
                 throw new Exception($"Error al obtener material por ID: {ex.Message}");
             }
             finally
