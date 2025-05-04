@@ -26,6 +26,8 @@ namespace Data
             objPer.closeConnection();
             return objData;
         }
+
+        // Método para mostrar por ddl las Editoriales
         public DataSet showEditorialsDDL()
         {
             MySqlDataAdapter objAdapter = new MySqlDataAdapter();
