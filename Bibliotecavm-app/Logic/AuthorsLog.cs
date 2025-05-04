@@ -16,8 +16,7 @@ namespace Logic
         {
             return objAut.showAuthors();
         }
-
-
+        
         // Método para guardar un nuevo autor, recibe nombre, apellido y municipio
         public bool saveAuthor(string _nombre, string _apellido, string _municipio)
         {
