@@ -37,18 +37,5 @@ namespace Logic
             return objMatEdu.deleteMaterialEducativo(_idMaterial);
         }
 
-        public void ActualizarDuracionVisita(int visitaId, string duracion)
-        {
-            try
-            {
-                // Actualizar la duración de la visita
-                objMatEdu.ActualizarDuracionVisita(visitaId, duracion);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al actualizar la duración de la visita: " + ex.Message);
-            }
-        }
-
     }
 }
