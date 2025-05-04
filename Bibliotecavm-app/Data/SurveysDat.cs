@@ -113,7 +113,6 @@ namespace Data
 
         // Borra una encuesta de la base de datos.
 
-
         public bool deleteSurvey(int surveyId)
         {
             bool executed = false;
@@ -127,7 +126,7 @@ namespace Data
 
             try
             {
-                executed = objDeleteCmd.ExecuteNonQuery() == 1;
+                executed = objDeleteCmd.ExecuteNonQuery() > 0; // Cambiado aquí
             }
             catch (Exception ex)
             {
