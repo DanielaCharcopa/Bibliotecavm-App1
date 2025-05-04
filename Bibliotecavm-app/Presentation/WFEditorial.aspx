@@ -4,6 +4,8 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <h2>Gestión de Editoriales</h2>
 
+    <%-- Formulario para agregar o editar Editorial --%>
+
     <div>
         <asp:HiddenField ID="HFEditorialId" runat="server" />
         <asp:Label ID="LblName" runat="server" Text="Nombre:"></asp:Label>
@@ -31,6 +33,7 @@
             OnSelectedIndexChanged="GVEditorial_SelectedIndexChanged"
            >
             <Columns>
+
                 <%--<asp:BoundField DataField="edi_id" HeaderText="ID" />--%>
                 <asp:BoundField DataField="edi_nombre" HeaderText="Nombre" />
                 <asp:BoundField DataField="edi_ciudad" HeaderText="Ciudad" />

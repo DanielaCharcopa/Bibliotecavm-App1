@@ -34,7 +34,9 @@ namespace Presentation
             string email = TBEmail.Text;
 
             if (!string.IsNullOrWhiteSpace(name) && !string.IsNullOrWhiteSpace(city) && !string.IsNullOrWhiteSpace(phone) && !string.IsNullOrWhiteSpace(email))
+           
             {
+             
                 bool executed = objEdit.saveEditorial(name, city, phone, email);
 
                 if (executed)
