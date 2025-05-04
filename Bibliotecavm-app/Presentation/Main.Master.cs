@@ -10,16 +10,7 @@ namespace Presentation
         {
             if (!IsPostBack)
             {
-                //if (Session["UserId"] != null)
-                //{
-                //    lblUsername.Text = "Bienvenido, " + Session["Username"].ToString();
-                //    lnkLogout.Visible = true;
-                //}
-                //else
-                //{
-                //    lblUsername.Text = "Bienvenido, Invitado";
-                //    lnkLogout.Visible = false;
-                //}
+                 
             }
         }
 
