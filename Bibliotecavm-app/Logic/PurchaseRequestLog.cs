@@ -19,7 +19,7 @@ namespace Logic
         {
             return objPur.showPurchaseRequestDDL();
         }
-
+       
         // Método para guardar una nueva solicitud de compra
         public bool savePurchaseRequest(string ticket, DateTime fecha, int userId, int cantidad, int matId, out string errorMessage)
         {
