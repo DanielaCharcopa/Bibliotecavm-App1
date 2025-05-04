@@ -52,12 +52,13 @@ namespace Presentation
             }
         }
 
+
         // Cargar visitas del usuario logueado
         private void LoadUserVisits()
         {
             try
             {
-                int userId = GetLoggedUserId(); // Asegurarse de obtenerlo siempre de la sesión
+                int userId = GetLoggedUserId(); //  obtener siempre de la sesión
                 if (userId == 0)
                 {
                     LblMsj.Text = "Error: Usuario no identificado.";
