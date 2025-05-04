@@ -30,6 +30,7 @@ namespace Presentation
 
         private void LoadRequests()
         {
+
             try
             {
                 int loggedInUserId = Convert.ToInt32(Session["UserID"]);
