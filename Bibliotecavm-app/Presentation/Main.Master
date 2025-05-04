@@ -207,10 +207,11 @@
                     <div class="logo">
                         <a href="Home.aspx" aria-label="Ir a la página de inicio">
                             <img class="logo-img" src="Recursos/Icons/Escudo.ico" alt="Escudo del Cabildo de Gaumbía">
+                              <img class="logo-img" src="Recursos/Icons/AISO.ico" alt="Escudo del Movimieto de Autoridades Indígenas del Sur Occidente">
                             <img class="logo-img" src="Recursos/Icons/Sin-fondo.ico" alt="Logo de Biblioteca Virtual Misak">
                         </a>
-                        <h3 style="line-height: 1.2;">Biblioteca Virtual Misak Web
-                        <span style="display: block; font-size: 0.5em; margin-top: -0.3em;">Asha mϴrϴp paya kusrep puinuk (AshMϴr)</span>
+                        <h3 style="line-height: 1.2;">Biblioteca Virtual Misak 
+                            <span style="display: block; font-size: 0.5em; margin-top: -0.3em;">Asha mϴrϴp paya kusrep puinuk (AshMϴr)</span>
                         </h3>
 
                     </div>
@@ -282,5 +283,7 @@
             });
         });
     </script>
+
 </body>
+
 </html>
