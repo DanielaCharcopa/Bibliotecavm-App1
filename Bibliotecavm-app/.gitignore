@@ -1,0 +1,23 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.cache
+*.db
+*.log
+
+# Build results
+bin/
+obj/
+*.dll
+*.exe
+
+# ASP.NET
+*.Publish.xml
+*.psess
+*.vsp
+
+# Other
+*.pidb
+*.sdf
+*.DS_Store
