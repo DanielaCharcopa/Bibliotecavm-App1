@@ -127,31 +127,5 @@ namespace Data
 
             return executed; // Devuelve true si se ejecutó correctamente
         }
-
-        public void ActualizarDuracionVisita(int visitaId, string duracion)
-        {
-            MySqlCommand objUpdateCmd = new MySqlCommand();
-            objUpdateCmd.Connection = objPer.openConnection();
-            objUpdateCmd.CommandText = "procActualizarDuracionVisita"; // Nombre del procedimiento almacenado
-            objUpdateCmd.CommandType = CommandType.StoredProcedure;
-
-            // Parámetros del procedimiento almacenado
-            objUpdateCmd.Parameters.Add("v_visita_id", MySqlDbType.Int32).Value = visitaId;
-            objUpdateCmd.Parameters.Add("v_duracion", MySqlDbType.Time).Value = TimeSpan.Parse(duracion);
-
-            try
-            {
-                objUpdateCmd.ExecuteNonQuery(); // Ejecutar el procedimiento almacenado
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al actualizar la duración de la visita: " + ex.Message);
-            }
-            finally
-            {
-                objPer.closeConnection(); // Cierra la conexión          
-            }
-
-        }
     }
 }
