@@ -1,5 +1,6 @@
 ﻿using Logic;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Web.UI.WebControls;
 
@@ -21,18 +22,17 @@ namespace Presentation
             {
                 // Obtener el ID del usuario logueado
                 _usu_id = GetLoggedUserId();
-
-                // Mostrar el nombre del usuario logueado en un Label
-                //ShowLoggedInUserName();
-
+                ConfigureInitialGridView();
                 // Cargar estadísticas
                 LoadStatistics();
                 LoadUserVisits();
                 LoadSurveyQuestions();
 
+
+
             }
         }
-        // Método para cargar el dropdown de preguntas
+
         private void LoadSurveyQuestions()
         {
             try
@@ -44,14 +44,13 @@ namespace Presentation
                 ddlSurveyQuestions.DataBind();
                 ddlSurveyQuestions.Items.Insert(0, new ListItem("-- Seleccione una pregunta --", "0"));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                lblSurveyMessage.Text = "Error al cargar preguntas: " + ex.Message;
-                lblSurveyMessage.ForeColor = System.Drawing.Color.Red;
+                //lblSurveyMessage.Text = "Error al cargar preguntas: " + ex.Message;
+                //lblSurveyMessage.CssClass = "message error-message";
             }
         }
 
-        // Método para cargar estadísticas de una pregunta seleccionada
         private void LoadSurveyStatistics(int questionId)
         {
             try
@@ -64,31 +63,28 @@ namespace Presentation
 
                     // Mostrar los resultados
                     lblQuestionText.Text = row["Pregunta"].ToString();
-                    lblYesCount.Text = row["Total Sí"].ToString();
-                    lblNoCount.Text = row["Total No"].ToString();
                     lblTotalResponses.Text = row["Total Respuestas"].ToString();
-                    lblYesPercent.Text = row["Porcentaje Sí"].ToString() + "%";
-                    lblNoPercent.Text = row["Porcentaje No"].ToString() + "%";
+                    lblYesPercent.Text = row["Porcentaje Sí"].ToString() + "% (" + row["Total Sí"].ToString() + ")";
+                    lblNoPercent.Text = row["Porcentaje No"].ToString() + "% (" + row["Total No"].ToString() + ")";
 
                     pnlSurveyStats.Visible = true;
-                    lblSurveyMessage.Text = "";
+
                 }
                 else
                 {
                     pnlSurveyStats.Visible = false;
-                    lblSurveyMessage.Text = "No hay respuestas para esta pregunta.";
-                    lblSurveyMessage.ForeColor = System.Drawing.Color.Blue;
+                    //lblSurveyMessage.Text = "No hay respuestas para esta pregunta.";
+                    //lblSurveyMessage.CssClass = "message info-message";
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 pnlSurveyStats.Visible = false;
-                lblSurveyMessage.Text = "Error al cargar estadísticas: " + ex.Message;
-                lblSurveyMessage.ForeColor = System.Drawing.Color.Red;
+                //lblSurveyMessage.Text = "Error al cargar estadísticas: " + ex.Message;
+                //lblSurveyMessage.CssClass = "message error-message";
             }
         }
 
-        // Evento cuando se selecciona una pregunta del dropdown
         protected void ddlSurveyQuestions_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (ddlSurveyQuestions.SelectedValue != "0")
@@ -99,32 +95,16 @@ namespace Presentation
             else
             {
                 pnlSurveyStats.Visible = false;
-                lblSurveyMessage.Text = "Seleccione una pregunta para ver las estadísticas";
-                lblSurveyMessage.ForeColor = System.Drawing.Color.Blue;
+                //lblSurveyMessage.Text = "Seleccione una pregunta para ver las estadísticas";
+                //lblSurveyMessage.CssClass = "message info-message";
             }
         }
 
-
-        // Obtener el ID del usuario logueado
         private int GetLoggedUserId()
         {
-            return Convert.ToInt32(Session["UserID"]); // ⚠️ Ajusta esto según tu autenticación
+            return Convert.ToInt32(Session["UserID"]);
         }
 
-        // Mostrar el nombre del usuario logueado en un Label
-        //private void ShowLoggedInUserName()
-        //{
-        //    if (Session["UserName"] != null)
-        //    {
-        //        LblUsuario.Text = Session["UserName"].ToString(); // Asignar el nombre al Label
-        //    }
-        //    else
-        //    {
-        //        LblUsuario.Text = "Usuario no identificado"; // Mensaje por defecto si no hay nombre
-        //    }
-        //}
-
-        // Cargar estadísticas
         private void LoadStatistics()
         {
             try
@@ -138,69 +118,71 @@ namespace Presentation
                 // Obtener visitas por estudiantes
                 lblVisitsByStudents.Text = objVis.countVisitsByStudent().ToString();
 
-                // Obtener estadísticas de materiales y visitas
-                gvMaterialVisitStats.DataSource = objVis.GetMaterialAndVisitStats();
-                gvMaterialVisitStats.DataBind();
+                // Obtener estadísticas de materiales
+                DataSet dsMateriales = objVis.ListarMaterialesEducativos();
+                gvMaterialesEducativos.DataSource = dsMateriales;
+                gvMaterialesEducativos.DataBind();
 
                 // Obtener materiales más visitados
-                gvMostVisitedMaterials.DataSource = objVis.GetMostVisitedMaterials();
+                DataSet dsMostVisited = objVis.GetMostVisitedMaterials();
+                gvMostVisitedMaterials.DataSource = dsMostVisited;
                 gvMostVisitedMaterials.DataBind();
 
                 // Obtener visitas del usuario logueado
-                DataSet ds = objVis.showVisits();
-                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-                {
-                    gvUserVisits.DataSource = ds.Tables[0];
-                    gvUserVisits.DataBind();
-                }
-                else
-                {
-                    LblMsj.Text = "No hay visitas registradas para este usuario.";
-                    gvUserVisits.DataSource = null;
-                    gvUserVisits.DataBind();
-                }
+                LoadUserVisits();
             }
             catch (Exception ex)
             {
                 LblMsj.Text = "Error al cargar estadísticas: " + ex.Message;
+                LblMsj.CssClass = "message error-message";
+                LblMsj.Visible = true;
             }
         }
-        private void LoadUserVisits(string emailFilter = "")
+
+
+
+        private void LoadUserVisits(string email = "", DateTime? fechaInicio = null, DateTime? fechaFin = null)
         {
             try
             {
                 DataSet ds;
 
-                if (string.IsNullOrEmpty(emailFilter))
+                // 1. Verificar si hay filtros
+                if (string.IsNullOrEmpty(email))
                 {
-                    ds = objVis.showVisits(); // Cargar todas las visitas
+                    // Cargar todas las visitas (SP procSelectVisits)
+                    ds = objVis.showVisits();
                 }
                 else
                 {
-                    ds = objVis.searchVisitsByEmail(emailFilter); // Buscar por correo
+                    // Si hay filtro de email o fechas, usar SearchVisitsByDateRange (si existe)
+                    ds = objVis.SearchVisitsByDateRange(email, fechaInicio, fechaFin);
                 }
 
+                // 2. Verificar si hay datos
                 if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                 {
-                    gvUserVisits.DataSource = ds.Tables[0];
-                    gvUserVisits.DataBind();
+                    gvUserVisits.DataSource = ds; // Usar el DataSet completo (no solo Tables[0])
+                    gvUserVisits.DataBind(); // Aplicará paginación automáticamente
+
                     lblSearchMessage.Text = $"Mostrando {ds.Tables[0].Rows.Count} registros";
-                    lblSearchMessage.ForeColor = System.Drawing.Color.Blue;
+                    lblSearchMessage.CssClass = "message info-message";
                 }
                 else
                 {
                     gvUserVisits.DataSource = null;
                     gvUserVisits.DataBind();
-                    lblSearchMessage.Text = string.IsNullOrEmpty(emailFilter)
+
+                    lblSearchMessage.Text = string.IsNullOrEmpty(email)
                         ? "No hay visitas registradas"
-                        : $"No se encontraron visitas para '{emailFilter}'";
-                    lblSearchMessage.ForeColor = System.Drawing.Color.Red;
+                        : "No se encontraron resultados con los filtros aplicados";
+                    lblSearchMessage.CssClass = "message info-message";
                 }
             }
             catch (Exception ex)
             {
                 lblSearchMessage.Text = "Error al cargar visitas: " + ex.Message;
-                lblSearchMessage.ForeColor = System.Drawing.Color.Red;
+                lblSearchMessage.CssClass = "message error-message";
             }
         }
         protected void btnSearch_Click(object sender, EventArgs e)
@@ -208,87 +190,234 @@ namespace Presentation
             try
             {
                 string email = txtSearchEmail.Text.Trim();
-
                 DateTime? fechaInicio = null;
-                if (!string.IsNullOrEmpty(txtFechaInicio.Text))
-                {
-                    fechaInicio = DateTime.Parse(txtFechaInicio.Text);
-                }
-
                 DateTime? fechaFin = null;
+
+                if (!string.IsNullOrEmpty(txtFechaInicio.Text))
+                    fechaInicio = DateTime.Parse(txtFechaInicio.Text);
+
                 if (!string.IsNullOrEmpty(txtFechaFin.Text))
-                {
                     fechaFin = DateTime.Parse(txtFechaFin.Text);
-                }
 
-                // Validación adicional de fechas
-                if (fechaInicio.HasValue && fechaFin.HasValue && fechaInicio > fechaFin)
-                {
-                    throw new ArgumentException("La fecha de inicio no puede ser mayor a la fecha fin");
-                }
+                DataSet ds = GetFilteredDataSet(email, fechaInicio, fechaFin);
 
-                // Guardar filtros en ViewState
-                ViewState["CurrentEmailFilter"] = email;
-                ViewState["CurrentFechaInicio"] = fechaInicio;
-                ViewState["CurrentFechaFin"] = fechaFin;
+                // 1. Configurar el GridView ANTES de asignar los datos
+                ConfigureGridView(ds);
 
-                DataSet ds = objVis.SearchVisitsByDateRange(email, fechaInicio, fechaFin);
+                // 2. Asignar el DataSource
+                gvUserVisits.DataSource = ds;
 
+                // 3. Hacer el DataBind
+                gvUserVisits.DataBind();
+
+                // Mostrar mensaje adecuado
                 if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                 {
-                    gvUserVisits.DataSource = ds.Tables[0];
-                    gvUserVisits.DataBind();
-                    lblSearchMessage.Text = $"Mostrando {ds.Tables[0].Rows.Count} registros filtrados";
-                    lblSearchMessage.ForeColor = System.Drawing.Color.Blue;
+                    lblSearchMessage.Text = $"Se encontraron {ds.Tables[0].Rows.Count} registros";
+                    lblSearchMessage.CssClass = "message info-message";
                 }
                 else
                 {
+                    lblSearchMessage.Text = "No se encontraron resultados con los filtros aplicados";
+                    lblSearchMessage.CssClass = "message info-message";
+
+                    // Limpiar el GridView si no hay resultados
                     gvUserVisits.DataSource = null;
                     gvUserVisits.DataBind();
-                    lblSearchMessage.Text = "No se encontraron resultados con los filtros aplicados";
-                    lblSearchMessage.ForeColor = System.Drawing.Color.Red;
                 }
             }
             catch (Exception ex)
             {
-                lblSearchMessage.Text = "Error al filtrar: " + ex.Message;
-                lblSearchMessage.ForeColor = System.Drawing.Color.Red;
+                lblSearchMessage.Text = "Error al buscar: " + ex.Message;
+                lblSearchMessage.CssClass = "message error-message";
+
+                // Limpiar el GridView en caso de error
+                gvUserVisits.DataSource = null;
+                gvUserVisits.DataBind();
+            }
+            finally
+            {
+                lblSearchMessage.Visible = true;
             }
         }
 
-        protected void gvUserVisits_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        private void ConfigureGridView(DataSet ds)
         {
-            gvUserVisits.PageIndex = e.NewPageIndex;
-            // Recuperar filtros del ViewState
-            string email = ViewState["CurrentEmailFilter"]?.ToString() ?? "";
-            DateTime? fechaInicio = ViewState["CurrentFechaInicio"] as DateTime?;
-            DateTime? fechaFin = ViewState["CurrentFechaFin"] as DateTime?;
+            // Limpiar columnas existentes
+            gvUserVisits.Columns.Clear();
 
-            DataSet ds = objVis.SearchVisitsByDateRange(email, fechaInicio, fechaFin);
-            gvUserVisits.DataSource = ds;
-            gvUserVisits.DataBind();
+            // Verificar si hay datos para determinar qué columnas están disponibles
+            bool hasData = ds != null && ds.Tables.Count > 0 && ds.Tables[0].Columns.Count > 0;
+
+            // Lista de posibles columnas en el orden deseado
+            var columnDefinitions = new List<GridViewColumn>
+    {
+        new GridViewColumn { DataField = "usuario_nombre", HeaderText = "Usuario" },
+        new GridViewColumn { DataField = "usuario_correo", HeaderText = "Correo" },
+        new GridViewColumn { DataField = "material_titulo", HeaderText = "Material" },
+        new GridViewColumn {
+            DataField = "vis_fecha_ingreso",
+            HeaderText = "Fecha Visita",
+            DataFormatString = "{0:dd/MM/yyyy HH:mm}"
+        },
+        new GridViewColumn {
+            DataField = "vis_duracion",
+            HeaderText = "Duración (min)",
+            DataFormatString = "{0} min"
+        },
+        // Columnas alternativas que pueden venir de diferentes consultas
+        new GridViewColumn { DataField = "email", HeaderText = "Correo" },
+        new GridViewColumn {
+            DataField = "visit_date",
+            HeaderText = "Fecha Visita",
+            DataFormatString = "{0:dd/MM/yyyy HH:mm}"
+        },
+        new GridViewColumn {
+            DataField = "visit_duration",
+            HeaderText = "Duración (min)",
+            DataFormatString = "{0} min"
+        },
+        new GridViewColumn { DataField = "material_name", HeaderText = "Material" }
+    };
+
+            // Agregar solo las columnas que existen en los datos
+            foreach (var column in columnDefinitions)
+            {
+                if (!hasData || ds.Tables[0].Columns.Contains(column.DataField))
+                {
+                    var boundField = new BoundField
+                    {
+                        DataField = column.DataField,
+                        HeaderText = column.HeaderText,
+                        HtmlEncode = false
+                    };
+
+                    if (!string.IsNullOrEmpty(column.DataFormatString))
+                    {
+                        boundField.DataFormatString = column.DataFormatString;
+                    }
+
+                    gvUserVisits.Columns.Add(boundField);
+                }
+            }
+
+            gvUserVisits.AutoGenerateColumns = false;
         }
 
+        // Clase auxiliar para definir columnas
+        public class GridViewColumn
+        {
+            public string DataField { get; set; }
+            public string HeaderText { get; set; }
+            public string DataFormatString { get; set; }
+        }
+
+        private void ConfigureInitialGridView()
+        {
+            gvUserVisits.Columns.Clear();
+
+            // Definir columnas en el orden exacto que necesitas
+            gvUserVisits.Columns.Add(new BoundField
+            {
+                DataField = "usuario_nombre",
+                HeaderText = "Usuario"
+            });
+
+            gvUserVisits.Columns.Add(new BoundField
+            {
+                DataField = "usuario_correo",
+                HeaderText = "Correo"
+            });
+
+            gvUserVisits.Columns.Add(new BoundField
+            {
+                DataField = "material_titulo",
+                HeaderText = "Material"
+            });
+
+            gvUserVisits.Columns.Add(new BoundField
+            {
+                DataField = "vis_fecha_ingreso",
+                HeaderText = "Fecha Visita",
+                DataFormatString = "{0:dd/MM/yyyy HH:mm}",
+                HtmlEncode = false
+            });
+
+            gvUserVisits.Columns.Add(new BoundField
+            {
+                DataField = "vis_duracion",
+                HeaderText = "Duración (min)"
+            });
+
+            gvUserVisits.AutoGenerateColumns = false;
+        }
         protected void btnClearSearch_Click(object sender, EventArgs e)
         {
-            // Limpiar controles
-            txtSearchEmail.Text = "";
-            txtFechaInicio.Text = "";
-            txtFechaFin.Text = "";
+            try
+            {
+                txtSearchEmail.Text = "";
+                txtFechaInicio.Text = "";
+                txtFechaFin.Text = "";
 
-            // Limpiar ViewState
-            ViewState["CurrentEmailFilter"] = "";
-            ViewState["CurrentFechaInicio"] = null;
-            ViewState["CurrentFechaFin"] = null;
+                // Configurar las columnas antes de cargar los datos
+                ConfigureInitialGridView();
 
-            // Recargar datos sin filtros
-            LoadUserVisits();
-            lblSearchMessage.Text = "Mostrando todas las visitas";
-            lblSearchMessage.ForeColor = System.Drawing.Color.Blue;
+                DataSet ds = objVis.showVisits();
+                gvUserVisits.DataSource = ds;
+                gvUserVisits.DataBind();
+
+                lblSearchMessage.Text = "Mostrando todas las visitas";
+                lblSearchMessage.CssClass = "message info-message";
+            }
+            catch (Exception ex)
+            {
+                lblSearchMessage.Text = "Error al limpiar la búsqueda: " + ex.Message;
+                lblSearchMessage.CssClass = "message error-message";
+            }
         }
-        // Nuevo método para cargar estadísticas de respuestas a encuestas
+        protected void gvUserVisits_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            try
+            {
+                gvUserVisits.PageIndex = e.NewPageIndex;
 
+                string email = txtSearchEmail.Text.Trim();
+                DateTime? fechaInicio = null;
+                DateTime? fechaFin = null;
 
+                if (!string.IsNullOrEmpty(txtFechaInicio.Text))
+                    fechaInicio = DateTime.Parse(txtFechaInicio.Text);
+
+                if (!string.IsNullOrEmpty(txtFechaFin.Text))
+                    fechaFin = DateTime.Parse(txtFechaFin.Text);
+
+                DataSet ds = GetFilteredDataSet(email, fechaInicio, fechaFin);
+
+                // Configurar el GridView con el orden correcto
+                ConfigureGridView(ds);
+
+                gvUserVisits.DataSource = ds;
+                gvUserVisits.DataBind();
+            }
+            catch (Exception ex)
+            {
+                lblSearchMessage.Text = "Error al cambiar página: " + ex.Message;
+                lblSearchMessage.CssClass = "message error-message";
+            }
+        }
+
+        private DataSet GetFilteredDataSet(string email, DateTime? fechaInicio, DateTime? fechaFin)
+        {
+            if (!string.IsNullOrEmpty(email) && !fechaInicio.HasValue && !fechaFin.HasValue)
+                return objVis.searchVisitsByEmail(email);
+
+            if (string.IsNullOrEmpty(email) && (fechaInicio.HasValue || fechaFin.HasValue))
+                return objVis.SearchVisitsByDateRange(null, fechaInicio, fechaFin);
+
+            if (!string.IsNullOrEmpty(email) && (fechaInicio.HasValue || fechaFin.HasValue))
+                return objVis.SearchVisitsByDateRange(email, fechaInicio, fechaFin);
+
+            return objVis.showVisits();
+        }
     }
 }
-

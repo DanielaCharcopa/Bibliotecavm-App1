@@ -69,15 +69,6 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.Label lblQuestionText;
 
         /// <summary>
-        /// Control lblYesCount.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblYesCount;
-
-        /// <summary>
         /// Control lblYesPercent.
         /// </summary>
         /// <remarks>
@@ -85,15 +76,6 @@ namespace Presentation
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblYesPercent;
-
-        /// <summary>
-        /// Control lblNoCount.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblNoCount;
 
         /// <summary>
         /// Control lblNoPercent.
@@ -114,22 +96,22 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.Label lblTotalResponses;
 
         /// <summary>
-        /// Control lblSurveyMessage.
+        /// Control Label1.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblSurveyMessage;
+        protected global::System.Web.UI.WebControls.Label Label1;
 
         /// <summary>
-        /// Control gvMaterialVisitStats.
+        /// Control gvMaterialesEducativos.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvMaterialVisitStats;
+        protected global::System.Web.UI.WebControls.GridView gvMaterialesEducativos;
 
         /// <summary>
         /// Control gvMostVisitedMaterials.
@@ -174,7 +156,7 @@ namespace Presentation
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSearch;
+        protected global::System.Web.UI.WebControls.LinkButton btnSearch;
 
         /// <summary>
         /// Control btnClearSearch.
@@ -183,7 +165,7 @@ namespace Presentation
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnClearSearch;
+        protected global::System.Web.UI.WebControls.LinkButton btnClearSearch;
 
         /// <summary>
         /// Control gvUserVisits.
