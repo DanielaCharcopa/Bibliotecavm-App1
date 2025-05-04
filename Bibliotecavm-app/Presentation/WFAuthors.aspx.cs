@@ -1,12 +1,10 @@
-
-﻿using Logic;  
+using Logic;
 using System;
 using System.Data;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml.Linq;
-
 
 namespace Presentation
 {
@@ -57,14 +55,7 @@ namespace Presentation
             TBApellido.Text = HttpUtility.HtmlDecode(row.Cells[2].Text.Trim());
             TBMunicipio.Text = HttpUtility.HtmlDecode(row.Cells[3].Text.Trim());
 
-
-
-
-
-
-
-
-        }
+       }
 
         private void clear()
         {
@@ -110,7 +101,6 @@ namespace Presentation
                 LblMsj.ForeColor = System.Drawing.Color.Red;
             }
         }
-
         protected void BtnUpdate_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(HFAuthorsId.Value) && int.TryParse(HFAuthorsId.Value, out int id))
@@ -137,8 +127,6 @@ namespace Presentation
                 LblMessage.Text = "Error: No se ha seleccionado una editorial válida para actualizar.";
             }
 
-
-
         }
 
         protected void BtnDelete_Click(object sender, EventArgs e)
@@ -163,10 +151,6 @@ namespace Presentation
                 LblMessage.Text = "Error: No se ha seleccionado un actor válido para eliminar.";
             }
         }
-
-
-
-
 
     }
 }
