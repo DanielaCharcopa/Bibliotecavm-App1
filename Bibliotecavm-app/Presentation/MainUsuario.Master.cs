@@ -6,12 +6,17 @@ namespace Presentation
 {
     public partial class MainUsuario : System.Web.UI.MasterPage
     {
+        public string CurrentPage { get; private set; }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
+                // Determinar la página actual para resaltar en el menú
+                CurrentPage = System.IO.Path.GetFileNameWithoutExtension(Request.Url.AbsolutePath);
+
                 // Verificar si el usuario está autenticado
-                if (Session["UserRole"] != null)
+                if (Session["UserRole"] != null && Session["Username"] != null)
                 {
                     string userRole = Session["UserRole"].ToString();
 
@@ -19,30 +24,27 @@ namespace Presentation
                     switch (userRole)
                     {
                         case "Administrador":
-                            //pnlAdmin.Visible = true;
-                            pnlDocente.Visible = false;
-                            pnlEstudiante.Visible = false;
+                            // Redirigir a la página de admin si es administrador
+                            Response.Redirect("~/WFStatisticReport2.aspx");
                             break;
                         case "Docente":
-                            //pnlAdmin.Visible = false;
                             pnlDocente.Visible = true;
                             pnlEstudiante.Visible = false;
                             break;
                         case "Estudiante":
-                            //pnlAdmin.Visible = false;
                             pnlDocente.Visible = false;
                             pnlEstudiante.Visible = true;
                             break;
                         default:
                             // Si no tiene un rol válido, ocultar todos los paneles
-                            //pnlAdmin.Visible = false;
                             pnlDocente.Visible = false;
                             pnlEstudiante.Visible = false;
                             break;
                     }
 
                     // Mostrar el nombre del usuario
-                    lblUsername.Text = "Bienvenido, " + Session["Username"].ToString();
+                    lblUsername.Text = "Bienvenid@, " + Session["Username"].ToString();
+                    lblUsernameMobile.Text = "Bienvenid@, " + Session["Username"].ToString();
                 }
                 else
                 {
@@ -66,8 +68,29 @@ namespace Presentation
                 Response.Cookies.Add(authCookie);
             }
 
+            // Limpiar caché del navegador
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.Cache.SetExpires(DateTime.UtcNow.AddHours(-1));
+            Response.Cache.SetNoStore();
+
             // Redirigir a la página de inicio de sesión
             Response.Redirect("~/Default.aspx");
+        }
+
+        // Método para verificar si la página actual está en un submenú
+        public bool IsInSubmenu(string pageNames)
+        {
+            if (string.IsNullOrEmpty(pageNames)) return false;
+
+            string[] pages = pageNames.Split('|');
+            foreach (string page in pages)
+            {
+                if (CurrentPage.Equals(page, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
