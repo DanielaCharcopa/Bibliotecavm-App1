@@ -105,8 +105,13 @@
             color: white;
         }
         
-        /* Estilos para la paginación */
-        .pagination a, .pagination span {
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        /* Estilos para la paginación (estilo idéntico al que te gusta) */
+        .pagination a {
             padding: 6px 12px;
             margin: 0 3px;
             border: 1px solid #ddd;
@@ -114,14 +119,38 @@
             color: #007bff;
         }
         
-        .pagination a:hover {
-            background-color: #f1f1f1;
-        }
-        
-        .pagination .active {
+        .pagination span {
+            padding: 6px 12px;
+            margin: 0 3px;
+            border: 1px solid #007bff;
             background-color: #007bff;
             color: white;
-            border-color: #007bff;
+        }
+        
+        /* Estilos para el estado del usuario */
+        .status-active {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .status-inactive {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .status-control {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .edit-mode {
+            background-color: #fff3cd;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #ffc107;
         }
     </style>
 
@@ -146,7 +175,17 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="form-container">
-        <h2>Gestión de Usuarios</h2>
+        <h3>Gestión de Usuarios</h3>
+        
+        <%--Panel de modo edición--%>
+        <asp:Panel ID="PanelEditMode" runat="server" CssClass="edit-mode" Visible="false">
+            <strong>Modo Edición:</strong> Está editando un usuario existente. 
+            Use <strong>Actualizar</strong> para guardar cambios o 
+            <asp:LinkButton ID="LBCancelEdit" runat="server" OnClick="LBCancelEdit_Click" CssClass="btn btn-sm btn-secondary">
+                Cancelar
+            </asp:LinkButton> para volver al modo nuevo usuario.
+        </asp:Panel>
+        
         <asp:Label ID="LblMessage" runat="server" CssClass="message"></asp:Label>
 
         <%--Campo oculto para almacenar el ID del usuario seleccionado--%>
@@ -156,32 +195,27 @@
         <div>
             <label for="TBFirstName">Nombre:</label>
             <asp:TextBox ID="TBFirstName" runat="server" CssClass="form-control"></asp:TextBox>
-            <%-- Mensaje de validación para el nombre --%>
             <asp:Label ID="LblNombreMessage" runat="server" CssClass="error-message" Visible="false" Text="El campo 'Nombre' es obligatorio."></asp:Label>
         </div>
         <div>
             <label for="TBLastName">Apellido:</label>
             <asp:TextBox ID="TBLastName" runat="server" CssClass="form-control"></asp:TextBox>
-            <%-- Mensaje de validación para el apellido --%>
             <asp:Label ID="LblApellidoMessage" runat="server" CssClass="error-message" Visible="false" Text="El campo 'Apellido' es obligatorio."></asp:Label>
         </div>
         <div>
             <label for="TBEmail">Correo Electrónico:</label>
             <asp:TextBox ID="TBEmail" runat="server" CssClass="form-control"></asp:TextBox>
-            <%-- Mensaje de validación para el correo --%>
             <asp:Label ID="LblCorreoMessage" runat="server" CssClass="error-message" Visible="false" Text="Por favor, ingrese un correo electrónico válido de Gmail (ejemplo@gmail.com)."></asp:Label>
         </div>
         <div>
             <label for="TBPassword">Contraseña:</label>
             <asp:TextBox ID="TBPassword" runat="server" TextMode="Password" CssClass="form-control"></asp:TextBox>
-            <%-- Mensaje de validación para la contraseña --%>
             <asp:Label ID="LblPasswordMessage" runat="server" CssClass="error-message" Visible="false" Text="Por favor ingrese la contraseña del usuario."></asp:Label>
         </div>
         <div>
             <label for="DDLRole">Rol:</label>
             <asp:DropDownList ID="DDLRole" runat="server" CssClass="form-control">
                 <asp:ListItem Text="Seleccione un rol" Value="" />
-                <%-- La opción "Administrador" se agregará dinámicamente en el código C# --%>
                 <asp:ListItem Text="Docente" Value="Docente" />
                 <asp:ListItem Text="Estudiante" Value="Estudiante" />
             </asp:DropDownList>
@@ -202,34 +236,60 @@
                 <asp:ListItem Text="Postdoctorado" Value="Postdoctorado" />
             </asp:DropDownList>
         </div>
+        
+        <%--Control de estado del usuario--%>
+        <div class="status-control">
+            <label>Estado del Usuario:</label>
+            <asp:DropDownList ID="DDLEstado" runat="server" CssClass="form-control">
+                <asp:ListItem Text="Activo" Value="Activo" Selected="True" />
+                <asp:ListItem Text="Inactivo" Value="Inactivo" />
+            </asp:DropDownList>
+        </div>
 
         <%--Botones de acción--%>
         <div style="margin-top: 20px;">
             <asp:Button ID="BtnSave" runat="server" Text="Guardar" OnClientClick="return validateForm();" OnClick="BtnSave_Click" CssClass="btn btn-primary" />
             <asp:Button ID="BtnUpdate" runat="server" Text="Actualizar" OnClick="BtnUpdate_Click" CssClass="btn btn-warning" />
-            <asp:Button ID="BtnDelete" runat="server" Text="Eliminar" OnClick="BtnDelete_Click" CssClass="btn btn-danger" />
+            <asp:Button ID="BtnNew" runat="server" Text="Nuevo" OnClick="BtnNew_Click" CssClass="btn btn-info" />
+           
         </div>
     </div>
-
+    
     <%--Buscar usuarios por correo--%>
     <div class="form-group" style="margin-top: 20px;">
         <label for="TxtBuscarCorreo">Buscar por Correo Electrónico:</label>
-        <asp:TextBox ID="TxtBuscarCorreo" runat="server" CssClass="form-control" placeholder="Escribe el correo del usuario"></asp:TextBox>
-        <asp:Button ID="BtnBuscar" runat="server" Text="Buscar" OnClick="BtnBuscar_Click" CssClass="btn btn-info" Style="margin-top: 5px;" />
-        <asp:Button ID="BtnLimpiarBusqueda" runat="server" Text="Mostrar Todos" OnClick="BtnLimpiarBusqueda_Click" CssClass="btn btn-secondary" Style="margin-top: 5px;" />
+        <div class="input-group">
+            <asp:TextBox ID="TxtBuscarCorreo" runat="server" CssClass="form-control" 
+                placeholder="Escribe el correo del usuario" AutoPostBack="false"></asp:TextBox>
+            <div class="input-group-append">
+                <asp:Button ID="BtnBuscar" runat="server" Text="Buscar" 
+                    OnClick="BtnBuscar_Click" CssClass="btn btn-info" />
+                <asp:Button ID="BtnLimpiarBusqueda" runat="server" Text="Limpiar" 
+                    OnClick="BtnLimpiarBusqueda_Click" CssClass="btn btn-secondary" />
+            </div>
+        </div>
     </div>
+
+    <%-- Mensajes --%>
+    <div id="loading" style="display:none; margin: 10px 0;">
+        <i class="fa fa-spinner fa-spin"></i> Buscando usuarios...
+    </div>
+
     <asp:Label ID="lblmesaje2" runat="server" CssClass="message"></asp:Label>
 
-    <%--Mensaje cuando no hay resultados--%>
-    <div id="mensajeNoResultados" style="display: none; color: red; margin-top: 10px;">
-        No se encontraron resultados.
+    <div id="mensajeNoResultados" runat="server" 
+         style="display: none; margin: 10px 0; padding: 10px; 
+                background-color: #f8f9fa; border-radius: 4px;">
     </div>
 
     <%--GridView para mostrar los usuarios--%>
     <asp:GridView ID="GVUsers" runat="server" CssClass="table table-bordered" AutoGenerateColumns="False"
         DataKeyNames="usu_id" OnSelectedIndexChanged="GVUsers_SelectedIndexChanged1"
         AllowPaging="true" PageSize="10" OnPageIndexChanging="GVUsers_PageIndexChanging"
-        PagerStyle-CssClass="pagination" PagerSettings-Mode="NumericFirstLast">
+        PagerStyle-CssClass="pagination" 
+        PagerSettings-Mode="NumericFirstLast"
+        PagerSettings-Position="Bottom"
+        PagerSettings-PageButtonCount="5">
         <Columns>
             <asp:BoundField DataField="usu_id" HeaderText="ID" 
                 ItemStyle-CssClass="hidden-id-column" 
@@ -240,6 +300,13 @@
             <asp:BoundField DataField="usu_correo" HeaderText="Correo Electrónico" />
             <asp:BoundField DataField="usu_rol" HeaderText="Rol" />
             <asp:BoundField DataField="usu_nivel_estudios" HeaderText="Nivel Educativo" />
+            <asp:TemplateField HeaderText="Estado">
+                <ItemTemplate>
+                    <span class='<%# Eval("usu_estado").ToString() == "Activo" ? "status-active" : "status-inactive" %>'>
+                        <%# Eval("usu_estado") %>
+                    </span>
+                </ItemTemplate>
+            </asp:TemplateField>
             <asp:CommandField ShowSelectButton="True" HeaderText="Opción" SelectText="Seleccionar" 
                 ButtonType="Button" ControlStyle-CssClass="btn btn-sm btn-outline-primary" />
         </Columns>

@@ -15,6 +15,24 @@ namespace Presentation
     {
 
         /// <summary>
+        /// Control PanelEditMode.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel PanelEditMode;
+
+        /// <summary>
+        /// Control LBCancelEdit.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton LBCancelEdit;
+
+        /// <summary>
         /// Control LblMessage.
         /// </summary>
         /// <remarks>
@@ -123,6 +141,15 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.DropDownList DDLEducationLevel;
 
         /// <summary>
+        /// Control DDLEstado.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DDLEstado;
+
+        /// <summary>
         /// Control BtnSave.
         /// </summary>
         /// <remarks>
@@ -141,13 +168,13 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.Button BtnUpdate;
 
         /// <summary>
-        /// Control BtnDelete.
+        /// Control BtnNew.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnDelete;
+        protected global::System.Web.UI.WebControls.Button BtnNew;
 
         /// <summary>
         /// Control TxtBuscarCorreo.
@@ -184,6 +211,15 @@ namespace Presentation
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblmesaje2;
+
+        /// <summary>
+        /// Control mensajeNoResultados.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl mensajeNoResultados;
 
         /// <summary>
         /// Control GVUsers.

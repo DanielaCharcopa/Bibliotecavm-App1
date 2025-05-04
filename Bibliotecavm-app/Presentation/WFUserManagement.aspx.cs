@@ -4,44 +4,39 @@ using System;
 using System.Data;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace Presentation
 {
     public partial class WFUserManagement : System.Web.UI.Page
     {
-        // Instancia de la clase de lógica de usuarios
         UserLogic objUser = new UserLogic();
-        string nombre, apellido, correo, contrasena, salt, rol, nivelEstudios;
+        string nombre, apellido, correo, contrasena, salt, rol, nivelEstudios, estado;
         int userId;
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                LoadUsers(); // Carga inicial de usuarios
-                CargarRoles(); // Cargar roles dinámicamente
+                LoadUsers();
+                CargarRoles();
+
+                PanelEditMode.Visible = false;
             }
         }
 
         private void CargarRoles()
         {
-            // Verificar si ya existe un administrador
             bool existeAdministrador = objUser.CheckAdminExists();
-
-            // Limpiar el DropDownList de roles
             DDLRole.Items.Clear();
-
-            // Agregar la opción por defecto
             DDLRole.Items.Add(new ListItem("Seleccione un rol", ""));
 
-            // Agregar roles según la existencia de un administrador
             if (!existeAdministrador)
             {
                 DDLRole.Items.Add(new ListItem("Administrador", "Administrador"));
             }
 
-            // Agregar los demás roles
             DDLRole.Items.Add(new ListItem("Docente", "Docente"));
             DDLRole.Items.Add(new ListItem("Estudiante", "Estudiante"));
         }
@@ -54,7 +49,6 @@ namespace Presentation
                 GVUsers.DataSource = ds.Tables[0];
                 GVUsers.DataBind();
 
-                // Configurar el mensaje de paginación
                 int totalRecords = ds.Tables[0].Rows.Count;
                 int pageSize = GVUsers.PageSize;
                 int currentPage = GVUsers.PageIndex + 1;
@@ -74,99 +68,73 @@ namespace Presentation
 
         protected void BtnSave_Click(object sender, EventArgs e)
         {
-            // Obtener los valores del formulario
-            nombre = HttpUtility.HtmlDecode(TBFirstName.Text.Trim());
-            apellido = HttpUtility.HtmlDecode(TBLastName.Text.Trim());
-            correo = HttpUtility.HtmlDecode(TBEmail.Text.Trim());
-            contrasena = TBPassword.Text.Trim();
-            rol = DDLRole.SelectedValue;
-            nivelEstudios = DDLEducationLevel.SelectedValue;
-
-            // Validar campos obligatorios
-            if (string.IsNullOrEmpty(nombre))
+            // Primero verificar si estamos en modo de actualización (tiene ID)
+            if (!string.IsNullOrEmpty(HFUserId.Value))
             {
-                LblMessage.Text = "El campo 'Nombre' es obligatorio.";
+                LblMessage.Text = "⚠️ Está intentando guardar un usuario que ya existe. Por favor, use el botón 'Actualizar' para modificar este usuario o haga clic en 'Nuevo' para crear uno diferente.";
                 LblMessage.ForeColor = System.Drawing.Color.Red;
                 return;
             }
 
-            if (string.IsNullOrEmpty(apellido))
-            {
-                LblMessage.Text = "El campo 'Apellido' es obligatorio.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
+            if (!ValidarCampos())
                 return;
-            }
 
-            if (string.IsNullOrEmpty(correo))
-            {
-                LblMessage.Text = "El campo 'Correo Electrónico' es obligatorio.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-                return;
-            }
+            estado = DDLEstado.SelectedValue;
 
-            // Validar que el correo sea de Gmail
-            if (!IsGmailEmail(correo))
-            {
-                LblMessage.Text = "Por favor, ingrese un correo electrónico válido de Gmail (ejemplo@gmail.com).";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-                return;
-            }
-
-            if (string.IsNullOrEmpty(contrasena))
-            {
-                LblMessage.Text = "El campo 'Contraseña' es obligatorio.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-                return;
-            }
-
-            if (string.IsNullOrEmpty(rol) || string.IsNullOrEmpty(nivelEstudios))
-            {
-                LblMessage.Text = "Por favor seleccione un rol y un nivel educativo.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-                return;
-            }
-
-            // Verificar si ya existe un administrador
-            if (rol == "Administrador" && objUser.CheckAdminExists())
-            {
-                LblMessage.Text = "Ya existe un Administrador. Por favor, designe otro rol o elimine el actual administrador.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-                return;
-            }
-
-            // Verificar si el correo ya está registrado
-            if (objUser.isEmailRegistered(correo))
-            {
-                LblMessage.Text = "El correo electrónico ya está registrado. Por favor, use otro correo.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-                return;
-            }
-
-            // Generar el salt y encriptar la contraseña
-            ICryptoService cryptoService = new PBKDF2(); // Asume que tienes una clase PBKDF2 para encriptación
+            ICryptoService cryptoService = new PBKDF2();
             salt = cryptoService.GenerateSalt();
             string encryptedPassword = cryptoService.Compute(contrasena, salt);
 
-            // Guardar usuario con los datos decodificados
-            bool success = objUser.saveUser(nombre, apellido, correo, encryptedPassword, salt, rol, nivelEstudios);
+            try
+            {
+                // Verificar si el correo ya existe ANTES de intentar guardar
+                if (objUser.isEmailRegistered(correo))
+                {
+                    LblMessage.Text = $"❌ El correo electrónico {correo} ya está registrado. Si desea modificar este usuario, búsquelo en la tabla y selecciónelo para editar.";
+                    LblMessage.ForeColor = System.Drawing.Color.Red;
+                    return;
+                }
 
-            if (success)
-            {
-                LblMessage.Text = "Usuario guardado exitosamente.";
-                LblMessage.ForeColor = System.Drawing.Color.Green;
-                ClearForm(); // Limpiar el formulario después de guardar
-                LoadUsers(); // Recargar la lista de usuarios
-                CargarRoles(); // Recargar roles dinámicamente
+                bool success = objUser.saveUser(nombre, apellido, correo, encryptedPassword, salt, rol, nivelEstudios);
+
+                if (success)
+                {
+                    LblMessage.Text = "✅ Usuario registrado exitosamente.";
+                    LblMessage.ForeColor = System.Drawing.Color.Green;
+                    ClearForm();
+                    LoadUsers();
+                    CargarRoles();
+                }
+                else
+                {
+                    LblMessage.Text = "❌ Error al guardar el usuario. Por favor, verifique los datos e intente nuevamente.";
+                    LblMessage.ForeColor = System.Drawing.Color.Red;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                LblMessage.Text = "Error al guardar el usuario.";
+                // Mensaje más amigable para el usuario
+                if (ex.Message.Contains("Duplicate entry") && ex.Message.Contains("usu_correo"))
+                {
+                    LblMessage.Text = $"❌ El correo electrónico {correo} ya está registrado en el sistema. No se pueden crear usuarios duplicados.";
+                }
+                else
+                {
+                    LblMessage.Text = $"❌ Error inesperado: {ex.Message}";
+                }
                 LblMessage.ForeColor = System.Drawing.Color.Red;
             }
         }
 
         protected void BtnUpdate_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(HFUserId.Value))
+            {
+                LblMessage.Text = "⚠️ No hay ningún usuario seleccionado para actualizar. Por favor, seleccione un usuario de la lista.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
+
             // Obtener el ID del usuario
             userId = int.Parse(HFUserId.Value);
 
@@ -177,25 +145,26 @@ namespace Presentation
             contrasena = TBPassword.Text.Trim();
             rol = DDLRole.SelectedValue;
             nivelEstudios = DDLEducationLevel.SelectedValue;
+            estado = DDLEstado.SelectedValue;
 
             // Validar campos obligatorios
             if (string.IsNullOrEmpty(nombre))
             {
-                LblMessage.Text = "El campo 'Nombre' es obligatorio.";
+                LblMessage.Text = "❌ El campo 'Nombre' es obligatorio.";
                 LblMessage.ForeColor = System.Drawing.Color.Red;
                 return;
             }
 
             if (string.IsNullOrEmpty(apellido))
             {
-                LblMessage.Text = "El campo 'Apellido' es obligatorio.";
+                LblMessage.Text = "❌ El campo 'Apellido' es obligatorio.";
                 LblMessage.ForeColor = System.Drawing.Color.Red;
                 return;
             }
 
             if (string.IsNullOrEmpty(correo))
             {
-                LblMessage.Text = "El campo 'Correo Electrónico' es obligatorio.";
+                LblMessage.Text = "❌ El campo 'Correo Electrónico' es obligatorio.";
                 LblMessage.ForeColor = System.Drawing.Color.Red;
                 return;
             }
@@ -203,21 +172,21 @@ namespace Presentation
             // Validar que el correo sea de Gmail
             if (!IsGmailEmail(correo))
             {
-                LblMessage.Text = "Por favor, ingrese un correo electrónico válido de Gmail (ejemplo@gmail.com).";
+                LblMessage.Text = "❌ Por favor, ingrese un correo electrónico válido de Gmail (ejemplo@gmail.com).";
                 LblMessage.ForeColor = System.Drawing.Color.Red;
                 return;
             }
 
             if (string.IsNullOrEmpty(contrasena))
             {
-                LblMessage.Text = "El campo 'Contraseña' es obligatorio.";
+                LblMessage.Text = "❌ El campo 'Contraseña' es obligatorio.";
                 LblMessage.ForeColor = System.Drawing.Color.Red;
                 return;
             }
 
             if (string.IsNullOrEmpty(rol) || string.IsNullOrEmpty(nivelEstudios))
             {
-                LblMessage.Text = "Por favor seleccione un rol y un nivel educativo.";
+                LblMessage.Text = "❌ Por favor seleccione un rol y un nivel educativo.";
                 LblMessage.ForeColor = System.Drawing.Color.Red;
                 return;
             }
@@ -225,51 +194,172 @@ namespace Presentation
             // Verificar si el correo ya está registrado en otro usuario
             if (objUser.isEmailRegistered(correo) && !IsCurrentUserEmail(correo))
             {
-                LblMessage.Text = "El correo electrónico ya está registrado en otro usuario.";
+                LblMessage.Text = "❌ El correo electrónico ya está registrado en otro usuario. Por favor, use un correo diferente.";
                 LblMessage.ForeColor = System.Drawing.Color.Red;
                 return;
             }
 
-            // Generar el salt y encriptar la contraseña
-            ICryptoService cryptoService = new PBKDF2(); // Asume que tienes una clase PBKDF2 para encriptación
-            salt = cryptoService.GenerateSalt();
-            string encryptedPassword = cryptoService.Compute(contrasena, salt);
-
-            // Actualizar el usuario con los datos decodificados
-            bool success = objUser.updateUser(userId, nombre, apellido, correo, encryptedPassword, salt, rol, nivelEstudios);
-
-            if (success)
+            try
             {
-                LblMessage.Text = "Usuario actualizado con éxito.";
-                LblMessage.ForeColor = System.Drawing.Color.Green;
-                ClearForm(); // Limpiar el formulario después de actualizar
-                LoadUsers(); // Recargar la lista de usuarios
-                CargarRoles(); // Recargar roles dinámicamente
+                // Generar el salt y encriptar la contraseña
+                ICryptoService cryptoService = new PBKDF2();
+                salt = cryptoService.GenerateSalt();
+                string encryptedPassword = cryptoService.Compute(contrasena, salt);
+
+                // Actualizar el usuario con los datos decodificados
+                bool success = objUser.updateUser(userId, nombre, apellido, correo, encryptedPassword, salt, rol, nivelEstudios, estado);
+
+                if (success)
+                {
+                    LblMessage.Text = "✅ Usuario actualizado con éxito.";
+                    LblMessage.ForeColor = System.Drawing.Color.Green;
+                    ClearForm();
+                    LoadUsers();
+                    CargarRoles();
+
+                    PanelEditMode.Visible = false;
+                }
+                else
+                {
+                    LblMessage.Text = "❌ Error al actualizar el usuario. Verifique que: \n" +
+                                     "1. El correo no esté duplicado\n" +
+                                     "2. Los datos sean válidos\n" +
+                                     "3. La conexión a la base de datos esté activa";
+                    LblMessage.ForeColor = System.Drawing.Color.Red;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                LblMessage.Text = "Error al actualizar el usuario.";
+                // Capturar errores específicos de MySQL
+                if (ex.Message.Contains("El correo electrónico ya está registrado"))
+                {
+                    LblMessage.Text = "❌ El correo electrónico ya está registrado en otro usuario.";
+                }
+                else
+                {
+                    LblMessage.Text = "❌ Error inesperado al actualizar: " + ex.Message;
+                }
                 LblMessage.ForeColor = System.Drawing.Color.Red;
             }
         }
 
-        protected void BtnDelete_Click(object sender, EventArgs e)
+        protected void BtnActivate_Click(object sender, EventArgs e)
         {
-            // Eliminar un usuario
             userId = int.Parse(HFUserId.Value);
+            bool success = objUser.ActivateUser(userId);
 
-            bool success = objUser.deleteUser(userId);
-            LblMessage.Text = success ? "Usuario eliminado con éxito." : "Error al eliminar el usuario.";
-            LblMessage.ForeColor = success ? System.Drawing.Color.Green : System.Drawing.Color.Red;
+            if (success)
+            {
+                LblMessage.Text = "✅ Usuario activado con éxito.";
+                LblMessage.ForeColor = System.Drawing.Color.Green;
+                LoadUsers();
+                DDLEstado.SelectedValue = "Activo";
+            }
+            else
+            {
+                LblMessage.Text = "❌ Error al activar el usuario.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+            }
+        }
 
+        protected void BtnDeactivate_Click(object sender, EventArgs e)
+        {
+            userId = int.Parse(HFUserId.Value);
+            bool success = objUser.DeactivateUser(userId);
+
+            if (success)
+            {
+                LblMessage.Text = "✅ Usuario desactivado con éxito.";
+                LblMessage.ForeColor = System.Drawing.Color.Green;
+                LoadUsers();
+                DDLEstado.SelectedValue = "Inactivo";
+            }
+            else
+            {
+                LblMessage.Text = "❌ Error al desactivar el usuario.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+            }
+        }
+
+        protected void BtnNew_Click(object sender, EventArgs e)
+        {
             ClearForm();
-            LoadUsers(); // Recargar la lista de usuarios
-            CargarRoles(); // Recargar roles dinámicamente
+            LblMessage.Text = "📝 Listo para crear un nuevo usuario. Complete los datos y haga clic en Guardar.";
+            LblMessage.ForeColor = System.Drawing.Color.Blue;
+            PanelEditMode.Visible = false;
+        }
+
+        protected void LBCancelEdit_Click(object sender, EventArgs e)
+        {
+            ClearForm();
+            LblMessage.Text = "✖️ Edición cancelada. Puede crear un nuevo usuario o seleccionar otro para editar.";
+            LblMessage.ForeColor = System.Drawing.Color.Blue;
+            PanelEditMode.Visible = false;
+        }
+
+        private bool ValidarCampos()
+        {
+            nombre = HttpUtility.HtmlDecode(TBFirstName.Text.Trim());
+            apellido = HttpUtility.HtmlDecode(TBLastName.Text.Trim());
+            correo = HttpUtility.HtmlDecode(TBEmail.Text.Trim());
+            contrasena = TBPassword.Text.Trim();
+            rol = DDLRole.SelectedValue;
+            nivelEstudios = DDLEducationLevel.SelectedValue;
+
+            if (string.IsNullOrEmpty(nombre))
+            {
+                LblMessage.Text = "❌ El campo 'Nombre' es obligatorio.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(apellido))
+            {
+                LblMessage.Text = "❌ El campo 'Apellido' es obligatorio.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(correo) || !IsGmailEmail(correo))
+            {
+                LblMessage.Text = "❌ Por favor, ingrese un correo electrónico válido de Gmail (ejemplo@gmail.com).";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(contrasena) || contrasena.Length < 6)
+            {
+                LblMessage.Text = "❌ La contraseña debe tener al menos 6 caracteres.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(rol))
+            {
+                LblMessage.Text = "❌ Por favor seleccione un rol.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(nivelEstudios))
+            {
+                LblMessage.Text = "❌ Por favor seleccione un nivel educativo.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return false;
+            }
+
+            if (rol == "Administrador" && objUser.CheckAdminExists() && !IsCurrentUserAdmin())
+            {
+                LblMessage.Text = "❌ Ya existe un Administrador. Por favor, designe otro rol.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return false;
+            }
+
+            return true;
         }
 
         private void ClearForm()
         {
-            // Limpiar los campos del formulario
             HFUserId.Value = string.Empty;
             TBFirstName.Text = string.Empty;
             TBLastName.Text = string.Empty;
@@ -277,117 +367,177 @@ namespace Presentation
             TBPassword.Text = string.Empty;
             DDLRole.SelectedIndex = 0;
             DDLEducationLevel.SelectedIndex = 0;
-            TxtBuscarCorreo.Text = string.Empty; // Limpiar el campo de búsqueda
-            LblMessage.Text = string.Empty;
+            DDLEstado.SelectedValue = "Activo";
+            TxtBuscarCorreo.Text = string.Empty;
+            BtnSave.Text = "Guardar";
+            BtnSave.ToolTip = "Guardar nuevo usuario";
         }
 
         protected void GVUsers_SelectedIndexChanged1(object sender, EventArgs e)
         {
             try
             {
-                // Obtener la fila seleccionada
                 GridViewRow selectedRow = GVUsers.SelectedRow;
-
-                // Obtener el ID del usuario desde DataKeyNames
                 HFUserId.Value = GVUsers.DataKeys[selectedRow.RowIndex].Value.ToString();
 
-                // Decodificar valores antes de asignarlos
-                TBFirstName.Text = HttpUtility.HtmlDecode(selectedRow.Cells[1].Text.Trim()); // Nombre
-                TBLastName.Text = HttpUtility.HtmlDecode(selectedRow.Cells[2].Text.Trim());  // Apellido
-                TBEmail.Text = HttpUtility.HtmlDecode(selectedRow.Cells[3].Text.Trim());     // Correo Electrónico
-
-                // Mostrar el correo en el campo de búsqueda
+                TBFirstName.Text = HttpUtility.HtmlDecode(selectedRow.Cells[1].Text.Trim());
+                TBLastName.Text = HttpUtility.HtmlDecode(selectedRow.Cells[2].Text.Trim());
+                TBEmail.Text = HttpUtility.HtmlDecode(selectedRow.Cells[3].Text.Trim());
                 TxtBuscarCorreo.Text = HttpUtility.HtmlDecode(selectedRow.Cells[3].Text.Trim());
 
-                // Validar y asignar el Rol
                 string selectedRole = HttpUtility.HtmlDecode(selectedRow.Cells[4].Text.Trim());
                 if (!string.IsNullOrEmpty(selectedRole) && DDLRole.Items.FindByValue(selectedRole) != null)
                 {
                     DDLRole.SelectedValue = selectedRole;
                 }
-                else
-                {
-                    DDLRole.SelectedIndex = 0; // Seleccionar "Seleccione un rol" si no coincide
-                }
 
-                // Validar y asignar el Nivel Educativo
                 string selectedEducationLevel = HttpUtility.HtmlDecode(selectedRow.Cells[5].Text.Trim());
                 if (!string.IsNullOrEmpty(selectedEducationLevel) && DDLEducationLevel.Items.FindByValue(selectedEducationLevel) != null)
                 {
                     DDLEducationLevel.SelectedValue = selectedEducationLevel;
                 }
-                else
-                {
-                    DDLEducationLevel.SelectedIndex = 0; // Seleccionar "Seleccione un nivel" si no coincide
-                }
 
-                // Mensaje de confirmación (opcional)
-                LblMessage.Text = $"Usuario {TBFirstName.Text} seleccionado para edición.";
+                string userStatus = HttpUtility.HtmlDecode(selectedRow.Cells[6].Text.Trim());
+                DDLEstado.SelectedValue = userStatus;
+
+                // Actualizar botones de estado
+
+                // Cambiar el texto del botón Guardar para indicar modo edición
+                BtnSave.Text = "Guardar como nuevo";
+                BtnSave.ToolTip = "Crear un nuevo usuario con estos datos (el usuario actual no se modificará)";
+
+                // Mostrar panel de edición
+                PanelEditMode.Visible = true;
+
+                LblMessage.Text = $"✏️ Editando usuario: {TBFirstName.Text} {TBLastName.Text}. Use 'Actualizar' para guardar cambios.";
+                LblMessage.ForeColor = System.Drawing.Color.Blue;
             }
             catch (Exception ex)
             {
-                LblMessage.Text = "Error al seleccionar el usuario: " + ex.Message;
+                LblMessage.Text = "❌ Error al seleccionar el usuario: " + ex.Message;
+                LblMessage.ForeColor = System.Drawing.Color.Red;
             }
         }
 
-        // Método para validar si el correo es de Gmail
+
+
         private bool IsGmailEmail(string email)
         {
-            // Expresión regular para validar correos de Gmail
-            string pattern = @"^[a-zA-Z0-9._%+-]+@gmail\.com$";
-            return Regex.IsMatch(email, pattern);
+            return Regex.IsMatch(email, @"^[a-zA-Z0-9._%+-]+@gmail\.com$");
         }
 
-        // Método para verificar si el correo pertenece al usuario actual
         private bool IsCurrentUserEmail(string email)
         {
             if (string.IsNullOrEmpty(HFUserId.Value))
                 return false;
 
-            // Obtener el correo del usuario actual
             string currentEmail = HttpUtility.HtmlDecode(TBEmail.Text.Trim());
             return email.Equals(currentEmail, StringComparison.OrdinalIgnoreCase);
         }
+
+        private bool IsCurrentUserAdmin()
+        {
+            if (string.IsNullOrEmpty(HFUserId.Value))
+                return false;
+
+            string currentRole = DDLRole.SelectedValue;
+            return currentRole == "Administrador";
+        }
+
         protected void GVUsers_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             GVUsers.PageIndex = e.NewPageIndex;
-            LoadUsers(); // Vuelve a cargar los datos con la nueva página
+            LoadUsers();
         }
+
         protected void BtnBuscar_Click(object sender, EventArgs e)
         {
-            string correoBusqueda = TxtBuscarCorreo.Text.Trim();
-
-            if (!string.IsNullOrEmpty(correoBusqueda))
+            try
             {
+                string correoBusqueda = TxtBuscarCorreo.Text.Trim();
+
+                if (string.IsNullOrWhiteSpace(correoBusqueda))
+                {
+                    lblmesaje2.Text = "❌ Por favor ingrese un correo electrónico para buscar.";
+                    lblmesaje2.ForeColor = System.Drawing.Color.Red;
+                    return;
+                }
+
+                if (!IsValidEmail(correoBusqueda))
+                {
+                    lblmesaje2.Text = "❌ Por favor ingrese un correo electrónico válido.";
+                    lblmesaje2.ForeColor = System.Drawing.Color.Red;
+                    return;
+                }
+
+                ScriptManager.RegisterStartupScript(this, GetType(), "ShowLoading", "$('#loading').show();", true);
+
                 DataSet ds = objUser.SearchUsersByEmail(correoBusqueda);
+
                 if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                 {
                     GVUsers.DataSource = ds.Tables[0];
                     GVUsers.DataBind();
-                    lblmesaje2.Text = $"Se encontraron {ds.Tables[0].Rows.Count} resultados.";
-                    lblmesaje2.ForeColor = System.Drawing.Color.Blue;
+
+                    lblmesaje2.Text = $"✅ Se encontraron {ds.Tables[0].Rows.Count} usuario(s) con ese criterio.";
+                    lblmesaje2.ForeColor = System.Drawing.Color.Green;
+
+                    ScriptManager.RegisterStartupScript(this, GetType(), "HideNoResults", "$('#mensajeNoResultados').hide();", true);
                 }
                 else
                 {
                     GVUsers.DataSource = null;
                     GVUsers.DataBind();
-                    lblmesaje2.Text = "No se encontraron usuarios con ese correo.";
+
+                    lblmesaje2.Text = "❌ No se encontraron usuarios con ese correo.";
                     lblmesaje2.ForeColor = System.Drawing.Color.Red;
+
+                    ScriptManager.RegisterStartupScript(this, GetType(), "ShowNoResults",
+                        "$('#mensajeNoResultados').text('No se encontraron resultados para: \"" + correoBusqueda + "\"').show();", true);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                LoadUsers(); // Si el campo está vacío, cargar todos los usuarios
+                lblmesaje2.Text = "❌ Error en la búsqueda: " + ex.Message;
+                lblmesaje2.ForeColor = System.Drawing.Color.Red;
+            }
+            finally
+            {
+                ScriptManager.RegisterStartupScript(this, GetType(), "HideLoading", "$('#loading').hide();", true);
+            }
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
             }
         }
 
         protected void BtnLimpiarBusqueda_Click(object sender, EventArgs e)
         {
-            TxtBuscarCorreo.Text = string.Empty;
-            LoadUsers(); // Cargar todos los usuarios
-            lblmesaje2.Text = "Mostrando todos los usuarios.";
-            lblmesaje2.ForeColor = System.Drawing.Color.Blue;
+            try
+            {
+                TxtBuscarCorreo.Text = string.Empty;
+                LoadUsers();
+
+                lblmesaje2.Text = "🔍 Mostrando todos los usuarios registrados.";
+                lblmesaje2.ForeColor = System.Drawing.Color.Blue;
+
+                ScriptManager.RegisterStartupScript(this, GetType(), "HideNoResults",
+                    "$('#mensajeNoResultados').hide();", true);
+            }
+            catch (Exception ex)
+            {
+                lblmesaje2.Text = "❌ Error al limpiar la búsqueda: " + ex.Message;
+                lblmesaje2.ForeColor = System.Drawing.Color.Red;
+            }
         }
     }
-
 }
