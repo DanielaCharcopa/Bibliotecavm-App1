@@ -1,4 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MainAdmin.Master" AutoEventWireup="true" CodeBehind="WFMatEducativo.aspx.cs" Inherits="Presentation.WFMatEducativo" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </asp:Content>
@@ -9,7 +10,7 @@
     <%--Campo de búsqueda y botón--%>
     <div>
         <asp:TextBox ID="TBSearch" runat="server" placeholder="Buscar Material Educativo" />
-        <asp:Button ID="BtnSearch" runat="server" Text="Buscar" OnClick="BtnSearch_Click" 
+        <asp:Button ID="BtnSearch" runat="server" Text="Buscar" OnClick="BtnSearch_Click"
             CssClass="btn btn-primary" ValidationGroup="SearchGroup" />
     </div>
 
@@ -20,20 +21,20 @@
 
         <asp:TextBox ID="TBTitulo" runat="server" placeholder="Título Del Material Educativo" CssClass="form-control" />
         <asp:RequiredFieldValidator ID="rfvTitulo" runat="server" ControlToValidate="TBTitulo"
-            ErrorMessage="El título es obligatorio." ForeColor="Red" Display="Dynamic" 
+            ErrorMessage="El título es obligatorio." ForeColor="Red" Display="Dynamic"
             ValidationGroup="FormGroup" />
 
-    <asp:TextBox ID="TBAnopublicado" runat="server" CssClass="form-control" placeholder="Año de Publicación" />
-<asp:RequiredFieldValidator ID="rfvAnopublicado" runat="server" ControlToValidate="TBAnopublicado"
-    ErrorMessage="El año de publicación es obligatorio." ForeColor="Red" Display="Dynamic" 
-    ValidationGroup="FormGroup" />
-<asp:RegularExpressionValidator ID="revAnopublicado" runat="server" ControlToValidate="TBAnopublicado"
-    ValidationExpression="^\d{4}$" ErrorMessage="El año debe tener 4 dígitos."
-    ForeColor="Red" Display="Dynamic" ValidationGroup="FormGroup" />
-<asp:RangeValidator ID="rvAnopublicado" runat="server" ControlToValidate="TBAnopublicado"
-    MinimumValue="1000" MaximumValue="2100" Type="Integer"
-    ErrorMessage="El año debe estar entre 1000 y 2100." ForeColor="Red" Display="Dynamic"
-    ValidationGroup="FormGroup" />
+        <asp:TextBox ID="TBAnopublicado" runat="server" CssClass="form-control" placeholder="Año de Publicación" />
+        <asp:RequiredFieldValidator ID="rfvAnopublicado" runat="server" ControlToValidate="TBAnopublicado"
+            ErrorMessage="El año de publicación es obligatorio." ForeColor="Red" Display="Dynamic"
+            ValidationGroup="FormGroup" />
+        <asp:RegularExpressionValidator ID="revAnopublicado" runat="server" ControlToValidate="TBAnopublicado"
+            ValidationExpression="^\d{4}$" ErrorMessage="El año debe tener 4 dígitos."
+            ForeColor="Red" Display="Dynamic" ValidationGroup="FormGroup" />
+        <asp:RangeValidator ID="rvAnopublicado" runat="server" ControlToValidate="TBAnopublicado"
+            MinimumValue="1000" MaximumValue="2100" Type="Integer"
+            ErrorMessage="El año debe estar entre 1000 y 2100." ForeColor="Red" Display="Dynamic"
+            ValidationGroup="FormGroup" />
 
         <asp:TextBox ID="TBUrl" runat="server" placeholder="URL" CssClass="form-control" />
         <asp:TextBox ID="TBPrecio" runat="server" placeholder="Precio" CssClass="form-control" />
@@ -48,40 +49,40 @@
             <asp:ListItem Text="Otro" Value="Otro" />
         </asp:DropDownList>
         <asp:RequiredFieldValidator ID="rfvFormato" runat="server" ControlToValidate="DDLFormato"
-            InitialValue="0" ErrorMessage="Debe seleccionar un formato." ForeColor="Red" Display="Dynamic" 
+            InitialValue="0" ErrorMessage="Debe seleccionar un formato." ForeColor="Red" Display="Dynamic"
             ValidationGroup="FormGroup" />
 
-          <asp:DropDownList ID="DDLEditorial" runat="server" CssClass="form-control">
-      <asp:ListItem Text="Seleccione una editorial" Value="0" />
-  </asp:DropDownList>
-  <asp:RequiredFieldValidator ID="rfvEditorial" runat="server" ControlToValidate="DDLEditorial"
-      InitialValue="0" ErrorMessage="Debe seleccionar una editorial." ForeColor="Red" Display="Dynamic" 
-      ValidationGroup="FormGroup" />
+        <asp:DropDownList ID="DDLEditorial" runat="server" CssClass="form-control">
+            <asp:ListItem Text="Seleccione una editorial" Value="0" />
+        </asp:DropDownList>
+        <asp:RequiredFieldValidator ID="rfvEditorial" runat="server" ControlToValidate="DDLEditorial"
+            InitialValue="0" ErrorMessage="Debe seleccionar una editorial." ForeColor="Red" Display="Dynamic"
+            ValidationGroup="FormGroup" />
 
         <asp:DropDownList ID="DDLCategories" runat="server" CssClass="form-control">
             <asp:ListItem Text="Seleccione una categoría" Value="0" />
         </asp:DropDownList>
         <asp:RequiredFieldValidator ID="rfvCategoria" runat="server" ControlToValidate="DDLCategories"
-            InitialValue="0" ErrorMessage="Debe seleccionar una categoría." ForeColor="Red" Display="Dynamic" 
+            InitialValue="0" ErrorMessage="Debe seleccionar una categoría." ForeColor="Red" Display="Dynamic"
             ValidationGroup="FormGroup" />
 
-      
 
-        
+
+
         <asp:Button ID="Button1" CssClass="btn btn-primary" runat="server" Text="Guardar" OnClick="BtnSave_Click" />
-        <asp:Button ID="BtnUpdate" runat="server" Text="Actualizar" OnClick="BtnUpdate_Click" 
+        <asp:Button ID="BtnUpdate" runat="server" Text="Actualizar" OnClick="BtnUpdate_Click"
             CssClass="btn btn-warning" ValidationGroup="FormGroup" />
-        <asp:Button ID="BtnDelete" runat="server" Text="Eliminar" OnClick="BtnDelete_Click" 
+        <asp:Button ID="BtnDelete" runat="server" Text="Eliminar" OnClick="BtnDelete_Click"
             CssClass="btn btn-danger" ValidationGroup="FormGroup" />
 
         <asp:Label ID="LblMsj" runat="server" ForeColor="Red" />
     </div>
 
-    <asp:GridView 
-        ID="GVMaterial" 
-        runat="server" 
-        AutoGenerateColumns="False" 
-        OnSelectedIndexChanged="GVMaterial_SelectedIndexChanged" 
+    <asp:GridView
+        ID="GVMaterial"
+        runat="server"
+        AutoGenerateColumns="False"
+        OnSelectedIndexChanged="GVMaterial_SelectedIndexChanged"
         DataKeyNames="mat_id"
         CssClass="grid-view">
         <Columns>
