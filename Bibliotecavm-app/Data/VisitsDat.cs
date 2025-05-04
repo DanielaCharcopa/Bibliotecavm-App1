@@ -25,36 +25,40 @@ namespace Data
 
             return objData;
         }
-
-        // Registra una nueva visita en la base de datos.
-        public bool saveVisits(DateTime fechaIngreso, TimeSpan duracion, int usuId, int matId)
+        // Registra una nueva visita en la base de datos y devuelve el ID generado
+        public int saveVisits(DateTime fechaIngreso, TimeSpan duracion, int usuId, int matId)
         {
-            bool executed = false;
-
-            MySqlCommand objInsertCmd = new MySqlCommand();
-            objInsertCmd.Connection = objPer.openConnection();
-            objInsertCmd.CommandText = "procInsertVisits"; // Procedimiento almacenado
-            objInsertCmd.CommandType = CommandType.StoredProcedure;
-
-            objInsertCmd.Parameters.Add("v_fecha_ingreso", MySqlDbType.Date).Value = fechaIngreso;
-            objInsertCmd.Parameters.Add("v_duracion", MySqlDbType.Time).Value = duracion;
-            objInsertCmd.Parameters.Add("v_usu_id", MySqlDbType.Int32).Value = usuId;
-            objInsertCmd.Parameters.Add("v_mat_id", MySqlDbType.Int32).Value = matId;
-
+            MySqlCommand cmd = new MySqlCommand();
             try
             {
-                executed = objInsertCmd.ExecuteNonQuery() == 1;
+                cmd.Connection = objPer.openConnection();
+
+                // Primero ejecuta el INSERT
+                cmd.CommandText = "procInsertVisits";
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("v_fecha_ingreso", fechaIngreso);
+                cmd.Parameters.AddWithValue("v_duracion", duracion);
+                cmd.Parameters.AddWithValue("v_usu_id", usuId);
+                cmd.Parameters.AddWithValue("v_mat_id", matId);
+
+                cmd.ExecuteNonQuery();
+
+                // Luego obtén el ID (versión mejorada para MySQL)
+                cmd.CommandText = "SELECT LAST_INSERT_ID()";
+                object result = cmd.ExecuteScalar();
+
+                return Convert.ToInt32(result);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: " + ex.Message);
+                System.Diagnostics.Debug.WriteLine($"Error en saveVisits: {ex.ToString()}");
+                return 0; // Retorna 0 si hay error
             }
             finally
             {
                 objPer.closeConnection();
             }
-
-            return executed;
         }
 
         // Modifica la información de una visita existente.
@@ -279,6 +283,7 @@ namespace Data
             return ds;
         }
 
+        // Obtiene la última visita
         public int ObtenerUltimaVisitaId(int usuId, int matId)
         {
             MySqlCommand cmd = new MySqlCommand();
@@ -296,19 +301,27 @@ namespace Data
             return visitaId;
         }
 
-        public void ActualizarDuracionVisita(int visitaId, string duracion)
+        //Actualiza la duración de la visita
+        public bool ActualizarDuracionVisita(int visitaId, string duracion)
         {
-            MySqlCommand cmd = new MySqlCommand();
-            cmd.Connection = objPer.openConnection();
-            cmd.CommandText = "procActualizarDuracionVisita"; // Nombre del SP
-            cmd.CommandType = CommandType.StoredProcedure;
+            using (MySqlCommand cmd = new MySqlCommand())
+            {
+                cmd.Connection = objPer.openConnection();
+                cmd.CommandText = "procActualizarDuracionVisita";
+                cmd.CommandType = CommandType.StoredProcedure;
 
-            // Parámetros del SP
-            cmd.Parameters.AddWithValue("v_visita_id", visitaId);
-            cmd.Parameters.AddWithValue("v_duracion", TimeSpan.Parse(duracion));
+                cmd.Parameters.AddWithValue("v_visita_id", visitaId);
+                cmd.Parameters.AddWithValue("v_duracion", duracion); // Formato "HH:mm:ss"
 
-            cmd.ExecuteNonQuery();
-            objPer.closeConnection();
+                try
+                {
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+                finally
+                {
+                    objPer.closeConnection();
+                }
+            }
         }
 
         // Buscar visitas por correo electrónico
