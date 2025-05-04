@@ -16,7 +16,6 @@ namespace Presentation
         PurchaseRequestLog objPur = new PurchaseRequestLog();
         CategoryLog objCat = new CategoryLog();
 
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -125,50 +124,11 @@ namespace Presentation
             string filtroCategoria = DdlCategoria.SelectedValue;
 
             CargarMaterialesEducativos(filtroTitulo, filtroFormato, filtroCategoria);
-
-
-
         }
 
         protected void GVMateriales_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            if (e.CommandName == "Ver")
-            {
-                int matId = Convert.ToInt32(e.CommandArgument);
-                int usuId = Convert.ToInt32(Session["UserID"]);
-
-                // 1. Registrar la visita y obtener el ID
-                int visitaId = RegistrarVisita(usuId, matId);
-
-                // 2. Obtener URL del material
-                string url = ObtenerUrlMaterial(matId);
-
-                // 3. Script que abre la ventana Y configura el evento de cierre
-                string script = @"
-            var ventanaMaterial = window.open('" + url + @"', '_blank');
-            
-            ventanaMaterial.onload = function() {
-                var inicio = new Date();
-                
-                ventanaMaterial.onbeforeunload = function() {
-                    var fin = new Date();
-                    var duracionMs = fin - inicio;
-                    var duracion = new Date(duracionMs).toISOString().substr(11, 8); // Formato HH:MM:SS
-                    
-                    // AJAX síncrono para asegurar el envío
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('POST', 'WFPresentationMaterial.aspx/ActualizarDuracionVisita', false);
-                    xhr.setRequestHeader('Content-Type', 'application/json');
-                    xhr.send(JSON.stringify({ 
-                        visitaId: " + visitaId + @", 
-                        duracion: duracion 
-                    }));
-                };
-            };";
-
-                ScriptManager.RegisterStartupScript(this, GetType(), "ControlDuracion", script, true);
-            }
-            else if (e.CommandName == "Comprar")
+            if (e.CommandName == "Comprar")
             {
                 int matId = Convert.ToInt32(e.CommandArgument);
 
@@ -207,63 +167,38 @@ namespace Presentation
         }
 
         [System.Web.Services.WebMethod]
-        public static Dictionary<string, string> RegistrarVisita(int matId)
+        public static Dictionary<string, object> RegistrarVisitaInicial(int materialId)
         {
             try
             {
-                WFPresentationMaterial page = new WFPresentationMaterial();
-                int usuId = Convert.ToInt32(HttpContext.Current.Session["UserID"]);
+                var page = new WFPresentationMaterial();
+                int userId = Convert.ToInt32(HttpContext.Current.Session["UserID"]);
 
-                // Registrar la visita y obtener el ID
-                int visitaId = page.RegistrarVisita(usuId, matId);
+                // Registrar visita con duración inicial cero
+                int visitaId = page.VisitsLog.saveVisits(
+                    DateTime.Now,
+                    TimeSpan.Zero,
+                    userId,
+                    materialId
+                );
 
-                return new Dictionary<string, string> {
-            { "visitaId", visitaId.ToString() },
-            { "fechaIngreso", DateTime.Now.ToString("o") } // ISO 8601 format
+                string url = page.ObtenerUrlMaterial(materialId);
+
+                return new Dictionary<string, object> {
+            { "success", true },
+            { "visitaId", visitaId },
+            { "urlMaterial", url }
         };
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al registrar la visita: " + ex.Message);
+                return new Dictionary<string, object> {
+            { "success", false },
+            { "error", ex.Message }
+        };
             }
         }
 
-        private int RegistrarVisita(int usuId, int matId)
-        {
-            try
-            {
-                // Obtener el nombre del usuario logueado
-                string usuarioNombre = Session["UserName"].ToString();
-
-                // Obtener el título del material
-                MaterialEducativoLog logicaMaterial = new MaterialEducativoLog();
-                DataSet dsMaterial = logicaMaterial.showMaterialEdu();
-                DataRow[] rows = dsMaterial.Tables[0].Select($"mat_id = {matId}");
-                string materialTitulo = rows.Length > 0 ? rows[0]["mat_titulo"].ToString() : "Desconocido";
-
-                // Registrar la visita
-                VisitsLog logica = new VisitsLog();
-                DateTime fechaIngreso = DateTime.Now;
-                TimeSpan duracion = TimeSpan.Zero;
-
-                bool resultado = logica.saveVisits(fechaIngreso, duracion, usuId, matId);
-
-                if (resultado)
-                {
-                    // Obtener el ID de la visita recién insertada
-                    int visitaId = logica.ObtenerUltimaVisitaId(usuId, matId);
-                    return visitaId;
-                }
-                else
-                {
-                    throw new Exception("Error al registrar la visita.");
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error: " + ex.Message);
-            }
-        }
 
         private string ObtenerUrlMaterial(int matId)
         {
@@ -282,20 +217,23 @@ namespace Presentation
         }
 
         [System.Web.Services.WebMethod]
-        public static void ActualizarDuracionVisita(int visitaId, string duracion)
+        public static Dictionary<string, object> ActualizarDuracionVisita(int visitaId, string duracion)
         {
             try
             {
-                VisitsLog logica = new VisitsLog();
-                logica.ActualizarDuracionVisita(visitaId, duracion);
+                bool exito = new VisitsLog().ActualizarDuracionVisita(visitaId, duracion);
+                return new Dictionary<string, object> {
+            { "success", exito },
+            { "visitaId", visitaId }
+        };
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al actualizar la duración de la visita: " + ex.Message);
+                return new Dictionary<string, object> {
+            { "success", false },
+            { "error", ex.Message }
+        };
             }
         }
-
-
-
     }
 }
