@@ -9,9 +9,7 @@ namespace Data
 {
     public class AuthorsDat
     {
-
         Persistencia objPer = new Persistencia();
-
 
         // Método para mostrar todos los Autores
         public DataSet showAuthors()
