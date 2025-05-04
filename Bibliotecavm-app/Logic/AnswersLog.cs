@@ -67,6 +67,7 @@ namespace Logic
             }
         }
 
+        // Método para obtener todas las respuestas 
         public DataTable GetAllSurveyQuestions()
         {
             try
