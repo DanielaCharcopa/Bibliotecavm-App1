@@ -18,8 +18,7 @@ namespace Presentation
                 showCategory();
             }
         }
-
-        private void showCategory()
+       private void showCategory()
         {
             DataSet ds = objCat.showCategory();
             GVCategory.DataSource = ds;
@@ -84,7 +83,6 @@ namespace Presentation
                 LblMessage.Text = "Error: No se ha seleccionado una categoría válida para actualizar.";
             }
         }
-
         protected void BtnDelete_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(HFCategoryId.Value) && int.TryParse(HFCategoryId.Value, out int id))
