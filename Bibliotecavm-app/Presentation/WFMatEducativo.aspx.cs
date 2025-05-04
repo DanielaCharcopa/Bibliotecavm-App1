@@ -7,7 +7,9 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace Presentation
+
 {
+
     public partial class WFMatEducativo : System.Web.UI.Page
     {
         // Instancias de clases para interactuar con la lógica de negocio.
@@ -16,10 +18,11 @@ namespace Presentation
         CategoryLog objCat = new CategoryLog();
 
 
-        private int _idMaterial, _editorialId, _categoriaId;
-        private string _titulo, _urlDescarga, _keywords, _formato;
-        private int _anoPublicacion;
-        private decimal _precio;
+        private int _idMaterial;
+        //private int _editorialId, _categoriaId;
+        //private string _titulo, _urlDescarga, _keywords, _formato;
+        //private int _anoPublicacion;
+        //private decimal _precio;
         private bool executed = false;
 
         protected void Page_Load(object sender, EventArgs e)
@@ -34,7 +37,6 @@ namespace Presentation
                 LoadFormatoDDL(); // Cargar los valores del ENUM en el DropDownList
             }
         }
-
 
         // Mostrar las categorías en DropDownList 
         private void ShowCategoriesDDL()
