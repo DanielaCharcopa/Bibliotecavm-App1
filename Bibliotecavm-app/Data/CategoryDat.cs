@@ -26,6 +26,7 @@ namespace Data
             return objData;
         }
 
+        // Mostrar  las Categorías por ddl
         public DataSet showCategoryDDL()
         {
             MySqlDataAdapter objAdapter = new MySqlDataAdapter();
