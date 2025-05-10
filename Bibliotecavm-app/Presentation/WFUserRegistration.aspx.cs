@@ -11,36 +11,11 @@ namespace Presentation
     {
         // Instancia de la clase de lógica de usuarios
         UserLogic objUser = new UserLogic();
-        string nombre, apellido, correo, contrasena, salt, rol, nivelEstudios;
+        string nombre, apellido, correo, contrasena, salt;
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                CargarRoles(); // Cargar roles dinámicamente
-            }
-        }
-
-        private void CargarRoles()
-        {
-            // Verificar si ya existe un administrador
-            bool existeAdministrador = objUser.CheckAdminExists();
-
-            // Limpiar el DropDownList de roles
-            DDLRole.Items.Clear();
-
-            // Agregar la opción por defecto
-            DDLRole.Items.Add(new ListItem("Seleccione un rol", ""));
-
-            // Agregar roles según la existencia de un administrador
-            if (!existeAdministrador)
-            {
-                DDLRole.Items.Add(new ListItem("Administrador", "Administrador"));
-            }
-
-            // Agregar los demás roles
-            DDLRole.Items.Add(new ListItem("Docente", "Docente"));
-            DDLRole.Items.Add(new ListItem("Estudiante", "Estudiante"));
+            // No es necesario cargar roles ya que no se usan en este formulario
         }
 
         protected void BtnSave_Click(object sender, EventArgs e)
@@ -64,7 +39,8 @@ namespace Presentation
                 string encryptedPassword = cryptoService.Compute(contrasena, salt);
 
                 // Guardar usuario con los datos decodificados
-                bool success = objUser.saveUser(nombre, apellido, correo, encryptedPassword, salt, rol, nivelEstudios);
+                // Asignar rol predeterminado (por ejemplo, "Estudiante")
+                bool success = objUser.saveUser(nombre, apellido, correo, encryptedPassword, salt, "Estudiante");
 
                 if (success)
                 {
@@ -91,8 +67,6 @@ namespace Presentation
             apellido = HttpUtility.HtmlDecode(TBLastName.Text.Trim());
             correo = HttpUtility.HtmlDecode(TBEmail.Text.Trim());
             contrasena = TBPassword.Text.Trim();
-            rol = DDLRole.SelectedValue;
-            nivelEstudios = DDLEducationLevel.SelectedValue;
 
             // Resetear mensajes de error
             LblNombreMessage.Visible = false;
@@ -147,30 +121,6 @@ namespace Presentation
                 return false;
             }
 
-            // Validar rol
-            if (string.IsNullOrEmpty(rol))
-            {
-                LblMessage.Text = "❌ Por favor seleccione un rol.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-                return false;
-            }
-
-            // Validar nivel educativo
-            if (string.IsNullOrEmpty(nivelEstudios))
-            {
-                LblMessage.Text = "❌ Por favor seleccione un nivel educativo.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-                return false;
-            }
-
-            // Validar si ya existe administrador
-            if (rol == "Administrador" && objUser.CheckAdminExists())
-            {
-                LblMessage.Text = "❌ Ya existe un Administrador. Por favor, designe otro rol.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-                return false;
-            }
-
             return true;
         }
 
@@ -192,8 +142,6 @@ namespace Presentation
             TBLastName.Text = string.Empty;
             TBEmail.Text = string.Empty;
             TBPassword.Text = string.Empty;
-            DDLRole.SelectedIndex = 0;
-            DDLEducationLevel.SelectedIndex = 0;
 
             // Limpiar mensajes
             LblNombreMessage.Visible = false;

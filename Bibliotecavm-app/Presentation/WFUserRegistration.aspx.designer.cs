@@ -96,24 +96,6 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.Label LblPasswordMessage;
 
         /// <summary>
-        /// Control DDLRole.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DDLRole;
-
-        /// <summary>
-        /// Control DDLEducationLevel.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList DDLEducationLevel;
-
-        /// <summary>
         /// Control BtnSave.
         /// </summary>
         /// <remarks>

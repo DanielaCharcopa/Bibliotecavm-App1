@@ -107,13 +107,13 @@
             <asp:Label ID="LblApellidoMessage" runat="server" CssClass="error-message" Visible="false"></asp:Label>
         </div>
 
-    <div class="form-group">
-        <label for="TBEmail" class="required-field">Correo Electrónico:</label>
-        <asp:TextBox ID="TBEmail" runat="server" CssClass="form-control"
-            aria-required="true" placeholder="ejemplo@gmail.com"
-            autocomplete="email"></asp:TextBox>
-        <asp:Label ID="LblCorreoMessage" runat="server" CssClass="error-message" Visible="false"></asp:Label>
-    </div>
+        <div class="form-group">
+            <label for="TBEmail" class="required-field">Correo Electrónico:</label>
+            <asp:TextBox ID="TBEmail" runat="server" CssClass="form-control"
+                aria-required="true" placeholder="ejemplo@gmail.com"
+                autocomplete="email"></asp:TextBox>
+            <asp:Label ID="LblCorreoMessage" runat="server" CssClass="error-message" Visible="false"></asp:Label>
+        </div>
         
         <div class="form-group">
             <label for="TBPassword" class="required-field">Contraseña:</label>
@@ -127,32 +127,6 @@
             <asp:Label ID="LblPasswordMessage" runat="server" CssClass="error-message" 
                 Text="La contraseña debe tener al menos 6 caracteres."></asp:Label>
             <small id="passwordHelp" class="password-hint">Mínimo 6 caracteres</small>
-        </div>
-        
-        <div class="form-group">
-            <label for="DDLRole" class="required-field">Rol:</label>
-            <asp:DropDownList ID="DDLRole" runat="server" CssClass="form-control" aria-required="true">
-                <asp:ListItem Text="Seleccione un rol" Value="" />
-                <asp:ListItem Text="Docente" Value="Docente" />
-                <asp:ListItem Text="Estudiante" Value="Estudiante" />
-            </asp:DropDownList>
-        </div>
-        
-        <div class="form-group">
-            <label for="DDLEducationLevel" class="required-field">Nivel Educativo:</label>
-            <asp:DropDownList ID="DDLEducationLevel" runat="server" CssClass="form-control">
-                <asp:ListItem Text="Seleccione un nivel" Value="" />
-                <asp:ListItem Text="Primaria" Value="Primaria" />
-                <asp:ListItem Text="Secundaria" Value="Secundaria" />
-                <asp:ListItem Text="Bachillerato" Value="Bachillerato" />
-                <asp:ListItem Text="Técnico" Value="Técnico" />
-                <asp:ListItem Text="Tecnólogo" Value="Tecnólogo" />
-                <asp:ListItem Text="Pregrado" Value="Pregrado" />
-                <asp:ListItem Text="Especialización" Value="Especialización" />
-                <asp:ListItem Text="Maestría" Value="Maestría" />
-                <asp:ListItem Text="Doctorado" Value="Doctorado" />
-                <asp:ListItem Text="Postdoctorado" Value="Postdoctorado" />
-            </asp:DropDownList>
         </div>
 
         <!-- Botón de Guardar -->
@@ -265,15 +239,15 @@
 
             // Validación visual en tiempo real
             var message = document.getElementById("<%= LblCorreoMessage.ClientID %>");
-    if (value.includes('@') && !value.endsWith('@gmail.com')) {
-        message.textContent = "❌ Solo se permiten correos de Gmail";
-        message.style.display = "block";
-    } else {
-        message.style.display = "none";
-    }
-});
+            if (value.includes('@') && !value.endsWith('@gmail.com')) {
+                message.textContent = "❌ Solo se permiten correos de Gmail";
+                message.style.display = "block";
+            } else {
+                message.style.display = "none";
+            }
+        });
 
-// Evitar que el usuario modifique el dominio @gmail.com
+        // Evitar que el usuario modifique el dominio @gmail.com
         document.getElementById("<%= TBEmail.ClientID %>").addEventListener('keydown', function (e) {
             var emailInput = this;
             var value = emailInput.value;
@@ -297,7 +271,6 @@
                 }, 10);
             }
         });
-
     </script>
     
     <style type="text/css">
@@ -367,18 +340,6 @@
             margin-bottom: 20px;
             border-radius: 5px;
             text-align: center;
-        }
-        
-        /* Dropdowns */
-        select.form-control {
-            height: 45px;
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231a237e'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 10px center;
-            background-size: 20px;
         }
         
         /* Responsividad */
