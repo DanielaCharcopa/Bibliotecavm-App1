@@ -46,7 +46,7 @@ namespace Data
         }
 
         // Registra un nuevo usuario en la base de datos
-        public bool saveUser(string nombre, string apellido, string correo, string contrasena, string salt, string rol, string nivelEstudios)
+        public bool saveUser(string nombre, string apellido, string correo, string contrasena, string salt, string rol)
         {
             bool executed = false;
 
@@ -61,11 +61,14 @@ namespace Data
             objInsertCmd.Parameters.Add("v_contrasena", MySqlDbType.Text).Value = contrasena;
             objInsertCmd.Parameters.Add("v_salt", MySqlDbType.Text).Value = salt;
             objInsertCmd.Parameters.Add("v_rol", MySqlDbType.String).Value = rol;
-            objInsertCmd.Parameters.Add("v_nivel_estudios", MySqlDbType.String).Value = nivelEstudios;
 
             try
             {
                 executed = objInsertCmd.ExecuteNonQuery() == 1;
+            }
+            catch (MySqlException ex) when (ex.Number == 1644)
+            {
+                throw new ApplicationException(ex.Message);
             }
             catch (Exception ex)
             {
@@ -79,10 +82,10 @@ namespace Data
             return executed;
         }
 
+
         // Modifica la información de un usuario existente
         public bool updateUser(int idUser, string nombre, string apellido, string correo,
-                       string contrasena, string salt, string rol,
-                       string nivelEstudios, string estado)
+                      string contrasena, string salt, string rol, string estado)
         {
             bool executed = false;
             MySqlConnection connection = null;
@@ -95,7 +98,6 @@ namespace Data
                 objUpdateCmd.CommandText = "procUpdateUsers";
                 objUpdateCmd.CommandType = CommandType.StoredProcedure;
 
-                // Parámetros exactamente como los tienes
                 objUpdateCmd.Parameters.Add("v_id", MySqlDbType.Int32).Value = idUser;
                 objUpdateCmd.Parameters.Add("v_nombre", MySqlDbType.VarChar).Value = nombre;
                 objUpdateCmd.Parameters.Add("v_apellido", MySqlDbType.VarChar).Value = apellido;
@@ -103,10 +105,9 @@ namespace Data
                 objUpdateCmd.Parameters.Add("v_contrasena", MySqlDbType.Text).Value = contrasena ?? "";
                 objUpdateCmd.Parameters.Add("v_salt", MySqlDbType.Text).Value = salt ?? "";
                 objUpdateCmd.Parameters.Add("v_rol", MySqlDbType.String).Value = rol;
-                objUpdateCmd.Parameters.Add("v_nivel_estudios", MySqlDbType.String).Value = nivelEstudios;
                 objUpdateCmd.Parameters.Add("v_estado", MySqlDbType.String).Value = estado;
+                objUpdateCmd.Parameters.Add("v_current_user_id", MySqlDbType.Int32).Value = -1; // Valor temporal
 
-                // Cambio mínimo aquí para capturar el resultado correctamente
                 var result = objUpdateCmd.ExecuteScalar();
                 if (result != null)
                 {
@@ -115,10 +116,9 @@ namespace Data
             }
             catch (MySqlException ex)
             {
-                // Manejo específico para error de correo duplicado
-                if (ex.Number == 1644) // Número de error para SIGNAL SQLSTATE '45000'
+                if (ex.Number == 1644)
                 {
-                    throw new ApplicationException("El correo electrónico ya está registrado en otro usuario.");
+                    throw new ApplicationException(ex.Message);
                 }
                 throw;
             }
@@ -130,6 +130,8 @@ namespace Data
 
             return executed;
         }
+
+
         // Comprueba si un correo ya está registrado
         public bool checkEmailExists(string correo)
         {
