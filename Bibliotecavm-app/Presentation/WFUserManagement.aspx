@@ -216,24 +216,9 @@
             <label for="DDLRole">Rol:</label>
             <asp:DropDownList ID="DDLRole" runat="server" CssClass="form-control">
                 <asp:ListItem Text="Seleccione un rol" Value="" />
+                <asp:ListItem Text="Administrador" Value="Administrador" />
                 <asp:ListItem Text="Docente" Value="Docente" />
                 <asp:ListItem Text="Estudiante" Value="Estudiante" />
-            </asp:DropDownList>
-        </div>
-        <div>
-            <label for="DDLEducationLevel">Nivel Educativo:</label>
-            <asp:DropDownList ID="DDLEducationLevel" runat="server" CssClass="form-control">
-                <asp:ListItem Text="Seleccione un nivel" Value="" />
-                <asp:ListItem Text="Primaria" Value="Primaria" />
-                <asp:ListItem Text="Secundaria" Value="Secundaria" />
-                <asp:ListItem Text="Bachillerato" Value="Bachillerato" />
-                <asp:ListItem Text="Técnico" Value="Técnico" />
-                <asp:ListItem Text="Tecnólogo" Value="Tecnólogo" />
-                <asp:ListItem Text="Pregrado" Value="Pregrado" />
-                <asp:ListItem Text="Especialización" Value="Especialización" />
-                <asp:ListItem Text="Maestría" Value="Maestría" />
-                <asp:ListItem Text="Doctorado" Value="Doctorado" />
-                <asp:ListItem Text="Postdoctorado" Value="Postdoctorado" />
             </asp:DropDownList>
         </div>
         
@@ -251,7 +236,7 @@
             <asp:Button ID="BtnSave" runat="server" Text="Guardar" OnClientClick="return validateForm();" OnClick="BtnSave_Click" CssClass="btn btn-primary" />
             <asp:Button ID="BtnUpdate" runat="server" Text="Actualizar" OnClick="BtnUpdate_Click" CssClass="btn btn-warning" />
             <asp:Button ID="BtnNew" runat="server" Text="Nuevo" OnClick="BtnNew_Click" CssClass="btn btn-info" />
-           
+            
         </div>
     </div>
     
@@ -299,7 +284,6 @@
             <asp:BoundField DataField="usu_apellido" HeaderText="Apellido" />
             <asp:BoundField DataField="usu_correo" HeaderText="Correo Electrónico" />
             <asp:BoundField DataField="usu_rol" HeaderText="Rol" />
-            <asp:BoundField DataField="usu_nivel_estudios" HeaderText="Nivel Educativo" />
             <asp:TemplateField HeaderText="Estado">
                 <ItemTemplate>
                     <span class='<%# Eval("usu_estado").ToString() == "Activo" ? "status-active" : "status-inactive" %>'>
