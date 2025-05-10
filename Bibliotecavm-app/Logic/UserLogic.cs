@@ -22,22 +22,26 @@ namespace Logic
             return objUserDat.showUsersDDL();
         }
 
-        // Método para guardar un nuevo Usuario
-        public bool saveUser(string nombre, string apellido, string correo, string contrasena, string salt, string rol, string nivelEstudios)
+        // Método para guardar un nuevo Usuario (actualizado sin nivelEstudios)
+
+        // En tu capa de lógica (UserLogic)
+        public bool saveUser(string nombre, string apellido, string correo, string contrasena, string salt, string rol)
         {
-            // Validaciones básicas
-            if (string.IsNullOrWhiteSpace(nombre) || string.IsNullOrWhiteSpace(apellido) ||
-                string.IsNullOrWhiteSpace(correo) || string.IsNullOrWhiteSpace(contrasena))
+            // Opcional: Verificar si ya hay 2 admins activos usando procSearchUsersByStatus
+            var admins = objUserDat.SearchUsersByStatus("", "Activo");
+            var adminCount = admins.Tables[0].Select("usu_rol = 'Administrador'").Length;
+
+            if (rol == "Administrador" && adminCount >= 2)
             {
-                throw new ArgumentException("Todos los campos obligatorios deben estar completos");
+                throw new ApplicationException("Solo pueden existir dos administradores en el sistema.");
             }
 
-            return objUserDat.saveUser(nombre, apellido, correo, contrasena, salt, rol, nivelEstudios);
+            return objUserDat.saveUser(nombre, apellido, correo, contrasena, salt, rol);
         }
 
         // Método para actualizar un Usuario
         public bool updateUser(int idUser, string nombre, string apellido, string correo,
-                             string contrasena, string salt, string rol, string nivelEstudios, string estado)
+                             string contrasena, string salt, string rol, string estado)
         {
             // Validaciones básicas
             if (idUser <= 0)
@@ -51,7 +55,7 @@ namespace Logic
                 throw new ArgumentException("Todos los campos obligatorios deben estar completos");
             }
 
-            return objUserDat.updateUser(idUser, nombre, apellido, correo, contrasena, salt, rol, nivelEstudios, estado);
+            return objUserDat.updateUser(idUser, nombre, apellido, correo, contrasena, salt, rol, estado);
         }
 
         // Método para borrar un Usuario
@@ -97,7 +101,7 @@ namespace Logic
             return objUser;
         }
 
-        // NUEVO MÉTODO PARA OBTENER DATOS DE USUARIO (SOLO SALT Y ESTADO)
+        // Método para obtener datos de usuario (solo salt y estado)
         public User GetUserForLogin(string correo)
         {
             if (string.IsNullOrWhiteSpace(correo))
@@ -105,8 +109,6 @@ namespace Logic
 
             return objUserDat.showUsersMail(correo);
         }
-
-
 
         // Método para verificar si un correo ya está registrado
         public bool isEmailRegistered(string correo)
@@ -185,7 +187,7 @@ namespace Logic
         private bool IsLastAdmin(int userId)
         {
             // Obtener el usuario actual
-            User user = objUserDat.showUsersMail(userId.ToString()); // Esto necesitaría ajustarse
+            User user = objUserDat.showUsersMail(userId.ToString());
 
             // Verificar si es administrador
             if (user?.Rol == "Administrador")
