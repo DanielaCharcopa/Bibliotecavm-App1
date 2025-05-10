@@ -12,7 +12,7 @@ namespace Presentation
     public partial class WFUserManagement : System.Web.UI.Page
     {
         UserLogic objUser = new UserLogic();
-        string nombre, apellido, correo, contrasena, salt, rol, nivelEstudios, estado;
+        string nombre, apellido, correo, contrasena, salt, rol, estado;
         int userId;
 
         protected void Page_Load(object sender, EventArgs e)
@@ -21,7 +21,6 @@ namespace Presentation
             {
                 LoadUsers();
                 CargarRoles();
-
                 PanelEditMode.Visible = false;
             }
         }
@@ -68,7 +67,6 @@ namespace Presentation
 
         protected void BtnSave_Click(object sender, EventArgs e)
         {
-            // Primero verificar si estamos en modo de actualización (tiene ID)
             if (!string.IsNullOrEmpty(HFUserId.Value))
             {
                 LblMessage.Text = "⚠️ Está intentando guardar un usuario que ya existe. Por favor, use el botón 'Actualizar' para modificar este usuario o haga clic en 'Nuevo' para crear uno diferente.";
@@ -87,7 +85,6 @@ namespace Presentation
 
             try
             {
-                // Verificar si el correo ya existe ANTES de intentar guardar
                 if (objUser.isEmailRegistered(correo))
                 {
                     LblMessage.Text = $"❌ El correo electrónico {correo} ya está registrado. Si desea modificar este usuario, búsquelo en la tabla y selecciónelo para editar.";
@@ -95,7 +92,7 @@ namespace Presentation
                     return;
                 }
 
-                bool success = objUser.saveUser(nombre, apellido, correo, encryptedPassword, salt, rol, nivelEstudios);
+                bool success = objUser.saveUser(nombre, apellido, correo, encryptedPassword, salt, rol);
 
                 if (success)
                 {
@@ -113,7 +110,6 @@ namespace Presentation
             }
             catch (Exception ex)
             {
-                // Mensaje más amigable para el usuario
                 if (ex.Message.Contains("Duplicate entry") && ex.Message.Contains("usu_correo"))
                 {
                     LblMessage.Text = $"❌ El correo electrónico {correo} ya está registrado en el sistema. No se pueden crear usuarios duplicados.";
@@ -135,19 +131,15 @@ namespace Presentation
                 return;
             }
 
-            // Obtener el ID del usuario
             userId = int.Parse(HFUserId.Value);
 
-            // Obtener los valores del formulario
             nombre = HttpUtility.HtmlDecode(TBFirstName.Text.Trim());
             apellido = HttpUtility.HtmlDecode(TBLastName.Text.Trim());
             correo = HttpUtility.HtmlDecode(TBEmail.Text.Trim());
             contrasena = TBPassword.Text.Trim();
             rol = DDLRole.SelectedValue;
-            nivelEstudios = DDLEducationLevel.SelectedValue;
             estado = DDLEstado.SelectedValue;
 
-            // Validar campos obligatorios
             if (string.IsNullOrEmpty(nombre))
             {
                 LblMessage.Text = "❌ El campo 'Nombre' es obligatorio.";
@@ -169,7 +161,6 @@ namespace Presentation
                 return;
             }
 
-            // Validar que el correo sea de Gmail
             if (!IsGmailEmail(correo))
             {
                 LblMessage.Text = "❌ Por favor, ingrese un correo electrónico válido de Gmail (ejemplo@gmail.com).";
@@ -184,14 +175,13 @@ namespace Presentation
                 return;
             }
 
-            if (string.IsNullOrEmpty(rol) || string.IsNullOrEmpty(nivelEstudios))
+            if (string.IsNullOrEmpty(rol))
             {
-                LblMessage.Text = "❌ Por favor seleccione un rol y un nivel educativo.";
+                LblMessage.Text = "❌ Por favor seleccione un rol.";
                 LblMessage.ForeColor = System.Drawing.Color.Red;
                 return;
             }
 
-            // Verificar si el correo ya está registrado en otro usuario
             if (objUser.isEmailRegistered(correo) && !IsCurrentUserEmail(correo))
             {
                 LblMessage.Text = "❌ El correo electrónico ya está registrado en otro usuario. Por favor, use un correo diferente.";
@@ -201,13 +191,11 @@ namespace Presentation
 
             try
             {
-                // Generar el salt y encriptar la contraseña
                 ICryptoService cryptoService = new PBKDF2();
                 salt = cryptoService.GenerateSalt();
                 string encryptedPassword = cryptoService.Compute(contrasena, salt);
 
-                // Actualizar el usuario con los datos decodificados
-                bool success = objUser.updateUser(userId, nombre, apellido, correo, encryptedPassword, salt, rol, nivelEstudios, estado);
+                bool success = objUser.updateUser(userId, nombre, apellido, correo, encryptedPassword, salt, rol, estado);
 
                 if (success)
                 {
@@ -216,7 +204,6 @@ namespace Presentation
                     ClearForm();
                     LoadUsers();
                     CargarRoles();
-
                     PanelEditMode.Visible = false;
                 }
                 else
@@ -230,7 +217,6 @@ namespace Presentation
             }
             catch (Exception ex)
             {
-                // Capturar errores específicos de MySQL
                 if (ex.Message.Contains("El correo electrónico ya está registrado"))
                 {
                     LblMessage.Text = "❌ El correo electrónico ya está registrado en otro usuario.";
@@ -239,44 +225,6 @@ namespace Presentation
                 {
                     LblMessage.Text = "❌ Error inesperado al actualizar: " + ex.Message;
                 }
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-            }
-        }
-
-        protected void BtnActivate_Click(object sender, EventArgs e)
-        {
-            userId = int.Parse(HFUserId.Value);
-            bool success = objUser.ActivateUser(userId);
-
-            if (success)
-            {
-                LblMessage.Text = "✅ Usuario activado con éxito.";
-                LblMessage.ForeColor = System.Drawing.Color.Green;
-                LoadUsers();
-                DDLEstado.SelectedValue = "Activo";
-            }
-            else
-            {
-                LblMessage.Text = "❌ Error al activar el usuario.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-            }
-        }
-
-        protected void BtnDeactivate_Click(object sender, EventArgs e)
-        {
-            userId = int.Parse(HFUserId.Value);
-            bool success = objUser.DeactivateUser(userId);
-
-            if (success)
-            {
-                LblMessage.Text = "✅ Usuario desactivado con éxito.";
-                LblMessage.ForeColor = System.Drawing.Color.Green;
-                LoadUsers();
-                DDLEstado.SelectedValue = "Inactivo";
-            }
-            else
-            {
-                LblMessage.Text = "❌ Error al desactivar el usuario.";
                 LblMessage.ForeColor = System.Drawing.Color.Red;
             }
         }
@@ -304,7 +252,6 @@ namespace Presentation
             correo = HttpUtility.HtmlDecode(TBEmail.Text.Trim());
             contrasena = TBPassword.Text.Trim();
             rol = DDLRole.SelectedValue;
-            nivelEstudios = DDLEducationLevel.SelectedValue;
 
             if (string.IsNullOrEmpty(nombre))
             {
@@ -341,13 +288,6 @@ namespace Presentation
                 return false;
             }
 
-            if (string.IsNullOrEmpty(nivelEstudios))
-            {
-                LblMessage.Text = "❌ Por favor seleccione un nivel educativo.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-                return false;
-            }
-
             if (rol == "Administrador" && objUser.CheckAdminExists() && !IsCurrentUserAdmin())
             {
                 LblMessage.Text = "❌ Ya existe un Administrador. Por favor, designe otro rol.";
@@ -366,7 +306,6 @@ namespace Presentation
             TBEmail.Text = string.Empty;
             TBPassword.Text = string.Empty;
             DDLRole.SelectedIndex = 0;
-            DDLEducationLevel.SelectedIndex = 0;
             DDLEstado.SelectedValue = "Activo";
             TxtBuscarCorreo.Text = string.Empty;
             BtnSave.Text = "Guardar";
@@ -391,22 +330,12 @@ namespace Presentation
                     DDLRole.SelectedValue = selectedRole;
                 }
 
-                string selectedEducationLevel = HttpUtility.HtmlDecode(selectedRow.Cells[5].Text.Trim());
-                if (!string.IsNullOrEmpty(selectedEducationLevel) && DDLEducationLevel.Items.FindByValue(selectedEducationLevel) != null)
-                {
-                    DDLEducationLevel.SelectedValue = selectedEducationLevel;
-                }
-
-                string userStatus = HttpUtility.HtmlDecode(selectedRow.Cells[6].Text.Trim());
+                string userStatus = HttpUtility.HtmlDecode(selectedRow.Cells[5].Text.Trim());
                 DDLEstado.SelectedValue = userStatus;
 
-                // Actualizar botones de estado
-
-                // Cambiar el texto del botón Guardar para indicar modo edición
                 BtnSave.Text = "Guardar como nuevo";
                 BtnSave.ToolTip = "Crear un nuevo usuario con estos datos (el usuario actual no se modificará)";
 
-                // Mostrar panel de edición
                 PanelEditMode.Visible = true;
 
                 LblMessage.Text = $"✏️ Editando usuario: {TBFirstName.Text} {TBLastName.Text}. Use 'Actualizar' para guardar cambios.";
@@ -419,12 +348,12 @@ namespace Presentation
             }
         }
 
-
-
         private bool IsGmailEmail(string email)
         {
             return Regex.IsMatch(email, @"^[a-zA-Z0-9._%+-]+@gmail\.com$");
         }
+
+
 
         private bool IsCurrentUserEmail(string email)
         {
