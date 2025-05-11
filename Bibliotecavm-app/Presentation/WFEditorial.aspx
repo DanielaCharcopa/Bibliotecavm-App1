@@ -1,10 +1,15 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MainAdmin.Master" AutoEventWireup="true" CodeBehind="WFEditorial.aspx.cs" Inherits="Presentation.WFEditorial" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <style>
+        .table thead {
+            background-color: #343a40;
+            color: white;
+        }
+    </style>
 </asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <h2>Gestión de Editoriales</h2>
-
-    <%-- Formulario para agregar o editar Editorial --%>
 
     <div>
         <asp:HiddenField ID="HFEditorialId" runat="server" />
@@ -27,20 +32,19 @@
         <asp:Label ID="LblMessage" runat="server" Text="" ForeColor="green"></asp:Label>
     </div>
 
-    <div>
-        <%-- Grid para mostrar Editoriales --%>
+    <div class="mt-4">
         <asp:GridView ID="GVEditorial" runat="server" AutoGenerateColumns="False"
-            OnSelectedIndexChanged="GVEditorial_SelectedIndexChanged"
-           >
+            CssClass="table table-bordered table-hover"
+            OnSelectedIndexChanged="GVEditorial_SelectedIndexChanged">
             <Columns>
-
-                <%--<asp:BoundField DataField="edi_id" HeaderText="ID" />--%>
+                <asp:BoundField DataField="edi_id" HeaderText="ID" />
                 <asp:BoundField DataField="edi_nombre" HeaderText="Nombre" />
                 <asp:BoundField DataField="edi_ciudad" HeaderText="Ciudad" />
                 <asp:BoundField DataField="edi_telefono" HeaderText="Teléfono" />
                 <asp:BoundField DataField="edi_correo" HeaderText="Correo" />
-                <asp:CommandField HeaderText="Opción" ShowSelectButton="True" />
+                <asp:CommandField HeaderText="Opción" ShowSelectButton="True" SelectText="Seleccionar" ButtonType="Button" />
             </Columns>
         </asp:GridView>
     </div>
 </asp:Content>
+
