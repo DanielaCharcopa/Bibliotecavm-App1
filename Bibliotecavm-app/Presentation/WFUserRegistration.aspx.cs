@@ -25,33 +25,30 @@ namespace Presentation
 
             try
             {
-                // Verificar si el correo ya está registrado
-                if (objUser.isEmailRegistered(correo))
-                {
-                    LblMessage.Text = "❌ El correo electrónico ya está registrado. Por favor, use otro correo.";
-                    LblMessage.ForeColor = System.Drawing.Color.Red;
-                    return;
-                }
+
+
 
                 // Generar el salt y encriptar la contraseña
                 ICryptoService cryptoService = new PBKDF2();
                 salt = cryptoService.GenerateSalt();
                 string encryptedPassword = cryptoService.Compute(contrasena, salt);
 
-                // Guardar usuario con los datos decodificados
-                // Asignar rol predeterminado (por ejemplo, "Estudiante")
-                bool success = objUser.saveUser(nombre, apellido, correo, encryptedPassword, salt, "Estudiante");
+                // Guardar usuario - ahora recibe el ID del nuevo usuario
+                int newUserId = objUser.saveUser(nombre, apellido, correo, encryptedPassword, salt, "Estudiante");
 
-                if (success)
+                if (newUserId > 0)
                 {
                     // Redirigir a Default.aspx con parámetro de éxito
-                    Response.Redirect("~/Default.aspx?reg=success", false);
+                    Response.Redirect("~/Default.aspx?reg=success&id=" + newUserId, false);
                 }
                 else
                 {
-                    LblMessage.Text = "❌ Error al guardar el usuario. Por favor, intente nuevamente.";
+                    LblMessage.Text = "❌ Error al guardar el usuario. No se recibió un ID válido.";
                     LblMessage.ForeColor = System.Drawing.Color.Red;
                 }
+
+                LblMessage.Text = "❌ El correo electrónico ya está registrado. Por favor, use otro correo.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
             }
             catch (Exception ex)
             {
@@ -59,7 +56,6 @@ namespace Presentation
                 LblMessage.ForeColor = System.Drawing.Color.Red;
             }
         }
-
         private bool ValidarCampos()
         {
             // Obtener y decodificar valores del formulario
