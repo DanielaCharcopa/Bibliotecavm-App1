@@ -92,7 +92,8 @@ namespace Presentation
                     return;
                 }
 
-                bool success = objUser.saveUser(nombre, apellido, correo, encryptedPassword, salt, rol);
+                int userId = objUser.saveUser(nombre, apellido, correo, encryptedPassword, salt, rol);
+                bool success = userId > 0;
 
                 if (success)
                 {
