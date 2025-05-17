@@ -16,26 +16,15 @@ namespace Logic
             return objUserDat.showUsers();
         }
 
-        // Método para mostrar solamente el ID y el nombre completo de los Usuarios (DDL)
+        // Método para mostrar ID y nombre completo (DDL)
         public DataSet showUserDDL()
         {
             return objUserDat.showUsersDDL();
         }
 
-        // Método para guardar un nuevo Usuario (actualizado sin nivelEstudios)
-
-        // En tu capa de lógica (UserLogic)
-        public bool saveUser(string nombre, string apellido, string correo, string contrasena, string salt, string rol)
+        // Método para guardar un nuevo Usuario (versión simplificada)
+        public int saveUser(string nombre, string apellido, string correo, string contrasena, string salt, string rol)
         {
-            // Opcional: Verificar si ya hay 2 admins activos usando procSearchUsersByStatus
-            var admins = objUserDat.SearchUsersByStatus("", "Activo");
-            var adminCount = admins.Tables[0].Select("usu_rol = 'Administrador'").Length;
-
-            if (rol == "Administrador" && adminCount >= 2)
-            {
-                throw new ApplicationException("Solo pueden existir dos administradores en el sistema.");
-            }
-
             return objUserDat.saveUser(nombre, apellido, correo, contrasena, salt, rol);
         }
 
@@ -43,38 +32,14 @@ namespace Logic
         public bool updateUser(int idUser, string nombre, string apellido, string correo,
                              string contrasena, string salt, string rol, string estado)
         {
-            // Validaciones básicas
-            if (idUser <= 0)
-            {
-                throw new ArgumentException("ID de usuario inválido");
-            }
-
-            if (string.IsNullOrWhiteSpace(nombre) || string.IsNullOrWhiteSpace(apellido) ||
-                string.IsNullOrWhiteSpace(correo))
-            {
-                throw new ArgumentException("Todos los campos obligatorios deben estar completos");
-            }
-
             return objUserDat.updateUser(idUser, nombre, apellido, correo, contrasena, salt, rol, estado);
         }
 
         // Método para borrar un Usuario
         public bool deleteUser(int idUser)
         {
-            if (idUser <= 0)
-            {
-                throw new ArgumentException("ID de usuario inválido");
-            }
-
-            // Verificar que no sea el último administrador
-            if (IsLastAdmin(idUser))
-            {
-                throw new InvalidOperationException("No se puede eliminar el último administrador del sistema");
-            }
-
             return objUserDat.deleteUser(idUser);
         }
-
         // Método para validar el login de usuario
         public User validateUserLogin(string correo, string contrasenaEncriptada)
         {
