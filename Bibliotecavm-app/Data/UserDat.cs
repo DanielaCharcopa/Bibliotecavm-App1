@@ -45,43 +45,27 @@ namespace Data
             return objData;
         }
 
+        // Registra un nuevo usuario en la base de datos (ajustado para el SP simplificado)
         // Registra un nuevo usuario en la base de datos
-        public bool saveUser(string nombre, string apellido, string correo, string contrasena, string salt, string rol)
+        public int saveUser(string nombre, string apellido, string correo, string contrasena, string salt, string rol)
         {
-            bool executed = false;
-
             MySqlCommand objInsertCmd = new MySqlCommand();
             objInsertCmd.Connection = objPer.openConnection();
             objInsertCmd.CommandText = "procInsertUsers";
             objInsertCmd.CommandType = CommandType.StoredProcedure;
 
-            objInsertCmd.Parameters.Add("v_nombre", MySqlDbType.VarChar).Value = nombre;
-            objInsertCmd.Parameters.Add("v_apellido", MySqlDbType.VarChar).Value = apellido;
-            objInsertCmd.Parameters.Add("v_correo", MySqlDbType.VarChar).Value = correo;
+            objInsertCmd.Parameters.Add("v_nombre", MySqlDbType.VarChar, 50).Value = nombre;
+            objInsertCmd.Parameters.Add("v_apellido", MySqlDbType.VarChar, 50).Value = apellido;
+            objInsertCmd.Parameters.Add("v_correo", MySqlDbType.VarChar, 80).Value = correo;
             objInsertCmd.Parameters.Add("v_contrasena", MySqlDbType.Text).Value = contrasena;
             objInsertCmd.Parameters.Add("v_salt", MySqlDbType.Text).Value = salt;
             objInsertCmd.Parameters.Add("v_rol", MySqlDbType.String).Value = rol;
 
-            try
-            {
-                executed = objInsertCmd.ExecuteNonQuery() == 1;
-            }
-            catch (MySqlException ex) when (ex.Number == 1644)
-            {
-                throw new ApplicationException(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: " + ex.Message);
-            }
-            finally
-            {
-                objPer.closeConnection();
-            }
+            var result = objInsertCmd.ExecuteScalar();
+            objPer.closeConnection();
 
-            return executed;
+            return Convert.ToInt32(result);
         }
-
 
         // Modifica la información de un usuario existente
         public bool updateUser(int idUser, string nombre, string apellido, string correo,
