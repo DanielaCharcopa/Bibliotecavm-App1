@@ -45,8 +45,7 @@ namespace Data
             return objData;
         }
 
-        // Registra un nuevo usuario en la base de datos (ajustado para el SP simplificado)
-        // Registra un nuevo usuario en la base de datos
+        // Registra un nuevo usuario en la base de datos 
         public int saveUser(string nombre, string apellido, string correo, string contrasena, string salt, string rol)
         {
             MySqlCommand objInsertCmd = new MySqlCommand();
