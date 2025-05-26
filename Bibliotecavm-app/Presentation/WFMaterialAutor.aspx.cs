@@ -2,279 +2,357 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace Presentation
 {
+    public class Datosformulario
+    {
+        public int idDropAutor { get; set; }
+        public int idDropMaterial { get; set; }
+        public int idMaterial { get; set; }
+        public int idAutor { get; set; }
+        public string descripcion { get; set; }
+    }
+
     public partial class WFMaterialAutor : System.Web.UI.Page
     {
         MaterialAutorLog objMat = new MaterialAutorLog();
         MaterialEducativoLog objMatEdu = new MaterialEducativoLog();
         AuthorsLog objAut = new AuthorsLog();
 
-
+        public static List<Datosformulario> datosformularios = new List<Datosformulario>();
+        private int FormularioCount
+        {
+            get => ViewState["FormularioCount"] != null ? (int)ViewState["FormularioCount"] : 0;
+            set => ViewState["FormularioCount"] = value;
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
+            if (Session["FormularioCount"] != null)
             {
-                showMaterialAutor();
-              
+                FormularioCount = (int)Session["FormularioCount"];
+
+                for (int i = 1; i <= FormularioCount; i++)
+                {
+                    AgregarFormularioDinamico(i); // Función que agrega los controles al placeholder
+                }
             }
 
+            if (!IsPostBack)
+            {
+                CargarDDLEstaticos();
+                showMaterialAutor();
+            }
+        }
+
+
+        private void CargarDDLEstaticos()
+        {
+            DDLMatEdu.DataSource = objMatEdu.showMaterialEduDDL();
+            DDLMatEdu.DataValueField = "mat_id";
+            DDLMatEdu.DataTextField = "mat_titulo";
+            DDLMatEdu.DataBind();
+            DDLMatEdu.Items.Insert(0, new ListItem("Seleccione un Material", "0"));
+
+            DDLAutor.DataSource = objAut.showAuthorsDDL();
+            DDLAutor.DataValueField = "au_id";
+            DDLAutor.DataTextField = "nombre_completo";
+            DDLAutor.DataBind();
+            DDLAutor.Items.Insert(0, new ListItem("Seleccione un Autor", "0"));
         }
 
         private void showMaterialAutor()
         {
-            DataSet ds = objMat.showMaterialAutor();
-            GVMaterialAutor.DataSource = ds;
-            GVMaterialAutor.DataBind();
-
-        }
-
-       
-            public class MaterialAutorEntry
-            {
-                public int MaterialID { get; set; }
-                public string MaterialNombre { get; set; }
-                public int AutorID { get; set; }
-                public string AutorNombre { get; set; }
-                public string Descripcion { get; set; }
-            }
-
-
-
-        protected void BtnAddEntry_Click(object sender, EventArgs e)
-            {
-                // Obtener la lista desde ViewState o inicializarla
-                List<MaterialAutorEntry> entries = ViewState["Entries"] as List<MaterialAutorEntry> ?? new List<MaterialAutorEntry>();
-
-                // Obtener los textos/nombres de los seleccionados
-                string materialNombre = DDLMatEdu.SelectedItem.Text;
-                string autorNombre = DDLAutor.SelectedItem.Text;
-
-                // Agregar nueva entrada
-                entries.Add(new MaterialAutorEntry
-                {
-                    MaterialID = int.Parse(DDLMatEdu.SelectedValue),
-                    MaterialNombre = materialNombre,
-                    AutorID = int.Parse(DDLAutor.SelectedValue),
-                    AutorNombre = autorNombre,
-                    Descripcion = TBDescription.Text
-                });
-
-                // Guardar en ViewState
-                ViewState["Entries"] = entries;
-
-                // Mostrar en GridView
-                GVMaterialAutor.DataSource = entries;
-                GVMaterialAutor.DataBind();
-
-                // Limpiar los campos
-                DDLMatEdu.SelectedIndex = 0;
-                DDLAutor.SelectedIndex = 0;
-                TBDescription.Text = "";
-            }
-
-        
-
-
-
-        protected void GVMaterialAutor_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            int rowIndex = GVMaterialAutor.SelectedIndex;
-
-            if (rowIndex >= 0)
-            {
-                try
-                {
-                    // Material
-                    string MaterialSeleccionado = HttpUtility.HtmlDecode(GVMaterialAutor.SelectedRow.Cells[1].Text.Trim());
-                    Console.WriteLine("MaterialSeleccionado: " + MaterialSeleccionado); // Depuración
-
-                    bool MaterialEncontrado = false;
-                    foreach (ListItem item in DDLMatEdu.Items)
-                    {
-                        Console.WriteLine("DDLMatEdu Item Text: " + item.Text.Trim() + ", Value: " + item.Value); // Depuración
-                        if (item.Text.Trim().Equals(MaterialSeleccionado, StringComparison.OrdinalIgnoreCase))
-                        {
-                            DDLMatEdu.SelectedValue = item.Value;
-                            MaterialEncontrado = true;
-                            break;
-                        }
-                    }
-                    if (!MaterialEncontrado)
-                    {
-                        DDLMatEdu.SelectedIndex = 0;
-                    }
-
-                    // Autor
-                    string AutorSeleccionado = HttpUtility.HtmlDecode(GVMaterialAutor.SelectedRow.Cells[2].Text.Trim());
-                    Console.WriteLine("AutorSeleccionado: " + AutorSeleccionado); // Depuración
-
-                    bool AutorEncontrado = false;
-                    foreach (ListItem item in DDLAutor.Items)
-                    {
-                        Console.WriteLine("DDLAutor Item Text: " + item.Text.Trim() + ", Value: " + item.Value); // Depuración
-                        if (item.Text.Trim().Equals(AutorSeleccionado, StringComparison.OrdinalIgnoreCase))
-                        {
-                            DDLAutor.SelectedValue = item.Value;
-                            AutorEncontrado = true;
-                            break;
-                        }
-                    }
-                    if (!AutorEncontrado)
-                    {
-                        DDLAutor.SelectedIndex = 0;
-                    }
-
-                    TBDescription.Text = GVMaterialAutor.Rows[rowIndex].Cells[3].Text;
-                    LblMessage.Text = "Material seleccionado correctamente.";
-                    LblMessage.ForeColor = System.Drawing.Color.Green;
-                }
-                catch (Exception ex)
-                {
-                    // Manejar la excepción (mostrar un mensaje de error, registrar, etc.)
-                    Console.WriteLine("Error al seleccionar: " + ex.Message);
-                }
-            }
-        }
-        private void clear()
-        {
-            HFMaterialAutorID.Value = "";
-            DDLMatEdu.SelectedIndex = 0;
-            DDLAutor.SelectedIndex = 0;
-            TBDescription.Text = string.Empty;
-        }
-
-        protected void BtnUpdate_Click(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty(HFMaterialAutorID.Value) && int.TryParse(HFMaterialAutorID.Value, out int id))
-            {
-
-                int Material = Convert.ToInt32(DDLMatEdu.SelectedValue);
-                int Autor = Convert.ToInt32(DDLAutor.SelectedValue);
-                string description = TBDescription.Text;
-
-                bool executed = objMat.updateMaterialAutor(id, Material, Autor, description);
-                if (executed)
-                {
-                    LblMessage.Text = "¡Material Autor actualizado exitosamente!";
-                    clear();
-                    showMaterialAutor();
-                }
-                else
-                {
-                    LblMessage.Text = "Error al actualizar el Material Autor.";
-                }
-            }
-            else
-            {
-                LblMessage.Text = "Error: No se ha seleccionado un Material Autor válido para actualizar.";
-            }
-
-
-        }
-
-        protected void BtnDelete_Click(object sender, EventArgs e)
-        {
-
-
-            if (!string.IsNullOrEmpty(HFMaterialAutorID.Value) && int.TryParse(HFMaterialAutorID.Value, out int id))
-            {
-                bool executed = objMat.deleteMaterialAutor(id);
-
-                if (executed)
-                {
-                    LblMessage.Text = "¡Material Autor eliminada exitosamente!";
-                    clear();
-                    showMaterialAutor();
-                }
-                else
-                {
-                    LblMessage.Text = "Error al eliminar el material autor.";
-                }
-            }
-            else
-            {
-                LblMessage.Text = "Error: No se ha seleccionado un Material Autor válida para eliminar.";
-            }
-
-        }
-        protected void BtnSearch_Click(object sender, EventArgs e)
-        {
-            // Obtener el texto de búsqueda y convertirlo a minúsculas
-            string searchText = TBSearch.Text.Trim().ToLower();
-
-            // Obtener todos los materiales desde la lógica de negocio
-            DataSet ds = objMat.showMaterialAutor();
-
-            // Verificar si el DataSet tiene datos
-            if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-            {
-                // Crear un DataView para aplicar el filtro
-                DataView dv = ds.Tables[0].DefaultView;
-
-                // Aplicar el filtro si hay texto de búsqueda
-                if (!string.IsNullOrEmpty(searchText))
-                {
-                    dv.RowFilter = $"material_titulo LIKE '%{searchText}%' OR nombre_autor LIKE '%{searchText}%'";
-
-
-
-                }
-
-                // Enlazar el DataView al GridView
-                GVMaterialAutor.DataSource = dv;
-            }
-            else
-            {
-                // Si no hay datos, enlazar un DataSet vacío al GridView
-                GVMaterialAutor.DataSource = ds;
-            }
-
-            // Actualizar el GridView
+            GVMaterialAutor.DataSource = objMat.showMaterialAutor();
             GVMaterialAutor.DataBind();
         }
+
+        protected void BtnAgregarFormulario_Click(object sender, EventArgs e)
+        {
+            FormularioCount++;
+            AgregarFormularioDinamico(FormularioCount);
+
+            Session["FormularioCount"] = FormularioCount; // ← ¡IMPORTANTE!
+        }
+
+
+        private void AgregarFormularioDinamico(int index)
+        {
+            Panel panel = new Panel { CssClass = "form-section d-flex align-items-start gap-3 flex-wrap" };
+
+            DropDownList ddlMaterial = new DropDownList
+            {
+                ID = $"DDLMatEdu_{index}",
+                CssClass = "form-select"
+            };
+            ddlMaterial.DataSource = objMatEdu.showMaterialEduDDL();
+            ddlMaterial.DataValueField = "mat_id";
+            ddlMaterial.DataTextField = "mat_titulo";
+            ddlMaterial.DataBind();
+            ddlMaterial.Items.Insert(0, new ListItem("Seleccione un Material", "0"));
+
+            DropDownList ddlAutor = new DropDownList
+            {
+                ID = $"DDLAutor_{index}",
+                CssClass = "form-select"
+            };
+            ddlAutor.DataSource = objAut.showAuthorsDDL();
+            ddlAutor.DataValueField = "au_id";
+            ddlAutor.DataTextField = "nombre_completo";
+            ddlAutor.DataBind();
+            ddlAutor.Items.Insert(0, new ListItem("Seleccione un Autor", "0"));
+
+            TextBox tbDescripcion = new TextBox
+            {
+                ID = $"TBDescripcion_{index}",
+                CssClass = "form-control"
+            };
+
+            panel.Controls.Add(new Literal { Text = "<div class='form-group'><label class='form-label'>Material Educativo</label>" });
+            panel.Controls.Add(ddlMaterial);
+            panel.Controls.Add(new Literal { Text = "</div>" });
+
+            panel.Controls.Add(new Literal { Text = "<div class='form-group'><label class='form-label'>Autor</label>" });
+            panel.Controls.Add(ddlAutor);
+            panel.Controls.Add(new Literal { Text = "</div>" });
+
+            panel.Controls.Add(new Literal { Text = "<div class='form-group'><label class='form-label'>Descripción</label>" });
+            panel.Controls.Add(tbDescripcion);
+            panel.Controls.Add(new Literal { Text = "</div><hr>" });
+
+            phContenedor.Controls.Add(panel);
+
+
+        }
+
+
+
+
+
 
         protected void BtnSaveAll_Click(object sender, EventArgs e)
         {
             try
             {
-                int Material = Convert.ToInt32(DDLMatEdu.SelectedValue);
-                int Autor = Convert.ToInt32(DDLAutor.SelectedValue);
-                string description = TBDescription.Text;
+                bool allSaved = true;
 
-                if (Material == 0 || Autor == 0 || string.IsNullOrEmpty(description))
+                // 1. Guardar formulario ESTÁTICO
+                if (int.TryParse(DDLMatEdu.SelectedValue, out int matEstatico) &&
+                    int.TryParse(DDLAutor.SelectedValue, out int autEstatico))
                 {
+                    string descEstatico = TBDescription.Text;
+                    if (matEstatico > 0 && autEstatico > 0)
+                    {
+                        if (string.IsNullOrWhiteSpace(descEstatico))
+                        {
+                            descEstatico = "N/A";
+                        }
 
-
-                    LblMessage.Text = "Debe ingresar todos los datos correctamente.";
-                    LblMessage.ForeColor = System.Drawing.Color.Red;
-                    return;
-                }
-                bool executed = objMat.saveMaterialAutor(Material, Autor, description);
-                if (executed)
-                {
-                    LblMessage.Text = "El material autor se guardó exitosamente!";
-                    LblMessage.ForeColor = System.Drawing.Color.Green;
-                    showMaterialAutor(); // Método para actualizar la lista
-                    clear(); // Método para limpiar los inputs
+                        if (!objMat.saveMaterialAutor(matEstatico, autEstatico, descEstatico))
+                        {
+                            allSaved = false;
+                        }
+                    }
+                    else
+                    {
+                        allSaved = false;
+                    }
                 }
                 else
                 {
-                    LblMessage.Text = "Error al guardar el material.";
-                    LblMessage.ForeColor = System.Drawing.Color.Red;
+                    allSaved = false;
+                }
+
+                // 2. Guardar formularios DINÁMICOS
+                for (int i = 1; i <= FormularioCount; i++)
+                {
+                    DropDownList ddlMat = phContenedor.FindControl($"DDLMatEdu_{i}") as DropDownList;
+                    DropDownList ddlAut = phContenedor.FindControl($"DDLAutor_{i}") as DropDownList;
+                    TextBox tbDesc = phContenedor.FindControl($"TBDescripcion_{i}") as TextBox;
+
+                    if (ddlMat != null && ddlAut != null && tbDesc != null)
+                    {
+                        if (int.TryParse(ddlMat.SelectedValue, out int mat) &&
+                            int.TryParse(ddlAut.SelectedValue, out int aut))
+                        {
+                            string desc = tbDesc.Text;
+
+                            if (mat > 0 && aut > 0)
+                            {
+                                if (string.IsNullOrWhiteSpace(desc))
+                                {
+                                    desc = "N/A";
+                                }
+
+                                if (!objMat.saveMaterialAutor(mat, aut, desc))
+                                {
+                                    allSaved = false;
+                                }
+                            }
+                            else
+                            {
+                                allSaved = false;
+                            }
+                        }
+                        else
+                        {
+                            allSaved = false;
+                        }
+                    }
+                }
+
+                // Mensaje final
+                LblMessage.Text = allSaved
+                    ? "¡Todos los registros fueron guardados correctamente!"
+                    : "Hubo errores al guardar uno o más formularios.";
+                LblMessage.ForeColor = allSaved ? System.Drawing.Color.Green : System.Drawing.Color.Red;
+
+                if (allSaved)
+                {
+                    showMaterialAutor();
+
+                    // Limpiar controles estáticos
+                    DDLMatEdu.SelectedIndex = 0;
+                    DDLAutor.SelectedIndex = 0;
+                    TBDescription.Text = "";
+
+                    // Limpiar controles dinámicos
+                    phContenedor.Controls.Clear();
+
+                    // Reiniciar contador y sesión
+                    FormularioCount = 0;
+                    ViewState["FormularioCount"] = 0;
+                    Session["FormularioCount"] = 0;
                 }
             }
             catch (Exception ex)
             {
-                LblMessage.Text = "Error inesperado: " + ex.Message;
+                LblMessage.Text = "Error inesperado al guardar: " + ex.Message;
                 LblMessage.ForeColor = System.Drawing.Color.Red;
             }
+        }
+
+
+        protected void BtnSearch_Click(object sender, EventArgs e)
+        {
+            string searchText = TBSearch.Text.Trim().ToLower();
+            DataSet ds = objMat.showMaterialAutor();
+
+            if (ds != null && ds.Tables.Count > 0)
+            {
+                DataView dv = ds.Tables[0].DefaultView;
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    dv.RowFilter = $"material_titulo LIKE '%{searchText}%' OR nombre_autor LIKE '%{searchText}%'";
+                }
+                GVMaterialAutor.DataSource = dv;
+                GVMaterialAutor.DataBind();
+            }
+        }
+
+        protected void GVMaterialAutor_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int rowIndex = GVMaterialAutor.SelectedIndex;
+            if (rowIndex >= 0)
+            {
+                string matTitulo = HttpUtility.HtmlDecode(GVMaterialAutor.SelectedRow.Cells[1].Text.Trim());
+                string autorNombre = HttpUtility.HtmlDecode(GVMaterialAutor.SelectedRow.Cells[2].Text.Trim());
+
+                DDLMatEdu.SelectedIndex = DDLMatEdu.Items.IndexOf(DDLMatEdu.Items.FindByText(matTitulo)) != -1
+                    ? DDLMatEdu.Items.IndexOf(DDLMatEdu.Items.FindByText(matTitulo)) : 0;
+
+                DDLAutor.SelectedIndex = DDLAutor.Items.IndexOf(DDLAutor.Items.FindByText(autorNombre)) != -1
+                    ? DDLAutor.Items.IndexOf(DDLAutor.Items.FindByText(autorNombre)) : 0;
+
+                TBDescription.Text = GVMaterialAutor.Rows[rowIndex].Cells[3].Text;
+                HFMaterialAutorID.Value = GVMaterialAutor.DataKeys[rowIndex].Value.ToString();
+            }
+        }
+
+        protected void BtnUpdate_Click(object sender, EventArgs e)
+        {
+            if (int.TryParse(HFMaterialAutorID.Value, out int idMaterial))
+            {
+                bool allUpdated = true;
+
+                // 1. Eliminar registros actuales del material educativo
+                bool deleted = objMat.deleteMaterialAutor(idMaterial);
+                if (!deleted)
+                {
+                    LblMessage.Text = "Error al limpiar registros anteriores.";
+                    LblMessage.ForeColor = System.Drawing.Color.Red;
+                    return;
+                }
+
+                // 2. Guardar el formulario estático
+                int autEstatico = int.Parse(DDLAutor.SelectedValue);
+                string descEstatico = TBDescription.Text;
+                if (autEstatico > 0)
+                {
+                    if (string.IsNullOrWhiteSpace(descEstatico)) descEstatico = "N/A";
+                    allUpdated &= objMat.saveMaterialAutor(idMaterial, autEstatico, descEstatico);
+                }
+
+                // 3. Guardar los formularios dinámicos
+                for (int i = 1; i <= FormularioCount; i++)
+                {
+                    DropDownList ddlAut = (DropDownList)phContenedor.FindControl($"DDLAutor_{i}");
+                    TextBox tbDesc = (TextBox)phContenedor.FindControl($"TBDescripcion_{i}");
+
+                    if (ddlAut != null && tbDesc != null)
+                    {
+                        int aut = int.Parse(ddlAut.SelectedValue);
+                        string desc = tbDesc.Text;
+
+                        if (aut > 0)
+                        {
+                            if (string.IsNullOrWhiteSpace(desc)) desc = "N/A";
+                            allUpdated &= objMat.saveMaterialAutor(idMaterial, aut, desc);
+                        }
+                    }
+                }
+
+                // 4. Mostrar resultado
+                LblMessage.Text = allUpdated ? "¡Actualizado correctamente!" : "Error al actualizar uno o más registros.";
+                LblMessage.ForeColor = allUpdated ? System.Drawing.Color.Green : System.Drawing.Color.Red;
+
+                if (allUpdated)
+                {
+                    clear();
+                    showMaterialAutor();
+                }
+            }
+        }
+
+
+
+       
+
+        protected void BtnDelete_Click(object sender, EventArgs e)
+        {
+            if (int.TryParse(HFMaterialAutorID.Value, out int id))
+            {
+                bool deleted = objMat.deleteMaterialAutor(id);
+                LblMessage.Text = deleted ? "¡Eliminado correctamente!" : "Error al eliminar.";
+                LblMessage.ForeColor = deleted ? System.Drawing.Color.Green : System.Drawing.Color.Red;
+                if (deleted)
+                {
+                    clear();
+                    showMaterialAutor();
+                }
+            }
+        }
+
+        private void clear()
+        {
+            HFMaterialAutorID.Value = "";
+            DDLMatEdu.SelectedIndex = 0;
+            DDLAutor.SelectedIndex = 0;
+            TBDescription.Text = "";
         }
     }
 }
