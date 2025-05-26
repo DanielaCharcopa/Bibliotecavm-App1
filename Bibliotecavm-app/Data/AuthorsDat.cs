@@ -26,6 +26,19 @@ namespace Data
             return objData;
         }
 
+        public DataSet showAuthorsDDL()
+        {
+            MySqlDataAdapter objAdapter = new MySqlDataAdapter();
+            DataSet objData = new DataSet();
+            MySqlCommand objSelectCmd = new MySqlCommand();
+            objSelectCmd.Connection = objPer.openConnection();
+            objSelectCmd.CommandText = "procSelectAutorDDL"; // Procedimiento almacenado
+            objSelectCmd.CommandType = CommandType.StoredProcedure;
+            objAdapter.SelectCommand = objSelectCmd;
+            objAdapter.Fill(objData);
+            objPer.closeConnection();
+            return objData;
+        }
         // Método para guardar un nuevo Autor
         public bool saveAuthor(string _nombre, string _apellido, string _municipio)
         {
