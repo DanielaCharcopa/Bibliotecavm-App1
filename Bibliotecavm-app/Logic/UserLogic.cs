@@ -102,6 +102,12 @@ namespace Logic
 
             return objUserDat.SearchUsersByEmail(email);
         }
+        // Método para verificar si el correo electrónico existe
+
+        public bool CheckEmailExists(string correo)
+        {
+            return objUserDat.checkEmailExists(correo);
+        }
 
         // Método para obtener usuarios activos
         public DataSet GetActiveUsers()
