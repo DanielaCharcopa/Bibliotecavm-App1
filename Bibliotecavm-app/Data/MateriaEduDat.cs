@@ -25,6 +25,22 @@ namespace Data
 
             return objData;
         }
+        public DataSet showMaterialEduDDL()
+        {
+            MySqlDataAdapter objAdapter = new MySqlDataAdapter();
+            DataSet objData = new DataSet();
+
+            MySqlCommand objSelectCmd = new MySqlCommand();
+            objSelectCmd.Connection = objPer.openConnection();
+            objSelectCmd.CommandText = "procSelectMaterialEduDDL"; // Nombre del procedimiento almacenado
+            objSelectCmd.CommandType = CommandType.StoredProcedure;
+
+            objAdapter.SelectCommand = objSelectCmd;
+            objAdapter.Fill(objData); // Llena el DataSet con los datos devueltos por el procedimiento almacenado
+            objPer.closeConnection();
+
+            return objData;
+        }
 
         // Guardar un nuevo material educativo
         public bool saveMaterialEducativo(string _titulo, int _anoPublicacion, string _urlDescarga, decimal _precio,
