@@ -13,6 +13,11 @@ namespace Logic
         {
             return objMatEdu.showMaterialEdu();
         }
+        public DataSet showMaterialEduDDL()
+        {
+            return objMatEdu.showMaterialEduDDL();
+        }
+
 
         // Insertar un nuevo material educativo
         public bool saveMaterialEducativo(string _titulo, int _anoPublicacion, string _urlDescarga, decimal _precio,
