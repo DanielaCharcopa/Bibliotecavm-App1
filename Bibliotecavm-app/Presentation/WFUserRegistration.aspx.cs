@@ -26,6 +26,13 @@ namespace Presentation
             try
             {
 
+                // Verificar si el correo ya existe ANTES de intentar registrarlo
+                if (objUser.CheckEmailExists(correo))
+                {
+                    LblMessage.Text = "❌ El correo electrónico ya está registrado. Por favor, use otro correo.";
+                    LblMessage.ForeColor = System.Drawing.Color.Red;
+                    return;
+                }
 
 
                 // Generar el salt y encriptar la contraseña
