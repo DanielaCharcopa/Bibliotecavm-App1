@@ -458,8 +458,8 @@
                                 <i class="fas fa-cash-register nav-icon"></i>Ventas</a></li>
                             <li><a href="WFSurvey.aspx" class="nav-link <%= CurrentPage == "WFSurvey" ? "active" : "" %>">
                                 <i class="fas fa-poll nav-icon"></i>Encuestas</a></li>
-                            <li><a href="WFAnswerManagement.aspx" class="nav-link <%= CurrentPage == "WFAnswerManagement" ? "active" : "" %>">
-                                <i class="fas fa-comments nav-icon"></i>Respuestas</a></li>
+                            <%--<li><a href="WFAnswerManagement.aspx" class="nav-link <%= CurrentPage == "WFAnswerManagement" ? "active" : "" %>">
+                                <i class="fas fa-comments nav-icon"></i>Respuestas</a></li>--%>
                         </ul>
                     </li>
 
@@ -580,7 +580,5 @@
             }
         });
     </script>
-
 </body>
-
 </html>
