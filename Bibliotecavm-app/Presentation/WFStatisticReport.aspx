@@ -1,6 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MainUsuario.Master" AutoEventWireup="true" CodeBehind="WFStatisticReport.aspx.cs" Inherits="Presentation.WFStatisticReport" %>
 
-
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <%--Añadir Font Awesome para los iconos--%> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -244,25 +243,55 @@
             }
         }
 
-        /* Estilos para la tabla */
-        .materials-grid {
+        /* Nuevos estilos para las tablas */
+        .table-responsive {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        
+        .table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 10px;
+            margin-bottom: 1rem;
+            color: #212529;
+            border-collapse: collapse;
         }
         
-        .materials-grid th {
-            background-color: #f8f9fc;
-            color: #5a5c69;
-            font-weight: 600;
-            padding: 12px 15px;
-            text-align: left;
+        .table-bordered {
+            border: 1px solid #dee2e6;
         }
         
-        .materials-grid td {
-            padding: 15px;
-            vertical-align: middle;
-            border-top: 1px solid #e3e6f0;
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #dee2e6;
+        }
+        
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: rgba(78, 115, 223, 0.05);
+        }
+        
+        .table-dark {
+            background-color: #343a40;
+            color: white;
+        }
+        
+        .table-dark th {
+            border-color: #454d55;
+        }
+        
+        .align-middle {
+            vertical-align: middle !important;
+        }
+        
+        .text-end {
+            text-align: right !important;
+        }
+        
+        .text-center {
+            text-align: center !important;
         }
         
         .material-title {
@@ -270,7 +299,7 @@
             color: #4e73df;
         }
         
-        /* Estilos para las barras de progreso */
+        /* Barras de progreso mejoradas */
         .visits-container {
             width: 100%;
         }
@@ -293,6 +322,7 @@
             justify-content: flex-end;
             padding-right: 10px;
             min-width: 30px;
+            background-color: #4e73df;
         }
         
         .visits-count {
@@ -302,35 +332,37 @@
             text-shadow: 0 0 2px rgba(0,0,0,0.3);
         }
         
-        /* Estilos para botones con iconos */
-        .btn-with-icon {
-            display: inline-flex;
-            align-items: center;
+        /* Paginación mejorada */
+        .pagination {
+            display: flex;
+            padding-left: 0;
+            list-style: none;
+            border-radius: 0.25rem;
             justify-content: center;
-            padding: 0.5rem 1rem;
-            min-width: 120px;
-            transition: all 0.3s ease;
-            border-radius: 6px;
-            font-weight: 500;
+            margin-top: 20px;
         }
         
-        .btn-with-icon i {
-            font-size: 0.9rem;
-            margin-right: 8px;
+        .pagination a {
+            padding: 6px 12px;
+            margin: 0 3px;
+            border: 1px solid #dee2e6;
+            text-decoration: none;
+            color: #007bff;
+            border-radius: 4px;
+            transition: all 0.3s;
         }
         
-        .btn-primary.btn-with-icon:hover {
-            background-color: #2e59d9;
-            border-color: #2e59d9;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(46, 89, 217, 0.25);
+        .pagination a:hover {
+            background-color: #e9ecef;
         }
         
-        .btn-outline-secondary.btn-with-icon:hover {
-            background-color: #f8f9fa;
-            color: #5a5c69;
-            transform: translateY(-2px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        .pagination span {
+            padding: 6px 12px;
+            margin: 0 3px;
+            border: 1px solid #007bff;
+            background-color: #007bff;
+            color: white;
+            border-radius: 4px;
         }
         
         /* Responsive */
@@ -351,23 +383,6 @@
             .btn-with-icon i {
                 margin-right: 5px;
             }
-        }
-        
-        /* Estilos para la paginación */
-        .pagination a {
-            padding: 6px 12px;
-            margin: 0 3px;
-            border: 1px solid #ddd;
-            text-decoration: none;
-            color: #007bff;
-        }
-        
-        .pagination span {
-            padding: 6px 12px;
-            margin: 0 3px;
-            border: 1px solid #007bff;
-            background-color: #007bff;
-            color: white;
         }
     </style>
 </asp:Content>
@@ -479,28 +494,33 @@
     <%-- Materiales Más Visitados --%>
     <div class="dashboard-section">
         <h3><i class="fas fa-trophy mr-2"></i> Materiales Más Visitados</h3>
-        <div class="grid-container">
+        <div class="table-responsive">
             <asp:GridView 
                 ID="gvMostVisitedMaterials" 
                 runat="server" 
-                CssClass="table table-striped materials-grid" 
                 AutoGenerateColumns="false"
-                GridLines="None">
+                CssClass="table table-bordered table-striped table-hover"
+                EmptyDataText="No se encontraron materiales con visitas registradas."
+                GridLines="None"
+                aria-label="Materiales más visitados">
                 <Columns>
                     <asp:BoundField DataField="mat_id" HeaderText="ID" Visible="false" />
                     <asp:BoundField 
                         DataField="mat_titulo" 
                         HeaderText="Material" 
-                        HeaderStyle-CssClass="material-header"
-                        ItemStyle-CssClass="material-title" />
-                    <asp:TemplateField HeaderText="Visitas" HeaderStyle-CssClass="visits-header">
+                        HeaderStyle-CssClass="table-dark align-middle"
+                        ItemStyle-CssClass="align-middle material-title" />
+                    <asp:TemplateField 
+                        HeaderText="Visitas" 
+                        HeaderStyle-CssClass="table-dark align-middle text-center"
+                        ItemStyle-CssClass="align-middle">
                         <ItemTemplate>
                             <div class="visits-container">
                                 <div class="progress-bar-bg">
                                     <div 
                                         class="progress-bar-fill" 
                                         data-visits='<%# Eval("total_visitas") %>'
-                                        style="width: 0%; background-color: #4e73df;">
+                                        style="width: 0%;">
                                         <span class="visits-count"><%# Eval("total_visitas") %></span>
                                     </div>
                                 </div>
@@ -508,6 +528,9 @@
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>
+                <HeaderStyle CssClass="table-dark" />
+                <RowStyle CssClass="align-middle" />
+                <EmptyDataRowStyle CssClass="text-center p-4" />
             </asp:GridView>
         </div>
     </div>
@@ -565,22 +588,52 @@
             </div>
         </div>
         
-        <div class="grid-container">
-            <asp:GridView ID="gvUserVisits" runat="server" CssClass="table table-striped"
-                AutoGenerateColumns="false" AllowPaging="true" PageSize="10"
+        <div class="table-responsive">
+            <asp:GridView 
+                ID="gvUserVisits" 
+                runat="server" 
+                AutoGenerateColumns="false" 
+                AllowPaging="true" 
+                PageSize="10"
                 OnPageIndexChanging="gvUserVisits_PageIndexChanging"
+                CssClass="table table-bordered table-striped table-hover"
+                EmptyDataText="No se encontraron visitas con los criterios de búsqueda."
                 PagerStyle-CssClass="pagination"
                 PagerSettings-Mode="NumericFirstLast"
                 PagerSettings-Position="Bottom"
-                PagerSettings-PageButtonCount="5">
+                PagerSettings-PageButtonCount="5"
+                aria-label="Visitas de usuarios">
                 <Columns>
-                    <asp:BoundField DataField="usuario_nombre" HeaderText="Usuario" />
-                    <asp:BoundField DataField="usuario_correo" HeaderText="Correo" />
-                    <asp:BoundField DataField="material_titulo" HeaderText="Material" />
-                    <asp:BoundField DataField="vis_fecha_ingreso" HeaderText="Fecha Visita"
-                        DataFormatString="{0:dd/MM/yyyy HH:mm}" />
-                    <asp:BoundField DataField="vis_duracion" HeaderText="Duración (min)" />
+                    <asp:BoundField 
+                        DataField="usuario_nombre" 
+                        HeaderText="Usuario"
+                        HeaderStyle-CssClass="table-dark align-middle"
+                        ItemStyle-CssClass="align-middle" />
+                    <asp:BoundField 
+                        DataField="usuario_correo" 
+                        HeaderText="Correo"
+                        HeaderStyle-CssClass="table-dark align-middle"
+                        ItemStyle-CssClass="align-middle" />
+                    <asp:BoundField 
+                        DataField="material_titulo" 
+                        HeaderText="Material"
+                        HeaderStyle-CssClass="table-dark align-middle"
+                        ItemStyle-CssClass="align-middle" />
+                    <asp:BoundField 
+                        DataField="vis_fecha_ingreso" 
+                        HeaderText="Fecha Visita"
+                        DataFormatString="{0:dd/MM/yyyy HH:mm}"
+                        HeaderStyle-CssClass="table-dark align-middle"
+                        ItemStyle-CssClass="align-middle" />
+                    <asp:BoundField 
+                        DataField="vis_duracion" 
+                        HeaderText="Duración (min)"
+                        HeaderStyle-CssClass="table-dark align-middle text-end"
+                        ItemStyle-CssClass="align-middle text-end" />
                 </Columns>
+                <HeaderStyle CssClass="table-dark" />
+                <RowStyle CssClass="align-middle" />
+                <EmptyDataRowStyle CssClass="text-center p-4" />
             </asp:GridView>
         </div>
         
@@ -612,9 +665,9 @@
             // Configurar búsqueda con Enter
             var searchEmailField = document.getElementById('<%= txtSearchEmail.ClientID %>');
             var searchButton = document.getElementById('<%= btnSearch.ClientID %>');
-            
+
             if (searchEmailField && searchButton) {
-                searchEmailField.addEventListener('keypress', function(e) {
+                searchEmailField.addEventListener('keypress', function (e) {
                     if (e.key === 'Enter') {
                         e.preventDefault();
                         searchButton.click();
@@ -623,7 +676,7 @@
             }
 
             // Validación de fechas en el cliente
-            document.getElementById('<%= btnSearch.ClientID %>').addEventListener('click', function(e) {
+            document.getElementById('<%= btnSearch.ClientID %>').addEventListener('click', function (e) {
                 var fechaInicio = document.getElementById('<%= txtFechaInicio.ClientID %>').value;
                 var fechaFin = document.getElementById('<%= txtFechaFin.ClientID %>').value;
 
@@ -645,24 +698,27 @@
             // Encontrar el valor máximo para escalar las barras
             let maxVisits = 0;
             bars.forEach(bar => {
-                const visits = parseInt(bar.getAttribute('data-visits'));
+                const visits = parseInt(bar.getAttribute('data-visits')) || 0;
                 if (visits > maxVisits) maxVisits = visits;
             });
 
             // Animar cada barra
             bars.forEach(bar => {
-                const visits = parseInt(bar.getAttribute('data-visits'));
-                const percentage = (visits / maxVisits) * 100;
+                const visits = parseInt(bar.getAttribute('data-visits')) || 0;
+                const percentage = maxVisits > 0 ? (visits / maxVisits) * 100 : 0;
 
-                // Aplicar color basado en el porcentaje
-                const hue = 210 * (percentage / 100); // Azul (0) a Verde (120)
+                // Aplicar color basado en el porcentaje (azul a verde)
+                const hue = 210 * (percentage / 100);
                 bar.style.backgroundColor = `hsl(${hue}, 70%, 50%)`;
-
-                // Animación
                 bar.style.width = percentage + '%';
-
-                // Tooltip
                 bar.setAttribute('title', visits + ' visitas');
+            });
+        }
+
+        // Manejar postbacks de ASP.NET
+        if (typeof (Sys) !== 'undefined') {
+            Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
+                setTimeout(animateProgressBars, 300);
             });
         }
     </script>
