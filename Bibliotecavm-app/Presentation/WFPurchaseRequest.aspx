@@ -76,7 +76,6 @@
             text-decoration: none !important;
         }
 
-        
         .btn-primary {
             background-color: #1a237e;
             color: white;
@@ -115,6 +114,40 @@
         .btn-buscar:hover {
             background-color: #303f9f;
         }
+
+        /* ===== ESTILOS MODIFICADOS PARA BOTÓN SELECCIONAR (AZUL CLARO) ===== */
+        .btn-outline-primary {
+            border: 1px solid #0d6efd;
+            color: #0d6efd;
+            background-color: transparent;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .btn-outline-primary:hover,
+        .btn-outline-primary:focus {
+            background-color: #0d6efd;
+            color: white;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+
+        .grid-view-improved .btn-outline-primary {
+            border-color: #0d6efd;
+            color: #0d6efd;
+        }
+        
+        .grid-view-improved .btn-outline-primary:hover {
+            background-color: #0d6efd;
+            color: white;
+        }
+        /* ===== FIN DE ESTILOS MODIFICADOS ===== */
+
+        /* Clase para botones pequeños */
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.875rem;
+        }
         
         /* Estilo añadido para íconos */
         .btn i {
@@ -130,90 +163,88 @@
             margin: 30px 0;
         }
         
-        /* GridView */
+        /* GridView Mejorado */
         .grid-container {
             margin-top: 30px;
             overflow-x: auto;
         }
         
-        .grid-view {
+        .grid-view-improved {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
         
-        .grid-view th {
-            background-color: #1a237e;
+        .grid-view-improved th {
+            background-color: #343a40;
             color: white;
             padding: 12px;
             text-align: left;
+            vertical-align: middle;
         }
         
-        .grid-view td {
-            padding: 10px 12px;
-            border-bottom: 1px solid #ddd;
+        .grid-view-improved td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+            vertical-align: middle;
+        }
+        
+        .grid-view-improved tr:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .grid-view-improved tr:hover {
+            background-color: rgba(0, 0, 0, 0.075);
+        }
+        
+        /* Paginación mejorada */
+        .pagination-improved {
+            display: flex;
+            justify-content: center;
+            padding-left: 0;
+            list-style: none;
+            border-radius: 0.25rem;
+        }
+        
+        .pagination-improved a {
+            position: relative;
+            display: block;
+            padding: 0.5rem 0.75rem;
+            margin-left: -1px;
+            line-height: 1.25;
+            color: #1a237e;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            text-decoration: none;
+        }
+        
+        .pagination-improved a:hover {
+            color: #0d1533;
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+        }
+        
+        .pagination-improved span {
+            position: relative;
+            display: block;
+            padding: 0.5rem 0.75rem;
+            margin-left: -1px;
+            line-height: 1.25;
+            color: #fff;
+            background-color: #1a237e;
+            border: 1px solid #1a237e;
         }
         
         /* Estilo para ocultar columnas */
         .hidden-column, 
-        .grid-view th.hidden-column, 
-        .grid-view td.hidden-column {
+        .grid-view-improved th.hidden-column, 
+        .grid-view-improved td.hidden-column {
             display: none !important;
             width: 0 !important;
             height: 0 !important;
             padding: 0 !important;
             margin: 0 !important;
             border: none !important;
-        }
-        
-        .grid-view tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        
-        .grid-view tr:hover {
-            background-color: #f1f1f1;
-        }
-        
-        /* Estilos para la paginación */
-        .grid-view .pager {
-            margin-top: 15px;
-            text-align: center;
-        }
-        
-        .grid-view .pager a, 
-        .grid-view .pager span {
-            display: inline-block;
-            padding: 5px 10px;
-            margin: 0 3px;
-            border: 1px solid #1a237e;
-            border-radius: 3px;
-            text-decoration: none;
-            color: #1a237e;
-            font-weight: normal;
-        }
-        
-        .grid-view .pager a:hover {
-            background-color: #1a237e;
-            color: white;
-        }
-        
-        .grid-view .pager span {
-            background-color: #1a237e;
-            color: white;
-            font-weight: bold;
-        }
-        
-        /* Estilo para botón seleccionar */
-        .btn-select {
-            background-color: #1a237e;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 3px;
-            text-decoration: none;
-        }
-        
-        .btn-select:hover {
-            background-color: #303f9f;
         }
         
         /* Mensajes */
@@ -275,8 +306,8 @@
             }
             
             /* Ajustes para paginación en móviles */
-            .grid-view .pager a, 
-            .grid-view .pager span {
+            .pagination-improved a, 
+            .pagination-improved span {
                 padding: 3px 6px;
                 margin: 0 2px;
                 font-size: 0.9em;
@@ -363,19 +394,59 @@
                 OnSelectedIndexChanged="GVRequests_SelectedIndexChanged" 
                 DataKeyNames="solic_id,tbl_material_edu_mat_id"
                 AllowPaging="True" PageSize="5" OnPageIndexChanging="GVRequests_PageIndexChanging"
-                CssClass="grid-view" PagerStyle-CssClass="pager" GridLines="None">
+                CssClass="table table-bordered table-striped table-hover grid-view-improved" 
+                PagerStyle-CssClass="pagination-improved" GridLines="None"
+                aria-label="Lista de solicitudes de compra">
                 <Columns>
-                    <asp:BoundField DataField="solic_id" HeaderText="ID" HeaderStyle-CssClass="hidden-column" ItemStyle-CssClass="hidden-column" />
-                    <asp:BoundField DataField="solic_ticket" HeaderText="Ticket" />
-                    <asp:BoundField DataField="solic_fecha" HeaderText="Fecha" DataFormatString="{0:dd/MM/yyyy}" />
-                    <asp:BoundField DataField="usuario_nombre" HeaderText="Usuario" HeaderStyle-CssClass="hidden-column" ItemStyle-CssClass="hidden-column" />
-                    <asp:BoundField DataField="material_titulo" HeaderText="Material" />
-                    <asp:BoundField DataField="solic_cantidad" HeaderText="Cantidad" />
-                    <asp:BoundField DataField="precio_unitario" HeaderText="Precio Unitario" DataFormatString="{0:C2}" />
-                    <asp:BoundField DataField="solic_valor_total" HeaderText="Total" DataFormatString="{0:C2}" />
-                    <asp:CommandField ShowSelectButton="True" HeaderText="Opción" SelectText="Seleccionar" ControlStyle-CssClass="btn-select" />
+                    <asp:BoundField DataField="solic_id" HeaderText="ID" 
+                        HeaderStyle-CssClass="hidden-column table-dark" 
+                        ItemStyle-CssClass="hidden-column" />
+                        
+                    <asp:BoundField DataField="solic_ticket" HeaderText="Ticket" 
+                        HeaderStyle-CssClass="table-dark align-middle" 
+                        ItemStyle-CssClass="align-middle" />
+                        
+                    <asp:BoundField DataField="solic_fecha" HeaderText="Fecha" 
+                        DataFormatString="{0:dd/MM/yyyy}"
+                        HeaderStyle-CssClass="table-dark align-middle" 
+                        ItemStyle-CssClass="align-middle" />
+                        
+                    <asp:BoundField DataField="usuario_nombre" HeaderText="Usuario" 
+                        HeaderStyle-CssClass="hidden-column table-dark" 
+                        ItemStyle-CssClass="hidden-column" />
+                        
+                    <asp:BoundField DataField="material_titulo" HeaderText="Material" 
+                        HeaderStyle-CssClass="table-dark align-middle" 
+                        ItemStyle-CssClass="align-middle" />
+                        
+                    <asp:BoundField DataField="solic_cantidad" HeaderText="Cantidad" 
+                        HeaderStyle-CssClass="table-dark align-middle text-center" 
+                        ItemStyle-CssClass="align-middle text-center" />
+                        
+                    <asp:BoundField DataField="precio_unitario" HeaderText="Precio Unitario" 
+                        DataFormatString="{0:C2}"
+                        HeaderStyle-CssClass="table-dark align-middle text-end" 
+                        ItemStyle-CssClass="align-middle text-end" />
+                        
+                    <asp:BoundField DataField="solic_valor_total" HeaderText="Total" 
+                        DataFormatString="{0:C2}"
+                        HeaderStyle-CssClass="table-dark align-middle text-end" 
+                        ItemStyle-CssClass="align-middle text-end" />
+                        
+                    <asp:CommandField
+                        ShowSelectButton="True"
+                        HeaderText="Opción"
+                        SelectText="Seleccionar"
+                        ButtonType="Button"
+                        ControlStyle-CssClass="btn btn-sm btn-outline-primary"
+                        HeaderStyle-CssClass="table-dark text-center"
+                        ItemStyle-CssClass="text-center align-middle" />
                 </Columns>
-                <PagerSettings Mode="NumericFirstLast" Position="Bottom" PageButtonCount="5" FirstPageText="Primera" LastPageText="Última" NextPageText="Siguiente" PreviousPageText="Anterior" />
+                <HeaderStyle CssClass="table-dark" />
+                <RowStyle CssClass="align-middle" />
+                <PagerSettings Mode="NumericFirstLast" Position="Bottom" 
+                    PageButtonCount="5" FirstPageText="Primera" LastPageText="Última" 
+                    NextPageText="Siguiente" PreviousPageText="Anterior" />
             </asp:GridView>
         </div>
     </div>
@@ -385,13 +456,13 @@
             var btnSave = document.getElementById('<%= BtnSave.ClientID %>');
             var btnUpdate = document.getElementById('<%= BtnUpdate.ClientID %>');
             var btnDelete = document.getElementById('<%= BtnDelete.ClientID %>');
-            
+
             if (isEditing) {
                 // Modo edición
                 btnSave.classList.add('btn-hidden');
                 btnUpdate.classList.remove('btn-hidden');
                 btnDelete.classList.remove('btn-hidden');
-                
+
                 // Mostrar mensaje al usuario
                 document.getElementById('<%= LblMsj.ClientID %>').textContent = 'Estás editando un registro existente. Usa el botón "Actualizar" para guardar los cambios.';
                 document.getElementById('<%= LblMsj.ClientID %>').className = 'message info-message';
