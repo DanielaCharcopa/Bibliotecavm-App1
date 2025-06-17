@@ -1,4 +1,4 @@
-﻿ <%@ Page Title="Gestión de Compras" Language="C#" MasterPageFile="~/MainAdmin.Master" AutoEventWireup="true" 
+﻿<%@ Page Title="Gestión de Compras" Language="C#" MasterPageFile="~/MainAdmin.Master" AutoEventWireup="true" 
     CodeBehind="WFPurchaseRequestManagement.aspx.cs" Inherits="Presentation.WFPurchaseRequestManagement" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -42,94 +42,129 @@
             border: 1px solid #f5c6cb;
         }
         
-        /* Tabla responsiva */
+        /* GridView Mejorado */
         .gridview-container {
-            width: 100%;
+            margin-top: 30px;
             overflow-x: auto;
-            margin: 20px 0;
             -webkit-overflow-scrolling: touch;
         }
-        
+
         .gridview {
             width: 100%;
-            min-width: 600px; /* Ancho mínimo para evitar compresión extrema */
             border-collapse: collapse;
-            font-size: clamp(12px, 2vw, 14px);
+            margin-bottom: 20px;
+            min-width: 600px;
         }
-        
+
         .gridview th {
-            background-color: #f8f9fa;
-            padding: 10px 8px;
+            background-color: #343a40;
+            color: white;
+            padding: 12px;
             text-align: left;
-            border-bottom: 2px solid #dee2e6;
-            font-weight: 600;
-            white-space: nowrap;
+            vertical-align: middle;
+            border: 1px solid #454d55;
         }
-        
+
         .gridview td {
-            padding: 10px 8px;
-            border-bottom: 1px solid #e9ecef;
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
             vertical-align: middle;
         }
-        
-        /* Ajustes responsivos por columna */
+
+        .gridview tr:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .gridview tr:hover {
+            background-color: rgba(0, 0, 0, 0.075);
+        }
+
+        /* Ajustes responsivos de columnas */
         .ticket-column {
             width: auto;
             min-width: 150px;
             max-width: 180px;
-            padding-right: 8px !important;
         }
-        
+
         .date-column {
             width: auto;
             min-width: 80px;
             max-width: 90px;
-            padding-right: 10px !important;
         }
-        
+
         .user-column {
             width: auto;
             min-width: 120px;
             max-width: 200px;
-            padding-right: 15px !important;
         }
-        
+
         .quantity-column {
             width: auto;
             min-width: 60px;
             max-width: 70px;
-            padding-right: 10px !important;
             text-align: center !important;
         }
-        
+
         .material-column {
             width: auto;
             min-width: 150px;
             max-width: 300px;
-            padding-right: 15px !important;
             word-break: break-word;
         }
-        
+
         .total-column {
             width: auto;
             min-width: 90px;
             max-width: 110px;
-            padding-right: 10px !important;
             text-align: right !important;
         }
-        
+
         .completed-column {
             width: auto;
             min-width: 70px;
             max-width: 90px;
             text-align: center !important;
         }
-        
-        /* Efecto hover */
-        .gridview tr:not(.completed-row):hover {
-            background-color: #f8f9fa;
+
+        /* Paginación mejorada */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            padding-left: 0;
+            list-style: none;
+            border-radius: 0.25rem;
+            margin-top: 20px;
         }
-        
+
+        .pagination a {
+            position: relative;
+            display: block;
+            padding: 0.5rem 0.75rem;
+            margin-left: -1px;
+            line-height: 1.25;
+            color: #1a237e;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            text-decoration: none;
+        }
+
+        .pagination a:hover {
+            color: #0d1533;
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+        }
+
+        .pagination span {
+            position: relative;
+            display: block;
+            padding: 0.5rem 0.75rem;
+            margin-left: -1px;
+            line-height: 1.25;
+            color: #fff;
+            background-color: #1a237e;
+            border: 1px solid #1a237e;
+        }
+
         /* Checkbox responsivo */
         .checkbox-large {
             width: clamp(16px, 3vw, 18px);
@@ -138,41 +173,28 @@
             display: block;
         }
         
-        /* Paginación  */
-        .pagination a {
-            padding: 6px 12px;
-            margin: 0 3px;
-            border: 1px solid #ddd;
-            text-decoration: none;
-            color: #007bff;
-        }
-        
-        .pagination span {
-            padding: 6px 12px;
-            margin: 0 3px;
-            border: 1px solid #007bff;
-            background-color: #007bff;
-            color: white;
-        }
-        
         /* Estilos para móviles */
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
             }
             
-            .gridview th, .gridview td {
-                padding: 8px 5px;
+            .gridview th, 
+            .gridview td {
+                padding: 8px;
             }
             
-            .ticket-column, .user-column, .material-column {
+            .ticket-column, 
+            .user-column, 
+            .material-column {
                 word-break: break-all;
             }
             
-            /* Ajuste para paginación en móviles */
-            .pagination a, .pagination span {
-                padding: 4px 8px;
+            .pagination a, 
+            .pagination span {
+                padding: 0.25rem 0.5rem;
                 margin: 0 2px;
+                font-size: 0.9em;
             }
         }
         
@@ -182,7 +204,8 @@
                 padding: 15px;
             }
             
-            .gridview th, .gridview td {
+            .gridview th, 
+            .gridview td {
                 padding: 10px 6px;
             }
         }
