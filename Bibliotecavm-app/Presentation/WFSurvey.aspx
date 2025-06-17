@@ -26,42 +26,112 @@
             min-width: 100px;
         }
         
-        .table-hover {
+        /* GridView Mejorado - ESTILO ACTUALIZADO (igual al WFUserManagement) */
+        .table-responsive {
             margin-top: 20px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table {
             width: 100%;
+            margin-bottom: 1rem;
+            color: #212529;
             border-collapse: collapse;
         }
         
-        .table-hover th {
-            background-color: #f8f9fa;
-            padding: 12px;
-            text-align: left;
-            border-bottom: 2px solid #dee2e6;
+        .table-bordered {
+            border: 1px solid #dee2e6;
         }
         
-        .table-hover td {
-            padding: 10px;
-            border-bottom: 1px solid #dee2e6;
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #dee2e6;
         }
         
-        .table-hover tr:hover {
-            background-color: #f1f1f1;
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.02);
         }
         
-        .pagination a {
-            padding: 6px 12px;
-            margin: 0 3px;
-            border: 1px solid #ddd;
-            text-decoration: none;
-            color: #007bff;
+        .table-hover tbody tr:hover {
+            background-color: rgba(78, 115, 223, 0.05);
         }
         
-        .pagination span {
-            padding: 6px 12px;
-            margin: 0 3px;
-            border: 1px solid #007bff;
-            background-color: #007bff;
+        .table-dark {
+            background-color: #343a40;
             color: white;
+        }
+        
+        .table-dark th {
+            border-color: #454d55;
+        }
+        
+        .align-middle {
+            vertical-align: middle !important;
+        }
+        
+        .text-center {
+            text-align: center !important;
+        }
+
+        /* Estilo del botón Seleccionar (igual al WFUserManagement) */
+        .btn-outline-primary {
+            border: 1px solid #1a237e;
+            color: #1a237e;
+            background-color: transparent;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: #1a237e;
+            color: white;
+            box-shadow: 0 0 0 0.2rem rgba(26,35,126,0.25);
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.875rem;
+        }
+
+        /* Paginación mejorada (igual al WFUserManagement) */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            padding-left: 0;
+            list-style: none;
+            border-radius: 0.25rem;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            position: relative;
+            display: block;
+            padding: 0.5rem 0.75rem;
+            margin-left: -1px;
+            line-height: 1.25;
+            color: #1a237e;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            text-decoration: none;
+        }
+
+        .pagination a:hover {
+            color: #0d1533;
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+        }
+
+        .pagination span {
+            position: relative;
+            display: block;
+            padding: 0.5rem 0.75rem;
+            margin-left: -1px;
+            line-height: 1.25;
+            color: #fff;
+            background-color: #1a237e;
+            border: 1px solid #1a237e;
         }
         
         #lblMessage {
@@ -69,6 +139,21 @@
             padding: 10px;
             margin-bottom: 15px;
             border-radius: 4px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .table th, 
+            .table td {
+                padding: 8px;
+            }
+            
+            .pagination a, 
+            .pagination span {
+                padding: 0.25rem 0.5rem;
+                margin: 0 2px;
+                font-size: 0.9em;
+            }
         }
     </style>
 </asp:Content>
@@ -108,33 +193,41 @@
         <br />
 
         <%-- Listado de encuestas --%>
-
         <div class="row">
             <div class="col">
                 <h3>Listado de Encuestas</h3>
-                <asp:GridView ID="gvSurveys" CssClass="table table-hover" runat="server" 
-                    AutoGenerateColumns="False" 
-                    OnSelectedIndexChanged="gvSurveys_SelectedIndexChanged"
-                    AllowPaging="True" 
-                    PageSize="10" 
-                    OnPageIndexChanging="gvSurveys_PageIndexChanging"
-                    PagerStyle-CssClass="pagination" 
-                    PagerSettings-Mode="NumericFirstLast"
-                    PagerSettings-Position="Bottom"
-                    PagerSettings-PageButtonCount="5">
-                    <Columns>
-
-                        <%-- Columna ID oculta visualmente pero funcional --%>
-
-                        <asp:BoundField DataField="en_id" HeaderText="ID" 
-                            ItemStyle-CssClass="hidden-id-column" 
-                            HeaderStyle-CssClass="hidden-id-column" />
-                            
-                        <asp:BoundField DataField="en_descripcion_pregunta" HeaderText="Descripción" />
-                        <asp:CommandField HeaderText="Acción" ShowSelectButton="True" SelectText="Seleccionar" 
-                            ButtonType="Button" ControlStyle-CssClass="btn btn-sm btn-outline-primary" />
-                    </Columns>
-                </asp:GridView>
+                <div class="table-responsive">
+                    <asp:GridView ID="gvSurveys" runat="server" 
+                        CssClass="table table-bordered table-striped table-hover" 
+                        AutoGenerateColumns="False" 
+                        OnSelectedIndexChanged="gvSurveys_SelectedIndexChanged"
+                        AllowPaging="True" 
+                        PageSize="10" 
+                        OnPageIndexChanging="gvSurveys_PageIndexChanging"
+                        PagerStyle-CssClass="pagination" 
+                        PagerSettings-Mode="NumericFirstLast"
+                        PagerSettings-Position="Bottom"
+                        PagerSettings-PageButtonCount="5">
+                        <Columns>
+                            <%-- Columna ID oculta visualmente pero funcional --%>
+                            <asp:BoundField DataField="en_id" HeaderText="ID" 
+                                ItemStyle-CssClass="hidden-id-column" 
+                                HeaderStyle-CssClass="hidden-id-column" />
+                                
+                            <asp:BoundField DataField="en_descripcion_pregunta" HeaderText="Descripción" 
+                                HeaderStyle-CssClass="table-dark align-middle"
+                                ItemStyle-CssClass="align-middle" />
+                                
+                            <asp:CommandField HeaderText="Acción" ShowSelectButton="True" SelectText="Seleccionar" 
+                                ButtonType="Button" 
+                                ControlStyle-CssClass="btn btn-sm btn-outline-primary"
+                                HeaderStyle-CssClass="table-dark align-middle text-center"
+                                ItemStyle-CssClass="align-middle text-center" />
+                        </Columns>
+                        <HeaderStyle CssClass="table-dark" />
+                        <RowStyle CssClass="align-middle" />
+                    </asp:GridView>
+                </div>
             </div>
         </div>
     </div>
