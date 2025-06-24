@@ -57,6 +57,7 @@ namespace Presentation
                 }
             }
         }
+
         protected void lnkLogout_Click(object sender, EventArgs e)
         {
             // Limpiar la sesión
