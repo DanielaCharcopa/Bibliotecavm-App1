@@ -65,7 +65,7 @@
         .stat-card .stat-value {
             font-size: 28px;
             font-weight: bold;
-            color: #4e73df;
+            color: #2c3e50;
             margin-top: 10px;
             transition: all 0.3s ease;
         }
@@ -79,35 +79,35 @@
             border-left-color: #4e73df;
         }
         .stat-card.primary .stat-icon, .stat-card.primary .stat-value {
-            color: #4e73df;
+            color: #2c3e50;
         }
         
         .stat-card.success {
             border-left-color: #1cc88a;
         }
         .stat-card.success .stat-icon, .stat-card.success .stat-value {
-            color: #1cc88a;
+            color: #186a3b;
         }
         
         .stat-card.info {
             border-left-color: #36b9cc;
         }
         .stat-card.info .stat-icon, .stat-card.info .stat-value {
-            color: #36b9cc;
+            color: #1a5276;
         }
         
         .stat-card.warning {
             border-left-color: #f6c23e;
         }
         .stat-card.warning .stat-icon, .stat-card.warning .stat-value {
-            color: #f6c23e;
+            color: #7d6608;
         }
         
         .stat-card.danger {
             border-left-color: #e74a3b;
         }
         .stat-card.danger .stat-icon, .stat-card.danger .stat-value {
-            color: #e74a3b;
+            color: #943126;
         }
         
         .stat-card::after {
@@ -207,10 +207,6 @@
             display: block;
         }
         
-        .grid-container {
-            margin-top: 20px;
-        }
-        
         .message {
             padding: 10px;
             border-radius: 4px;
@@ -237,12 +233,6 @@
             margin: 20px 0;
         }
         
-        @media (max-width: 768px) {
-            .chart-container {
-                height: 250px;
-            }
-        }
-
         /* Nuevos estilos para las tablas */
         .table-responsive {
             margin-top: 20px;
@@ -365,8 +355,43 @@
             border-radius: 4px;
         }
         
+        /* Clase para texto accesible (solo para lectores de pantalla) */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Mejoras de accesibilidad para botones - CONTRASTE AJUSTADO */
+        .btn-outline-secondary {
+            color: #495057; /* Cambiado a un gris más oscuro para mejor contraste (7.5:1) */
+            border-color: #495057;
+            background-color: transparent;
+        }
+
+        .btn-outline-secondary:hover {
+            color: #fff;
+            background-color: #495057;
+            border-color: #495057;
+        }
+
+        /* Asegurar contraste en otros elementos */
+        .text-muted {
+            color: #6c757d !important; /* Ajustado para mejor contraste */
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
+            .chart-container {
+                height: 250px;
+            }
+            
             .search-filters .form-group {
                 margin-bottom: 15px;
             }
@@ -389,8 +414,8 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <%-- Estadísticas Generales --%> 
-    <div class="dashboard-section">
-        <h3><i class="fas fa-chart-bar mr-2"></i> Estadísticas Generales</h3>
+    <div class="dashboard-section" role="region" aria-labelledby="statsGeneralHeading">
+        <h3 id="statsGeneralHeading"><i class="fas fa-chart-bar mr-2"></i> Estadísticas Generales</h3>
         <div class="row">
             <div class="col-md-4">
                 <div class="stat-card primary">
@@ -423,15 +448,19 @@
     </div>
 
     <%-- Estadísticas de Encuestas --%> 
-    <div class="dashboard-section">
-        <h3><i class="fas fa-poll mr-2"></i> Estadísticas de Encuestas</h3>
+    <div class="dashboard-section" role="region" aria-labelledby="surveyStatsHeading">
+        <h3 id="surveyStatsHeading"><i class="fas fa-poll mr-2"></i> Estadísticas de Encuestas</h3>
         <div class="form-group">
-            <label for="ddlSurveyQuestions"><i class="fas fa-question-circle"></i> Seleccione una pregunta:</label>
+            <asp:Label AssociatedControlID="ddlSurveyQuestions" runat="server" CssClass="form-label">
+                <i class="fas fa-question-circle"></i> Seleccione una pregunta:
+            </asp:Label>
             <asp:DropDownList ID="ddlSurveyQuestions" runat="server" 
                 CssClass="form-control" 
                 AutoPostBack="true"
+                aria-describedby="surveyHelp"
                 OnSelectedIndexChanged="ddlSurveyQuestions_SelectedIndexChanged">
             </asp:DropDownList>
+            <small id="surveyHelp" class="form-text text-muted">Seleccione una pregunta para ver sus estadísticas</small>
         </div>
         
         <asp:Panel ID="pnlSurveyStats" runat="server" Visible="false">
@@ -468,8 +497,8 @@
     </div>
 
     <%-- Estadísticas de Materiales --%> 
-    <div class="dashboard-section">
-        <h3><i class="fas fa-file-alt mr-2"></i> Estadísticas de Materiales registrados</h3>
+    <div class="dashboard-section" role="region" aria-labelledby="materialStatsHeading">
+        <h3 id="materialStatsHeading"><i class="fas fa-file-alt mr-2"></i> Estadísticas de Materiales registrados</h3>
         
         <%-- Contenedor del gráfico --%>
         <div style="width: 100%; max-width: 600px; margin: 20px auto; text-align: center;">
@@ -492,8 +521,8 @@
     </div>
 
     <%-- Materiales Más Visitados --%>
-    <div class="dashboard-section">
-        <h3><i class="fas fa-trophy mr-2"></i> Materiales Más Visitados</h3>
+    <div class="dashboard-section" role="region" aria-labelledby="mostVisitedHeading">
+        <h3 id="mostVisitedHeading"><i class="fas fa-trophy mr-2"></i> Materiales Más Visitados</h3>
         <div class="table-responsive">
             <asp:GridView 
                 ID="gvMostVisitedMaterials" 
@@ -510,24 +539,28 @@
                         HeaderText="Material" 
                         HeaderStyle-CssClass="table-dark align-middle"
                         ItemStyle-CssClass="align-middle material-title" />
-                    <asp:TemplateField 
-                        HeaderText="Visitas" 
-                        HeaderStyle-CssClass="table-dark align-middle text-center"
-                        ItemStyle-CssClass="align-middle">
-                        <ItemTemplate>
-                            <div class="visits-container">
-                                <div class="progress-bar-bg">
-                                    <div 
-                                        class="progress-bar-fill" 
-                                        data-visits='<%# Eval("total_visitas") %>'
-                                        style="width: 0%;">
-                                        <span class="visits-count"><%# Eval("total_visitas") %></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </ItemTemplate>
-                    </asp:TemplateField>
-                </Columns>
+        <asp:TemplateField
+        HeaderText="Visitas"
+        HeaderStyle-CssClass="table-dark align-middle text-center"
+        ItemStyle-CssClass="align-middle">
+        <ItemTemplate>
+            <div class="visits-container">
+                <div class="progress-bar-bg">
+                    <div
+                        class="progress-bar-fill"
+                        data-visits='<%# Eval("total_visitas") %>'
+                        style="width: 0%;"
+                        aria-valuenow='<%# Eval("total_visitas") %>'
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        role="progressbar">
+                        <span class="visits-count" style="opacity: 1; color: rgb(255, 255, 255); background-color: rgb(25, 105, 185);"><%# Eval("total_visitas") %></span>
+                    </div>
+                </div>
+            </div>
+        </ItemTemplate>
+    </asp:TemplateField>
+    </Columns>
                 <HeaderStyle CssClass="table-dark" />
                 <RowStyle CssClass="align-middle" />
                 <EmptyDataRowStyle CssClass="text-center p-4" />
@@ -536,35 +569,47 @@
     </div>
 
     <%-- Visitas del Usuario --%>
-    <div class="dashboard-section">
-        <h3><i class="fas fa-user-clock mr-2"></i> Visitas del Usuario</h3>
+    <div class="dashboard-section" role="region" aria-labelledby="userVisitsHeading">
+        <h3 id="userVisitsHeading"><i class="fas fa-user-clock mr-2"></i> Visitas del Usuario</h3>
 
         <div class="search-filters">
             <div class="row align-items-end">
                 <div class="col-md-5">
                     <div class="form-group mb-0">
-                        <label for="txtSearchEmail" class="form-label">Buscar por correo:</label>
+                        <asp:Label AssociatedControlID="txtSearchEmail" runat="server" CssClass="form-label">
+                            <i class="fas fa-envelope mr-1"></i> Buscar por correo:
+                        </asp:Label>
                         <asp:TextBox ID="txtSearchEmail" runat="server" 
                             CssClass="form-control" 
-                            placeholder="ejemplo@gmail.com"></asp:TextBox>
+                            placeholder="ejemplo@gmail.com"
+                            aria-describedby="emailHelp"></asp:TextBox>
+                        <small id="emailHelp" class="form-text text-muted">Ingrese el correo del usuario a buscar</small>
                     </div>
                 </div>
                 
                 <div class="col-md-2">
                     <div class="form-group mb-0">
-                        <label for="txtFechaInicio" class="form-label">Desde:</label>
+                        <asp:Label AssociatedControlID="txtFechaInicio" runat="server" CssClass="form-label">
+                            <i class="fas fa-calendar-alt mr-1"></i> Desde:
+                        </asp:Label>
                         <asp:TextBox ID="txtFechaInicio" runat="server" 
                             CssClass="form-control" 
-                            TextMode="Date"></asp:TextBox>
+                            TextMode="Date"
+                            aria-describedby="fechaInicioHelp"></asp:TextBox>
+                        <small id="fechaInicioHelp" class="form-text text-muted">Formato: DD/MM/AAAA</small>
                     </div>
                 </div>
                 
                 <div class="col-md-2">
                     <div class="form-group mb-0">
-                        <label for="txtFechaFin" class="form-label">Hasta:</label>
+                        <asp:Label AssociatedControlID="txtFechaFin" runat="server" CssClass="form-label">
+                            <i class="fas fa-calendar-alt mr-1"></i> Hasta:
+                        </asp:Label>
                         <asp:TextBox ID="txtFechaFin" runat="server" 
                             CssClass="form-control" 
-                            TextMode="Date"></asp:TextBox>
+                            TextMode="Date"
+                            aria-describedby="fechaFinHelp"></asp:TextBox>
+                        <small id="fechaFinHelp" class="form-text text-muted">Formato: DD/MM/AAAA</small>
                     </div>
                 </div>
                 
@@ -573,20 +618,25 @@
                         <asp:LinkButton ID="btnSearch" runat="server"
                             OnClick="btnSearch_Click"
                             CssClass="btn btn-primary btn-with-icon"
-                            style="min-width: auto; flex: 1;">
-                            <i class="fas fa-search mr-2"></i> Buscar
+                            style="min-width: auto; flex: 1;"
+                            aria-label="Buscar visitas">
+                            <i class="fas fa-search mr-2" aria-hidden="true"></i> Buscar
                         </asp:LinkButton>
                         
                         <asp:LinkButton ID="btnClearSearch" runat="server"
                             OnClick="btnClearSearch_Click"
                             CssClass="btn btn-outline-secondary btn-with-icon"
-                            style="min-width: auto; flex: 1;">
-                            <i class="fas fa-broom mr-2"></i> Limpiar
+                            style="min-width: auto; flex: 1; color: #495057 !important;"
+                            aria-label="Limpiar campos de búsqueda">
+                            <i class="fas fa-broom mr-2" aria-hidden="true"></i> Limpiar
                         </asp:LinkButton>
                     </div>
                 </div>
             </div>
         </div>
+        
+        <%-- Texto descriptivo accesible --%>
+        <span id="userVisitsDesc" class="visually-hidden">Tabla que muestra las visitas de usuarios filtradas por los criterios de búsqueda</span>
         
         <div class="table-responsive">
             <asp:GridView 
@@ -602,7 +652,7 @@
                 PagerSettings-Mode="NumericFirstLast"
                 PagerSettings-Position="Bottom"
                 PagerSettings-PageButtonCount="5"
-                aria-label="Visitas de usuarios">
+                aria-describedby="userVisitsDesc">
                 <Columns>
                     <asp:BoundField 
                         DataField="usuario_nombre" 
@@ -659,6 +709,8 @@
                     // Altura base + 10px por cada material (ajustable)
                     var altura = 50 + (totalMateriales * 10);
                     bar.style.height = altura + 'px';
+                    bar.setAttribute('aria-valuenow', totalMateriales);
+                    bar.setAttribute('aria-valuemax', totalMateriales + 10);
                 }
             }, 300);
 
@@ -711,6 +763,7 @@
                 const hue = 210 * (percentage / 100);
                 bar.style.backgroundColor = `hsl(${hue}, 70%, 50%)`;
                 bar.style.width = percentage + '%';
+                bar.setAttribute('aria-valuenow', percentage);
                 bar.setAttribute('title', visits + ' visitas');
             });
         }
