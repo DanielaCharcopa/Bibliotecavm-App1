@@ -22,17 +22,43 @@ namespace Logic
             return objUserDat.showUsersDDL();
         }
 
-        // Método para guardar un nuevo Usuario (versión simplificada)
-        public int saveUser(string nombre, string apellido, string correo, string contrasena, string salt, string rol)
+        // Método para guardar un nuevo Usuario (actualizado con celular)
+        public int saveUser(string nombre, string apellido, string correo, string contrasena,
+                          string salt, string celular, string rol)
         {
-            return objUserDat.saveUser(nombre, apellido, correo, contrasena, salt, rol);
+            // Validación del número celular
+            if (string.IsNullOrWhiteSpace(celular) || !IsValidColombianPhone(celular))
+            {
+                throw new ArgumentException("El número celular debe tener 10 dígitos y comenzar con 3");
+            }
+
+            // Verificar si el celular ya existe
+            if (objUserDat.checkCelularExists(celular))
+            {
+                throw new ArgumentException("El número de celular ya está registrado");
+            }
+
+            return objUserDat.saveUser(nombre, apellido, correo, contrasena, salt, celular, rol);
         }
 
-        // Método para actualizar un Usuario
+        // Método para actualizar un Usuario (actualizado con celular)
         public bool updateUser(int idUser, string nombre, string apellido, string correo,
-                             string contrasena, string salt, string rol, string estado)
+                             string contrasena, string salt, string celular, string rol, string estado)
         {
-            return objUserDat.updateUser(idUser, nombre, apellido, correo, contrasena, salt, rol, estado);
+            // Validación del número celular
+            if (string.IsNullOrWhiteSpace(celular) || !IsValidColombianPhone(celular))
+            {
+                throw new ArgumentException("El número celular debe tener 10 dígitos y comenzar con 3");
+            }
+
+            // Verificar si el celular ya existe en otro usuario
+            var user = objUserDat.showUsersMail(correo);
+            if (user != null && user.UsuId != idUser && objUserDat.checkCelularExists(celular))
+            {
+                throw new ArgumentException("El número de celular ya está registrado en otro usuario");
+            }
+
+            return objUserDat.updateUser(idUser, nombre, apellido, correo, contrasena, salt, celular, rol, estado);
         }
 
         // Método para borrar un Usuario
@@ -40,6 +66,7 @@ namespace Logic
         {
             return objUserDat.deleteUser(idUser);
         }
+
         // Método para validar el login de usuario
         public User validateUserLogin(string correo, string contrasenaEncriptada)
         {
@@ -86,6 +113,17 @@ namespace Logic
             return objUserDat.checkEmailExists(correo);
         }
 
+        // Método para verificar si un celular ya está registrado
+        public bool isCelularRegistered(string celular)
+        {
+            if (string.IsNullOrWhiteSpace(celular) || !IsValidColombianPhone(celular))
+            {
+                throw new ArgumentException("Número celular inválido");
+            }
+
+            return objUserDat.checkCelularExists(celular);
+        }
+
         // Método para verificar si existe al menos un administrador
         public bool CheckAdminExists()
         {
@@ -102,8 +140,8 @@ namespace Logic
 
             return objUserDat.SearchUsersByEmail(email);
         }
-        // Método para verificar si el correo electrónico existe
 
+        // Método para verificar si el correo electrónico existe
         public bool CheckEmailExists(string correo)
         {
             return objUserDat.checkEmailExists(correo);
@@ -171,6 +209,18 @@ namespace Logic
             }
 
             return false;
+        }
+
+        // Método privado para validar formato de celular colombiano
+        private bool IsValidColombianPhone(string celular)
+        {
+            if (string.IsNullOrWhiteSpace(celular) || celular.Length != 10)
+                return false;
+
+            if (!celular.StartsWith("3"))
+                return false;
+
+            return long.TryParse(celular, out _);
         }
     }
 }
