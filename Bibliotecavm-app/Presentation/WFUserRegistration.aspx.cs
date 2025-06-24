@@ -11,7 +11,7 @@ namespace Presentation
     {
         // Instancia de la clase de lógica de usuarios
         UserLogic objUser = new UserLogic();
-        string nombre, apellido, correo, contrasena, salt;
+        string nombre, apellido, correo, celular, contrasena, salt;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -25,7 +25,6 @@ namespace Presentation
 
             try
             {
-
                 // Verificar si el correo ya existe ANTES de intentar registrarlo
                 if (objUser.CheckEmailExists(correo))
                 {
@@ -34,6 +33,13 @@ namespace Presentation
                     return;
                 }
 
+                // Verificar si el celular ya existe
+                if (objUser.isCelularRegistered(celular))
+                {
+                    LblCelularMessage.Text = "❌ El número de celular ya está registrado.";
+                    LblCelularMessage.Visible = true;
+                    return;
+                }
 
                 // Generar el salt y encriptar la contraseña
                 ICryptoService cryptoService = new PBKDF2();
@@ -41,7 +47,7 @@ namespace Presentation
                 string encryptedPassword = cryptoService.Compute(contrasena, salt);
 
                 // Guardar usuario - ahora recibe el ID del nuevo usuario
-                int newUserId = objUser.saveUser(nombre, apellido, correo, encryptedPassword, salt, "Estudiante");
+                int newUserId = objUser.saveUser(nombre, apellido, correo, encryptedPassword, salt, celular, "Estudiante");
 
                 if (newUserId > 0)
                 {
@@ -53,9 +59,6 @@ namespace Presentation
                     LblMessage.Text = "❌ Error al guardar el usuario. No se recibió un ID válido.";
                     LblMessage.ForeColor = System.Drawing.Color.Red;
                 }
-
-                LblMessage.Text = "❌ El correo electrónico ya está registrado. Por favor, use otro correo.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
             }
             catch (Exception ex)
             {
@@ -63,18 +66,21 @@ namespace Presentation
                 LblMessage.ForeColor = System.Drawing.Color.Red;
             }
         }
+
         private bool ValidarCampos()
         {
             // Obtener y decodificar valores del formulario
             nombre = HttpUtility.HtmlDecode(TBFirstName.Text.Trim());
             apellido = HttpUtility.HtmlDecode(TBLastName.Text.Trim());
             correo = HttpUtility.HtmlDecode(TBEmail.Text.Trim());
+            celular = HttpUtility.HtmlDecode(TBCelular.Text.Trim());
             contrasena = TBPassword.Text.Trim();
 
             // Resetear mensajes de error
             LblNombreMessage.Visible = false;
             LblApellidoMessage.Visible = false;
             LblCorreoMessage.Visible = false;
+            LblCelularMessage.Visible = false;
             LblPasswordMessage.Visible = false;
             LblMessage.Text = "";
 
@@ -109,6 +115,21 @@ namespace Presentation
                 return false;
             }
 
+            // Validar celular
+            if (string.IsNullOrEmpty(celular))
+            {
+                LblCelularMessage.Text = "❌ El campo 'Número Celular' es obligatorio.";
+                LblCelularMessage.Visible = true;
+                return false;
+            }
+
+            if (!IsValidColombianPhone(celular))
+            {
+                LblCelularMessage.Text = "❌ El número celular debe tener 10 dígitos y comenzar con 3.";
+                LblCelularMessage.Visible = true;
+                return false;
+            }
+
             // Validar contraseña
             if (string.IsNullOrEmpty(contrasena))
             {
@@ -138,18 +159,32 @@ namespace Presentation
             return Regex.IsMatch(email, pattern, RegexOptions.IgnoreCase);
         }
 
+        // Método para validar número celular colombiano
+        private bool IsValidColombianPhone(string phone)
+        {
+            if (string.IsNullOrWhiteSpace(phone) || phone.Length != 10)
+                return false;
+
+            if (!phone.StartsWith("3"))
+                return false;
+
+            return long.TryParse(phone, out _);
+        }
+
         private void ClearForm()
         {
             // Limpiar los campos del formulario
             TBFirstName.Text = string.Empty;
             TBLastName.Text = string.Empty;
             TBEmail.Text = string.Empty;
+            TBCelular.Text = string.Empty;
             TBPassword.Text = string.Empty;
 
             // Limpiar mensajes
             LblNombreMessage.Visible = false;
             LblApellidoMessage.Visible = false;
             LblCorreoMessage.Visible = false;
+            LblCelularMessage.Visible = false;
             LblPasswordMessage.Visible = false;
             LblMessage.Text = string.Empty;
         }
