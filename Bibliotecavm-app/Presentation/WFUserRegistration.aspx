@@ -121,6 +121,16 @@
             <asp:Label ID="LblCorreoMessage" runat="server" CssClass="error-message" 
                 Visible="false" role="alert" aria-live="polite"></asp:Label>
         </div>
+
+        <div class="form-group">
+            <asp:Label runat="server" AssociatedControlID="TBCelular" CssClass="required-field">Número Celular:</asp:Label>
+            <asp:TextBox ID="TBCelular" runat="server" CssClass="form-control"
+                aria-required="true" required="required" placeholder="3101234567"
+                inputmode="tel" aria-describedby="celularHelp" MaxLength="10"></asp:TextBox>
+            <span id="celularHelp" class="password-hint">Debe ser un número colombiano válido (10 dígitos que comienzan con 3)</span>
+            <asp:Label ID="LblCelularMessage" runat="server" CssClass="error-message" 
+                Visible="false" role="alert" aria-live="polite"></asp:Label>
+        </div>
         
         <div class="form-group">
             <asp:Label runat="server" AssociatedControlID="TBPassword" CssClass="required-field">Contraseña:</asp:Label>
@@ -191,6 +201,25 @@
             }
         });
 
+        // Validación de número celular
+        document.getElementById("<%= TBCelular.ClientID %>").addEventListener('input', function () {
+            var celular = this.value;
+            var message = document.getElementById("<%= LblCelularMessage.ClientID %>");
+
+            // Limitar a números
+            this.value = celular.replace(/[^0-9]/g, '');
+
+            // Validar formato colombiano
+            if (celular.length > 0 && (celular.length !== 10 || !celular.startsWith('3'))) {
+                message.textContent = "Error: El número celular debe tener 10 dígitos y comenzar con 3";
+                message.style.display = "block";
+                this.setAttribute("aria-invalid", "true");
+            } else {
+                message.style.display = "none";
+                this.setAttribute("aria-invalid", "false");
+            }
+        });
+
         // Función para calcular fortaleza de contraseña
         function calculatePasswordStrength(password) {
             var strength = 0;
@@ -217,6 +246,7 @@
         document.getElementById("<%= BtnSave.ClientID %>").addEventListener('click', function (e) {
             var password = document.getElementById("<%= TBPassword.ClientID %>");
             var email = document.getElementById("<%= TBEmail.ClientID %>");
+            var celular = document.getElementById("<%= TBCelular.ClientID %>");
             var regex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
             var isValid = true;
 
@@ -229,6 +259,17 @@
                 isValid = false;
             } else {
                 email.setAttribute("aria-invalid", "false");
+            }
+
+            // Validar celular
+            if (celular.value.length !== 10 || !celular.value.startsWith('3')) {
+                document.getElementById("<%= LblCelularMessage.ClientID %>").textContent = "Error: El número celular debe tener 10 dígitos y comenzar con 3";
+                document.getElementById("<%= LblCelularMessage.ClientID %>").style.display = "block";
+                celular.focus();
+                celular.setAttribute("aria-invalid", "true");
+                isValid = false;
+            } else {
+                celular.setAttribute("aria-invalid", "false");
             }
 
             // Validar contraseña
