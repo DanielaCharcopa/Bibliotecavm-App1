@@ -1,6 +1,9 @@
 ﻿<%@ Page Title="Gestion de encuesta" Language="C#" MasterPageFile="~/MainAdmin.Master" AutoEventWireup="true" CodeBehind="WFSurvey.aspx.cs" Inherits="Presentation.WFSurvey" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <!-- Font Awesome CDN para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
     <style type="text/css">
         /* Estilos para ocultar la columna ID pero mantener funcionalidad */
         .hidden-id-column {
@@ -24,6 +27,11 @@
         .btn {
             margin-right: 8px;
             min-width: 100px;
+        }
+        
+        /* Estilos para iconos en botones */
+        .btn i {
+            margin-right: 6px;
         }
         
         /* GridView Mejorado - ESTILO ACTUALIZADO (igual al WFUserManagement) */
@@ -156,11 +164,13 @@
             }
         }
     </style>
+    
+
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="container-fluid">
-        <h3>Gestión de Encuestas</h3>
+        <h3><i class="fas fa-poll-h"></i> Gestión de Encuestas</h3>
         
         <%-- Mensaje de alerta o éxito --%>
         <div class="row">
@@ -178,15 +188,26 @@
                 
                 <%-- Pregunta --%>
                 <div class="form-group">
-                    <asp:Label ID="lblPregunta" runat="server" Text="Pregunta:"></asp:Label>
+                    <asp:Label ID="lblPregunta" runat="server" Text="Pregunta:" AssociatedControlID="txtDescripcionPregunta"></asp:Label>
                     <asp:TextBox ID="txtDescripcionPregunta" CssClass="form-control" runat="server" Width="100%" />
                 </div>
                 
                 <%-- Botones para guardar, actualizar y eliminar encuesta --%>
                 <div class="form-group">
-                    <asp:Button ID="btnGuardarEncuesta" runat="server" CssClass="btn btn-success" Text="Guardar" OnClick="btnGuardarEncuesta_Click" />
-                    <asp:Button ID="btnActualizarEncuesta" runat="server" CssClass="btn btn-primary" Text="Actualizar" OnClick="btnActualizarEncuesta_Click" />
-                    <asp:Button ID="btnEliminarEncuesta" runat="server" CssClass="btn btn-danger" Text="Eliminar" OnClick="btnEliminarEncuesta_Click" />
+                    <button type="button" id="btnGuardarEncuesta" class="btn btn-success" onclick="<%= Page.ClientScript.GetPostBackEventReference(btnGuardarEncuesta, "") %>">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                    <button type="button" id="btnActualizarEncuesta" class="btn btn-primary" onclick="<%= Page.ClientScript.GetPostBackEventReference(btnActualizarEncuesta, "") %>">
+                        <i class="fas fa-edit"></i> Actualizar
+                    </button>
+                    <button type="button" id="btnEliminarEncuesta" class="btn btn-danger" onclick="<%= Page.ClientScript.GetPostBackEventReference(btnEliminarEncuesta, "") %>">
+                        <i class="fas fa-trash"></i> Eliminar
+                    </button>
+                    
+                    <%-- Botones ASP.NET ocultos para mantener la funcionalidad del servidor --%>
+                    <asp:Button ID="btnGuardarEncuesta" runat="server" Text="Guardar" OnClick="btnGuardarEncuesta_Click" style="display:none;" />
+                    <asp:Button ID="btnActualizarEncuesta" runat="server" Text="Actualizar" OnClick="btnActualizarEncuesta_Click" style="display:none;" />
+                    <asp:Button ID="btnEliminarEncuesta" runat="server" Text="Eliminar" OnClick="btnEliminarEncuesta_Click" style="display:none;" />
                 </div>
             </div>
         </div>
@@ -195,7 +216,7 @@
         <%-- Listado de encuestas --%>
         <div class="row">
             <div class="col">
-                <h3>Listado de Encuestas</h3>
+                <h3><i class="fas fa-list"></i> Listado de Encuestas</h3>
                 <div class="table-responsive">
                     <asp:GridView ID="gvSurveys" runat="server" 
                         CssClass="table table-bordered table-striped table-hover" 
@@ -231,4 +252,16 @@
             </div>
         </div>
     </div>
+
+    <script type="text/javascript">
+        // reference de ARIA
+        document.addEventListener("DOMContentLoaded", function() {
+            var txtDescripcion = document.getElementById('<%= txtDescripcionPregunta.ClientID %>');
+            var lblPregunta = document.getElementById('<%= lblPregunta.ClientID %>');
+            
+            if (txtDescripcion && lblPregunta) {
+                txtDescripcion.setAttribute('aria-labelledby', lblPregunta.id);
+            }
+        });
+    </script>
 </asp:Content>
