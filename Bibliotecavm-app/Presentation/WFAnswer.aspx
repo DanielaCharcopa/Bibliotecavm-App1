@@ -9,7 +9,7 @@
         </asp:Panel>
         
         <asp:Panel ID="pnlQuestions" runat="server">
-            <!-- Repeater para listar todas las preguntas no respondidas -->
+             <%--Repeater para listar todas las preguntas no respondidas--%> 
             <asp:Repeater ID="rptQuestions" runat="server" OnItemDataBound="rptQuestions_ItemDataBound">
                 <ItemTemplate>
                     <div class="card mb-3">
@@ -19,16 +19,30 @@
                             
                             <asp:HiddenField ID="hfQuestionId" runat="server" Value='<%# Eval("en_id") %>' />
                             
-                            <div class="form-check form-check-inline">
-                                <asp:RadioButton ID="rbSi" runat="server" GroupName='<%# "respuesta_" + Eval("en_id") %>' Text="Sí" CssClass="form-check-input" />
-                                <label class="form-check-label" for='<%# Container.FindControl("rbSi").ClientID %>'>Sí</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <asp:RadioButton ID="rbNo" runat="server" GroupName='<%# "respuesta_" + Eval("en_id") %>' Text="No" CssClass="form-check-input" />
-                                <label class="form-check-label" for='<%# Container.FindControl("rbNo").ClientID %>'>No</label>
-                            </div>
+                             <%--Fieldset para agrupar radio buttons relacionados--%> 
+                            <fieldset class="mt-3">
+                                <legend class="sr-only">Opciones de respuesta para pregunta <%# Eval("en_id") %></legend>
+                                
+                                <div class="form-check form-check-inline">
+                                    <asp:RadioButton ID="rbSi" runat="server" 
+                                        GroupName='<%# "respuesta_" + Eval("en_id") %>' 
+                                        CssClass="form-check-input" />
+                                    <label class="form-check-label" for='<%# Container.FindControl("rbSi").ClientID %>'>
+                                        Sí
+                                    </label>
+                                </div>
+                                
+                                <div class="form-check form-check-inline">
+                                    <asp:RadioButton ID="rbNo" runat="server" 
+                                        GroupName='<%# "respuesta_" + Eval("en_id") %>' 
+                                        CssClass="form-check-input" />
+                                    <label class="form-check-label" for='<%# Container.FindControl("rbNo").ClientID %>'>
+                                        No
+                                    </label>
+                                </div>
+                            </fieldset>
                             
-                            <div class="mt-2">
+                            <div class="mt-3">
                                 <asp:Button ID="btnResponder" runat="server" Text="Confirmar Respuesta" 
                                     CssClass="btn btn-primary" OnClick="btnResponder_Click" 
                                     CommandArgument='<%# Eval("en_id") %>' />
@@ -48,4 +62,19 @@
             <asp:Label ID="lblError" runat="server"></asp:Label>
         </asp:Panel>
     </div>
+    
+     <%--CSS adicional para sr-only--%> 
+    <style>
+        .sr-only {
+            position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            padding: 0 !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+            border: 0 !important;
+        }
+    </style>
 </asp:Content>
