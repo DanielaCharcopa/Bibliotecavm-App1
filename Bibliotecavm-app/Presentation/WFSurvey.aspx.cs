@@ -152,7 +152,6 @@ namespace Presentation
             {
                 GridViewRow selectedRow = gvSurveys.SelectedRow;
 
-
                 // Asignar los valores de la fila seleccionada al formulario
                 TBCode.Value = selectedRow.Cells[0].Text; // ID de la encuesta
                 txtDescripcionPregunta.Text = HttpUtility.HtmlDecode(selectedRow.Cells[1].Text); // Descripción
