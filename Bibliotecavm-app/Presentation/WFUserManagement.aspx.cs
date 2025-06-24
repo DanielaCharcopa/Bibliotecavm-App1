@@ -12,7 +12,7 @@ namespace Presentation
     public partial class WFUserManagement : System.Web.UI.Page
     {
         UserLogic objUser = new UserLogic();
-        string nombre, apellido, correo, contrasena, salt, rol, estado;
+        string nombre, apellido, correo, celular, contrasena, salt, rol, estado;
         int userId;
 
         protected void Page_Load(object sender, EventArgs e)
@@ -92,7 +92,14 @@ namespace Presentation
                     return;
                 }
 
-                int userId = objUser.saveUser(nombre, apellido, correo, encryptedPassword, salt, rol);
+                if (objUser.isCelularRegistered(celular))
+                {
+                    LblCelularMessage.Text = "❌ El número de celular ya está registrado.";
+                    LblCelularMessage.Visible = true;
+                    return;
+                }
+
+                int userId = objUser.saveUser(nombre, apellido, correo, encryptedPassword, salt, celular, rol);
                 bool success = userId > 0;
 
                 if (success)
@@ -114,6 +121,10 @@ namespace Presentation
                 if (ex.Message.Contains("Duplicate entry") && ex.Message.Contains("usu_correo"))
                 {
                     LblMessage.Text = $"❌ El correo electrónico {correo} ya está registrado en el sistema. No se pueden crear usuarios duplicados.";
+                }
+                else if (ex.Message.Contains("Duplicate entry") && ex.Message.Contains("usu_celular"))
+                {
+                    LblMessage.Text = "❌ El número de celular ya está registrado en el sistema.";
                 }
                 else
                 {
@@ -137,58 +148,13 @@ namespace Presentation
             nombre = HttpUtility.HtmlDecode(TBFirstName.Text.Trim());
             apellido = HttpUtility.HtmlDecode(TBLastName.Text.Trim());
             correo = HttpUtility.HtmlDecode(TBEmail.Text.Trim());
+            celular = HttpUtility.HtmlDecode(TBCelular.Text.Trim());
             contrasena = TBPassword.Text.Trim();
             rol = DDLRole.SelectedValue;
             estado = DDLEstado.SelectedValue;
 
-            if (string.IsNullOrEmpty(nombre))
-            {
-                LblMessage.Text = "❌ El campo 'Nombre' es obligatorio.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
+            if (!ValidarCampos())
                 return;
-            }
-
-            if (string.IsNullOrEmpty(apellido))
-            {
-                LblMessage.Text = "❌ El campo 'Apellido' es obligatorio.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-                return;
-            }
-
-            if (string.IsNullOrEmpty(correo))
-            {
-                LblMessage.Text = "❌ El campo 'Correo Electrónico' es obligatorio.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-                return;
-            }
-
-            if (!IsGmailEmail(correo))
-            {
-                LblMessage.Text = "❌ Por favor, ingrese un correo electrónico válido de Gmail (ejemplo@gmail.com).";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-                return;
-            }
-
-            if (string.IsNullOrEmpty(contrasena))
-            {
-                LblMessage.Text = "❌ El campo 'Contraseña' es obligatorio.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-                return;
-            }
-
-            if (string.IsNullOrEmpty(rol))
-            {
-                LblMessage.Text = "❌ Por favor seleccione un rol.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-                return;
-            }
-
-            if (objUser.isEmailRegistered(correo) && !IsCurrentUserEmail(correo))
-            {
-                LblMessage.Text = "❌ El correo electrónico ya está registrado en otro usuario. Por favor, use un correo diferente.";
-                LblMessage.ForeColor = System.Drawing.Color.Red;
-                return;
-            }
 
             try
             {
@@ -196,7 +162,7 @@ namespace Presentation
                 salt = cryptoService.GenerateSalt();
                 string encryptedPassword = cryptoService.Compute(contrasena, salt);
 
-                bool success = objUser.updateUser(userId, nombre, apellido, correo, encryptedPassword, salt, rol, estado);
+                bool success = objUser.updateUser(userId, nombre, apellido, correo, encryptedPassword, salt, celular, rol, estado);
 
                 if (success)
                 {
@@ -210,7 +176,7 @@ namespace Presentation
                 else
                 {
                     LblMessage.Text = "❌ Error al actualizar el usuario. Verifique que: \n" +
-                                     "1. El correo no esté duplicado\n" +
+                                     "1. El correo o celular no estén duplicados\n" +
                                      "2. Los datos sean válidos\n" +
                                      "3. La conexión a la base de datos esté activa";
                     LblMessage.ForeColor = System.Drawing.Color.Red;
@@ -221,6 +187,10 @@ namespace Presentation
                 if (ex.Message.Contains("El correo electrónico ya está registrado"))
                 {
                     LblMessage.Text = "❌ El correo electrónico ya está registrado en otro usuario.";
+                }
+                else if (ex.Message.Contains("El número de celular ya está registrado"))
+                {
+                    LblMessage.Text = "❌ El número de celular ya está registrado en otro usuario.";
                 }
                 else
                 {
@@ -251,6 +221,7 @@ namespace Presentation
             nombre = HttpUtility.HtmlDecode(TBFirstName.Text.Trim());
             apellido = HttpUtility.HtmlDecode(TBLastName.Text.Trim());
             correo = HttpUtility.HtmlDecode(TBEmail.Text.Trim());
+            celular = HttpUtility.HtmlDecode(TBCelular.Text.Trim());
             contrasena = TBPassword.Text.Trim();
             rol = DDLRole.SelectedValue;
 
@@ -271,6 +242,13 @@ namespace Presentation
             if (string.IsNullOrEmpty(correo) || !IsGmailEmail(correo))
             {
                 LblMessage.Text = "❌ Por favor, ingrese un correo electrónico válido de Gmail (ejemplo@gmail.com).";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(celular) || !IsValidColombianPhone(celular))
+            {
+                LblMessage.Text = "❌ El número celular debe tener 10 dígitos y comenzar con 3.";
                 LblMessage.ForeColor = System.Drawing.Color.Red;
                 return false;
             }
@@ -305,12 +283,13 @@ namespace Presentation
             TBFirstName.Text = string.Empty;
             TBLastName.Text = string.Empty;
             TBEmail.Text = string.Empty;
+            TBCelular.Text = string.Empty;
             TBPassword.Text = string.Empty;
             DDLRole.SelectedIndex = 0;
             DDLEstado.SelectedValue = "Activo";
             TxtBuscarCorreo.Text = string.Empty;
             BtnSave.Text = "Guardar";
-            BtnSave.ToolTip = "Guardar nuevo usuario";
+            LblCelularMessage.Visible = false;
         }
 
         protected void GVUsers_SelectedIndexChanged1(object sender, EventArgs e)
@@ -323,20 +302,19 @@ namespace Presentation
                 TBFirstName.Text = HttpUtility.HtmlDecode(selectedRow.Cells[1].Text.Trim());
                 TBLastName.Text = HttpUtility.HtmlDecode(selectedRow.Cells[2].Text.Trim());
                 TBEmail.Text = HttpUtility.HtmlDecode(selectedRow.Cells[3].Text.Trim());
+                TBCelular.Text = HttpUtility.HtmlDecode(selectedRow.Cells[4].Text.Trim());
                 TxtBuscarCorreo.Text = HttpUtility.HtmlDecode(selectedRow.Cells[3].Text.Trim());
 
-                string selectedRole = HttpUtility.HtmlDecode(selectedRow.Cells[4].Text.Trim());
+                string selectedRole = HttpUtility.HtmlDecode(selectedRow.Cells[5].Text.Trim());
                 if (!string.IsNullOrEmpty(selectedRole) && DDLRole.Items.FindByValue(selectedRole) != null)
                 {
                     DDLRole.SelectedValue = selectedRole;
                 }
 
-                string userStatus = HttpUtility.HtmlDecode(selectedRow.Cells[5].Text.Trim());
+                string userStatus = HttpUtility.HtmlDecode(selectedRow.Cells[6].Text.Trim());
                 DDLEstado.SelectedValue = userStatus;
 
-                BtnSave.Text = "Guardar como nuevo";
-                BtnSave.ToolTip = "Crear un nuevo usuario con estos datos (el usuario actual no se modificará)";
-
+                BtnSave.Text = "Guardar";
                 PanelEditMode.Visible = true;
 
                 LblMessage.Text = $"✏️ Editando usuario: {TBFirstName.Text} {TBLastName.Text}. Use 'Actualizar' para guardar cambios.";
@@ -354,7 +332,16 @@ namespace Presentation
             return Regex.IsMatch(email, @"^[a-zA-Z0-9._%+-]+@gmail\.com$");
         }
 
+        private bool IsValidColombianPhone(string phone)
+        {
+            if (string.IsNullOrWhiteSpace(phone) || phone.Length != 10)
+                return false;
 
+            if (!phone.StartsWith("3"))
+                return false;
+
+            return long.TryParse(phone, out _);
+        }
 
         private bool IsCurrentUserEmail(string email)
         {
