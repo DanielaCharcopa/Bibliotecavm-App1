@@ -105,6 +105,24 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.Label LblCorreoMessage;
 
         /// <summary>
+        /// Control TBCelular.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TBCelular;
+
+        /// <summary>
+        /// Control LblCelularMessage.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblCelularMessage;
+
+        /// <summary>
         /// Control TBPassword.
         /// </summary>
         /// <remarks>
@@ -166,6 +184,15 @@ namespace Presentation
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button BtnNew;
+
+        /// <summary>
+        /// Control PanelBusqueda.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel PanelBusqueda;
 
         /// <summary>
         /// Control TxtBuscarCorreo.
