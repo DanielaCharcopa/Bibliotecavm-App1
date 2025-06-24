@@ -33,6 +33,15 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.HiddenField HFPurchaId;
 
         /// <summary>
+        /// Control LblTicketHidden.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblTicketHidden;
+
+        /// <summary>
         /// Control TBTicket.
         /// </summary>
         /// <remarks>
@@ -40,6 +49,15 @@ namespace Presentation
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox TBTicket;
+
+        /// <summary>
+        /// Control LblFechaHidden.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblFechaHidden;
 
         /// <summary>
         /// Control TBFecha.

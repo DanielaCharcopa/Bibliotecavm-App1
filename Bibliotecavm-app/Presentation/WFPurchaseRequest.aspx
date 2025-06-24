@@ -27,22 +27,28 @@
             font-weight: 600;
         }
         
-        /* Estilos para la tabla de formulario */
-        .form-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 15px;
+        /* Estructura de formulario accesible */
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
         }
         
-        .form-table td {
-            padding: 8px 0;
+        .form-group-horizontal {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group-horizontal .form-control {
+            flex: 1;
         }
         
         .form-label {
             font-weight: 500;
             color: #2c3e50;
-            display: block;
             margin-bottom: 5px;
+            display: block;
         }
         
         .form-control {
@@ -58,6 +64,12 @@
             border-color: #1a237e;
             outline: none;
             box-shadow: 0 0 0 3px rgba(26,35,126,0.1);
+        }
+        
+        /* Estilos para campos de solo lectura */
+        .form-control[readonly] {
+            background-color: #f8f9fa;
+            color: #6c757d;
         }
         
         /* Estilos para botones */
@@ -107,15 +119,14 @@
             background-color: #1a237e;
             color: white;
             padding: 10px 15px;
-            margin-left: 10px;
             min-width: 150px;
+            white-space: nowrap;
         }
         
         .btn-buscar:hover {
             background-color: #303f9f;
         }
-
-        /* ===== ESTILOS MODIFICADOS PARA BOTÓN SELECCIONAR (AZUL CLARO) ===== */
+        
         .btn-outline-primary {
             border: 1px solid #0d6efd;
             color: #0d6efd;
@@ -141,7 +152,6 @@
             background-color: #0d6efd;
             color: white;
         }
-        /* ===== FIN DE ESTILOS MODIFICADOS ===== */
 
         /* Clase para botones pequeños */
         .btn-sm {
@@ -275,6 +285,19 @@
             pointer-events: none !important;
         }
         
+        /* Campos ocultos accesibles */
+        .sr-only {
+            position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            padding: 0 !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+            border: 0 !important;
+        }
+        
         /* Responsive */
         @media (max-width: 768px) {
             .form-container {
@@ -289,20 +312,15 @@
                 width: 100%;
             }
             
-            .btn-buscar {
-                background-color: #1a237e;
-                color: white;
-                padding: 10px 15px;
-                margin-left: 10px;
-                min-width: auto;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                white-space: nowrap;
+            .form-group-horizontal {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
             }
-
-            .btn-buscar i {
-                margin-right: 8px;
+            
+            .btn-buscar {
+                min-width: auto;
+                width: 100%;
             }
             
             /* Ajustes para paginación en móviles */
@@ -320,83 +338,108 @@
     <div class="form-container">
         <h3>Registro de Compras</h3>
         
-        <asp:Label ID="LblMsj" runat="server" CssClass="message info-message"></asp:Label>
-        <asp:HiddenField ID="HFPurchaId" runat="server" />
-        <asp:TextBox ID="TBTicket" runat="server" style="display:none;"></asp:TextBox>
-
-        <table class="form-table">
-            <tr>
-                <td>
-                    <asp:TextBox ID="TBFecha" runat="server" style="display:none;"></asp:TextBox>
-                    <asp:Label ID="LblFecha" runat="server" Text="Fecha:" CssClass="form-label"></asp:Label>
-                </td>
-                <td>
-                    <asp:Label ID="LblFechaMostrar" runat="server" CssClass="form-control"></asp:Label>
-                </td>
-            </tr>
-           <tr>
-                <td>
-                    <asp:Label ID="LblMaterial" runat="server" Text="Material Seleccionado:" CssClass="form-label"></asp:Label>
-                </td>
-                <td>
-                    <div style="display:flex; align-items:center;">
-                        <asp:TextBox ID="TxtMaterialSeleccionado" runat="server" ReadOnly="true" CssClass="form-control"></asp:TextBox>
-                        <asp:HiddenField ID="HdnMaterialId" runat="server" />
-                        <asp:LinkButton ID="BtnBuscarMaterial" runat="server" OnClick="BtnBuscarMaterial_Click" 
-                            CssClass="btn btn-primary" style="margin-left: 10px; white-space: nowrap;">
-                            <i class="fas fa-search"></i> Buscar Material
-                        </asp:LinkButton>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <asp:Label ID="LblQuantity" runat="server" Text="Cantidad:" CssClass="form-label"></asp:Label>
-                </td>
-                <td>
-                    <asp:TextBox ID="TBQuantity" runat="server" TextMode="Number" 
-                        min="1" value="1" AutoPostBack="true" 
-                        OnTextChanged="TBQuantity_TextChanged" CssClass="form-control"></asp:TextBox>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <asp:Label ID="LblUnitPrice" runat="server" Text="Precio Unitario:" CssClass="form-label"></asp:Label>
-                </td>
-                <td>
-                    <asp:TextBox ID="TBUnitPrice" runat="server" ReadOnly="true" CssClass="form-control"></asp:TextBox>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <asp:Label ID="LblTotal" runat="server" Text="Total:" CssClass="form-label"></asp:Label>
-                </td>
-                <td>
-                    <asp:TextBox ID="TBTotal" runat="server" ReadOnly="true" CssClass="form-control"></asp:TextBox>
-                </td>
-            </tr>
-        </table>
+        <!-- Mensaje informativo -->
+        <asp:Label ID="LblMsj" runat="server" CssClass="message info-message" role="status" aria-live="polite"></asp:Label>
         
-        <div class="btn-container">
-            <asp:LinkButton ID="BtnSave" runat="server" OnClick="BtnSave_Click" CssClass="btn btn-primary" OnClientClick="return confirm('¿Confirmar compra?');">
-                <i class="fas fa-shopping-cart"></i> Comprar
-            </asp:LinkButton>
-            <asp:LinkButton ID="BtnUpdate" runat="server" OnClick="BtnUpdate_Click" CssClass="btn btn-secondary btn-hidden" OnClientClick="return confirm('¿Confirmar actualización?');">
-                <i class="fas fa-sync-alt"></i> Actualizar
-            </asp:LinkButton>
-            <asp:LinkButton ID="BtnDelete" runat="server" OnClick="BtnDelete_Click" CssClass="btn btn-danger btn-hidden" OnClientClick="return confirm('¿Eliminar esta solicitud?');">
-                <i class="fas fa-trash-alt"></i> Eliminar
-            </asp:LinkButton>
+        <!-- Campos ocultos con labels para accesibilidad -->
+        <asp:HiddenField ID="HFPurchaId" runat="server" />
+        
+        <div class="sr-only">
+            <asp:Label ID="LblTicketHidden" runat="server" Text="Ticket interno:" AssociatedControlID="TBTicket"></asp:Label>
+            <asp:TextBox ID="TBTicket" runat="server" TabIndex="-1" aria-hidden="true"></asp:TextBox>
+            
+            <asp:Label ID="LblFechaHidden" runat="server" Text="Fecha interna:" AssociatedControlID="TBFecha"></asp:Label>
+            <asp:TextBox ID="TBFecha" runat="server" TabIndex="-1" aria-hidden="true"></asp:TextBox>
         </div>
 
+        <!-- Formulario principal -->
+        <form role="form" aria-label="Formulario de registro de compras">
+            <fieldset>
+                <legend class="sr-only">Información de la compra</legend>
+                
+                <!-- Fecha -->
+                <div class="form-group">
+                    <asp:Label ID="LblFecha" runat="server" Text="Fecha:" CssClass="form-label" AssociatedControlID="LblFechaMostrar"></asp:Label>
+                    <asp:Label ID="LblFechaMostrar" runat="server" CssClass="form-control" role="textbox" aria-readonly="true"></asp:Label>
+                </div>
+                
+                <!-- Material -->
+                <div class="form-group">
+                    <asp:Label ID="LblMaterial" runat="server" Text="Material Seleccionado:" CssClass="form-label" AssociatedControlID="TxtMaterialSeleccionado"></asp:Label>
+                    <div class="form-group-horizontal">
+                        <asp:TextBox ID="TxtMaterialSeleccionado" runat="server" ReadOnly="true" CssClass="form-control" 
+                                     aria-describedby="MaterialHelp" placeholder="Ningún material seleccionado"></asp:TextBox>
+                        <asp:HiddenField ID="HdnMaterialId" runat="server" />
+                        <asp:LinkButton ID="BtnBuscarMaterial" runat="server" OnClick="BtnBuscarMaterial_Click" 
+                                        CssClass="btn btn-primary btn-buscar" aria-label="Buscar y seleccionar material">
+                            <i class="fas fa-search" aria-hidden="true"></i> Buscar Material
+                        </asp:LinkButton>
+                    </div>
+                    <small id="MaterialHelp" class="form-text text-muted">Haz clic en "Buscar Material" para seleccionar un producto.</small>
+                </div>
+                
+                <!-- Cantidad -->
+                <div class="form-group">
+                    <asp:Label ID="LblQuantity" runat="server" Text="Cantidad:" CssClass="form-label" AssociatedControlID="TBQuantity"></asp:Label>
+                    <asp:TextBox ID="TBQuantity" runat="server" TextMode="Number" 
+                                 min="1" value="1" AutoPostBack="true" 
+                                 OnTextChanged="TBQuantity_TextChanged" CssClass="form-control"
+                                 aria-describedby="QuantityHelp" aria-required="true"></asp:TextBox>
+                    <small id="QuantityHelp" class="form-text text-muted">Ingresa la cantidad deseada (mínimo 1).</small>
+                </div>
+                
+                <!-- Precio Unitario -->
+                <div class="form-group">
+                    <asp:Label ID="LblUnitPrice" runat="server" Text="Precio Unitario:" CssClass="form-label" AssociatedControlID="TBUnitPrice"></asp:Label>
+                    <asp:TextBox ID="TBUnitPrice" runat="server" ReadOnly="true" CssClass="form-control" 
+                                 aria-describedby="UnitPriceHelp" placeholder="Selecciona un material para ver el precio"></asp:TextBox>
+                    <small id="UnitPriceHelp" class="form-text text-muted">El precio se actualiza automáticamente según el material seleccionado.</small>
+                </div>
+                
+                <!-- Total -->
+                <div class="form-group">
+                    <asp:Label ID="LblTotal" runat="server" Text="Total:" CssClass="form-label" AssociatedControlID="TBTotal"></asp:Label>
+                    <asp:TextBox ID="TBTotal" runat="server" ReadOnly="true" CssClass="form-control"
+                                 aria-describedby="TotalHelp" placeholder="El total se calcula automáticamente"></asp:TextBox>
+                    <small id="TotalHelp" class="form-text text-muted">Total calculado: cantidad × precio unitario.</small>
+                </div>
+            </fieldset>
+        </form>
+        
+        <!-- Botones de acción -->
+        <div class="btn-container" role="group" aria-label="Acciones del formulario">
+            <asp:LinkButton ID="BtnSave" runat="server" OnClick="BtnSave_Click" CssClass="btn btn-primary" 
+                            OnClientClick="return confirm('¿Confirmar compra?');" aria-describedby="SaveHelp">
+                <i class="fas fa-shopping-cart" aria-hidden="true"></i> Comprar
+            </asp:LinkButton>
+            <asp:LinkButton ID="BtnUpdate" runat="server" OnClick="BtnUpdate_Click" CssClass="btn btn-secondary btn-hidden" 
+                            OnClientClick="return confirm('¿Confirmar actualización?');" aria-describedby="UpdateHelp">
+                <i class="fas fa-sync-alt" aria-hidden="true"></i> Actualizar
+            </asp:LinkButton>
+            <asp:LinkButton ID="BtnDelete" runat="server" OnClick="BtnDelete_Click" CssClass="btn btn-danger btn-hidden" 
+                            OnClientClick="return confirm('¿Eliminar esta solicitud?');" aria-describedby="DeleteHelp">
+                <i class="fas fa-trash-alt" aria-hidden="true"></i> Eliminar
+            </asp:LinkButton>
+        </div>
+        
+        <!-- Textos de ayuda para botones (ocultos visualmente pero accesibles) -->
+        <div class="sr-only">
+            <div id="SaveHelp">Guardar nueva solicitud de compra.</div>
+            <div id="UpdateHelp">Actualizar solicitud de compra existente.</div>
+            <div id="DeleteHelp">Eliminar solicitud de compra seleccionada.</div>
+        </div>
+
+        <!-- Lista de solicitudes -->
         <div class="grid-container">
+            <h4 class="mb-3">Solicitudes de Compra Registradas</h4>
             <asp:GridView ID="GVRequests" runat="server" AutoGenerateColumns="False" 
                 OnSelectedIndexChanged="GVRequests_SelectedIndexChanged" 
                 DataKeyNames="solic_id,tbl_material_edu_mat_id"
                 AllowPaging="True" PageSize="5" OnPageIndexChanging="GVRequests_PageIndexChanging"
                 CssClass="table table-bordered table-striped table-hover grid-view-improved" 
                 PagerStyle-CssClass="pagination-improved" GridLines="None"
-                aria-label="Lista de solicitudes de compra">
+                aria-label="Lista de solicitudes de compra registradas"
+                role="table">
                 <Columns>
                     <asp:BoundField DataField="solic_id" HeaderText="ID" 
                         HeaderStyle-CssClass="hidden-column table-dark" 
@@ -435,7 +478,7 @@
                         
                     <asp:CommandField
                         ShowSelectButton="True"
-                        HeaderText="Opción"
+                        HeaderText="Acciones"
                         SelectText="Seleccionar"
                         ButtonType="Button"
                         ControlStyle-CssClass="btn btn-sm btn-outline-primary"
@@ -447,6 +490,12 @@
                 <PagerSettings Mode="NumericFirstLast" Position="Bottom" 
                     PageButtonCount="5" FirstPageText="Primera" LastPageText="Última" 
                     NextPageText="Siguiente" PreviousPageText="Anterior" />
+                <EmptyDataTemplate>
+                    <div class="text-center p-4">
+                        <i class="fas fa-inbox fa-2x text-muted mb-2"></i>
+                        <p class="text-muted">No hay solicitudes de compra registradas.</p>
+                    </div>
+                </EmptyDataTemplate>
             </asp:GridView>
         </div>
     </div>
@@ -456,6 +505,7 @@
             var btnSave = document.getElementById('<%= BtnSave.ClientID %>');
             var btnUpdate = document.getElementById('<%= BtnUpdate.ClientID %>');
             var btnDelete = document.getElementById('<%= BtnDelete.ClientID %>');
+            var lblMsj = document.getElementById('<%= LblMsj.ClientID %>');
 
             if (isEditing) {
                 // Modo edición
@@ -463,24 +513,46 @@
                 btnUpdate.classList.remove('btn-hidden');
                 btnDelete.classList.remove('btn-hidden');
 
+                // Actualizar atributos ARIA
+                btnSave.setAttribute('aria-hidden', 'true');
+                btnUpdate.setAttribute('aria-hidden', 'false');
+                btnDelete.setAttribute('aria-hidden', 'false');
+
                 // Mostrar mensaje al usuario
-                document.getElementById('<%= LblMsj.ClientID %>').textContent = 'Estás editando un registro existente. Usa el botón "Actualizar" para guardar los cambios.';
-                document.getElementById('<%= LblMsj.ClientID %>').className = 'message info-message';
+                lblMsj.textContent = 'Estás editando un registro existente. Usa el botón "Actualizar" para guardar los cambios.';
+                lblMsj.className = 'message info-message';
+                lblMsj.setAttribute('aria-live', 'polite');
             } else {
                 // Modo nuevo registro
                 btnSave.classList.remove('btn-hidden');
                 btnUpdate.classList.add('btn-hidden');
                 btnDelete.classList.add('btn-hidden');
-                
+
+                // Actualizar atributos ARIA
+                btnSave.setAttribute('aria-hidden', 'false');
+                btnUpdate.setAttribute('aria-hidden', 'true');
+                btnDelete.setAttribute('aria-hidden', 'true');
+
                 // Mostrar mensaje al usuario
-                document.getElementById('<%= LblMsj.ClientID %>').textContent = 'Modo de creación de nuevo registro. Completa los campos y haz clic en "Comprar".';
-                document.getElementById('<%= LblMsj.ClientID %>').className = 'message info-message';
+                lblMsj.textContent = 'Modo de creación de nuevo registro. Completa los campos y haz clic en "Comprar".';
+                lblMsj.className = 'message info-message';
+                lblMsj.setAttribute('aria-live', 'polite');
             }
         }
 
         // Llamar a esta función cuando se selecciona un registro
         function onRecordSelected() {
             toggleSaveUpdateButtons(true);
+            // Anunciar a lectores de pantalla que se ha seleccionado un registro
+            var announcement = document.createElement('div');
+            announcement.setAttribute('aria-live', 'assertive');
+            announcement.setAttribute('aria-atomic', 'true');
+            announcement.className = 'sr-only';
+            announcement.textContent = 'Registro seleccionado para edición.';
+            document.body.appendChild(announcement);
+            setTimeout(function () {
+                document.body.removeChild(announcement);
+            }, 3000);
         }
 
         // Llamar a esta función cuando se limpia el formulario
@@ -489,9 +561,27 @@
         }
 
         // Verificar estado al cargar la página
-        window.onload = function() {
+        window.onload = function () {
             var purchaseId = document.getElementById('<%= HFPurchaId.ClientID %>').value;
             toggleSaveUpdateButtons(purchaseId !== '');
+
+            // Configurar eventos de teclado para navegación mejorada
+            var form = document.querySelector('form[role="form"]');
+            if (form) {
+                form.addEventListener('keydown', function (e) {
+                    // Permitir navegación con Tab y Enter
+                    if (e.key === 'Tab') {
+                        // Comportamiento normal del Tab
+                        return;
+                    }
+                    if (e.key === 'Enter' && e.target.type !== 'textarea') {
+                        // Prevenir submit accidental en campos que no son textarea
+                        if (e.target.type !== 'submit' && e.target.tagName !== 'BUTTON') {
+                            e.preventDefault();
+                        }
+                    }
+                });
+            }
         };
     </script>
 </asp:Content>
