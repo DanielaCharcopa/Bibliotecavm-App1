@@ -46,7 +46,8 @@ namespace Data
         }
 
         // Registra un nuevo usuario en la base de datos 
-        public int saveUser(string nombre, string apellido, string correo, string contrasena, string salt, string rol)
+        public int saveUser(string nombre, string apellido, string correo, string contrasena,
+                          string salt, string celular, string rol)
         {
             MySqlCommand objInsertCmd = new MySqlCommand();
             objInsertCmd.Connection = objPer.openConnection();
@@ -58,6 +59,7 @@ namespace Data
             objInsertCmd.Parameters.Add("v_correo", MySqlDbType.VarChar, 80).Value = correo;
             objInsertCmd.Parameters.Add("v_contrasena", MySqlDbType.Text).Value = contrasena;
             objInsertCmd.Parameters.Add("v_salt", MySqlDbType.Text).Value = salt;
+            objInsertCmd.Parameters.Add("v_celular", MySqlDbType.VarChar, 10).Value = celular;
             objInsertCmd.Parameters.Add("v_rol", MySqlDbType.String).Value = rol;
 
             var result = objInsertCmd.ExecuteScalar();
@@ -68,7 +70,7 @@ namespace Data
 
         // Modifica la información de un usuario existente
         public bool updateUser(int idUser, string nombre, string apellido, string correo,
-                      string contrasena, string salt, string rol, string estado)
+                      string contrasena, string salt, string celular, string rol, string estado)
         {
             bool executed = false;
             MySqlConnection connection = null;
@@ -87,9 +89,9 @@ namespace Data
                 objUpdateCmd.Parameters.Add("v_correo", MySqlDbType.VarChar).Value = correo;
                 objUpdateCmd.Parameters.Add("v_contrasena", MySqlDbType.Text).Value = contrasena ?? "";
                 objUpdateCmd.Parameters.Add("v_salt", MySqlDbType.Text).Value = salt ?? "";
+                objUpdateCmd.Parameters.Add("v_celular", MySqlDbType.VarChar, 10).Value = celular;
                 objUpdateCmd.Parameters.Add("v_rol", MySqlDbType.String).Value = rol;
                 objUpdateCmd.Parameters.Add("v_estado", MySqlDbType.String).Value = estado;
-                objUpdateCmd.Parameters.Add("v_current_user_id", MySqlDbType.Int32).Value = -1; // Valor temporal
 
                 var result = objUpdateCmd.ExecuteScalar();
                 if (result != null)
@@ -114,7 +116,6 @@ namespace Data
             return executed;
         }
 
-
         // Comprueba si un correo ya está registrado
         public bool checkEmailExists(string correo)
         {
@@ -131,6 +132,31 @@ namespace Data
             catch (Exception ex)
             {
                 Console.WriteLine("Error al verificar correo: " + ex.Message);
+            }
+            finally
+            {
+                objPer.closeConnection();
+            }
+
+            return exists;
+        }
+
+        // Comprueba si un celular ya está registrado
+        public bool checkCelularExists(string celular)
+        {
+            bool exists = false;
+            MySqlCommand cmd = new MySqlCommand("procCheckCelularExists", objPer.openConnection());
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add("v_celular", MySqlDbType.VarChar, 10).Value = celular;
+
+            try
+            {
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                exists = count > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al verificar celular: " + ex.Message);
             }
             finally
             {
@@ -190,11 +216,11 @@ namespace Data
                             UsuId = reader.GetInt32("usu_id"),
                             NombreCompleto = reader.GetString("nombre_completo"),
                             Correo = reader.GetString("usu_correo"),
+                            Celular = reader.GetString("usu_celular"),
                             Contrasena = reader.GetString("usu_contrasena"),
                             Salt = reader.GetString("usu_salt"),
                             Rol = reader.GetString("usu_rol"),
                             Estado = reader.GetString("usu_estado")
-
                         };
                     }
                 }
