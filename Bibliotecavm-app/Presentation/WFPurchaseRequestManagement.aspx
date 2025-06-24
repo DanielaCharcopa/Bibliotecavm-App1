@@ -173,6 +173,24 @@
             display: block;
         }
         
+        /* Estilos para accesibilidad */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .checkbox-container {
+            position: relative;
+            display: inline-block;
+        }
+        
         /* Estilos para móviles */
         @media (max-width: 768px) {
             .container {
@@ -258,10 +276,17 @@
                             
                             <asp:TemplateField HeaderText="Completar" ItemStyle-CssClass="completed-column" HeaderStyle-CssClass="completed-column">
                                 <ItemTemplate>
-                                    <asp:CheckBox ID="CbCompleted" runat="server" CssClass="checkbox-large" 
-                                        AutoPostBack="true" OnCheckedChanged="CbCompleted_CheckedChanged"
-                                        Checked='<%# IsCompleted(Eval("solic_ticket")) %>' 
-                                        Enabled='<%# !IsCompleted(Eval("solic_ticket")) %>' />
+                                    <div class="checkbox-container">
+                                        <asp:Label ID="LblCompleted" runat="server" 
+                                            AssociatedControlID="CbCompleted"
+                                            CssClass="visually-hidden"
+                                            Text='<%# "Marcar solicitud " + Eval("solic_ticket") + " como completada" %>' />
+                                        <asp:CheckBox ID="CbCompleted" runat="server" CssClass="checkbox-large" 
+                                            AutoPostBack="true" OnCheckedChanged="CbCompleted_CheckedChanged"
+                                            Checked='<%# IsCompleted(Eval("solic_ticket")) %>' 
+                                            Enabled='<%# !IsCompleted(Eval("solic_ticket")) %>'
+                                            ToolTip='<%# "Marcar solicitud " + Eval("solic_ticket") + " como completada" %>' />
+                                    </div>
                                 </ItemTemplate>
                             </asp:TemplateField>
                         </Columns>
