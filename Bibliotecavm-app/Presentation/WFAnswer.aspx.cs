@@ -22,6 +22,9 @@ namespace Presentation
         {
             try
             {
+                // Aquí deberías obtener el ID del usuario de la sesión
+                // Por ejemplo: int userId = Convert.ToInt32(Session["UserId"]);
+                // Para pruebas, usaremos un ID fijo (reemplázalo con el código real)
                 int userId = GetCurrentUserId();
 
                 DataSet dsQuestions = objAnswerLog.showUnansweredQuestionsByUser(userId);
@@ -112,10 +115,7 @@ namespace Presentation
 
         private int GetCurrentUserId()
         {
-            // En una aplicación real, este método obtendría el ID del usuario de la sesión
-            // Por ejemplo: return Convert.ToInt32(Session["UserId"]);
 
-            // Por ahora, retornamos un valor de ejemplo (reemplaza esto)
             if (Session["UserId"] != null)
             {
                 return Convert.ToInt32(Session["UserId"]);
