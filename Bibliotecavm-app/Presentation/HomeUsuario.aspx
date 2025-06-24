@@ -310,7 +310,7 @@
                 <p class="slide-description">Realizó sus estudios de básica primaria en la Escuela Las Delicias,
                     bajo la orientación de las Hermanas Lauritas. Continuó su formación secundaria en el Colegio
                     Agrícola de Silvia hasta noveno grado, y culminó los grados décimo y undécimo en la Institución Educativa INEM Francisco José de Caldas.</p>
-                <a href="WFLuisFCalambás.aspx" class="ver-mas-btn">Ver más <span class="sr-only">sobre Luis Felipe Calambas</span></a>
+                <a href="WFLuisFCalambas.aspx" class="ver-mas-btn">Ver más <span class="sr-only">sobre Luis Felipe Calambas</span></a>
             </div>
         </div>
 
@@ -333,26 +333,26 @@
             </div>
         </div>
 
-         <%--Miniaturas con flechas--%> 
-        <div class="thumbnail-slider">
-            <button class="thumb-btn prev-btn" aria-label="Diapositiva anterior">&lt;</button>
-            <div class="thumbnail-wrapper" id="thumbnailWrapper">
-                <button class="thumbnail visible active-thumb" data-index="0" aria-label="Mostrar diapositiva 1: Mercedes Tunubala">
-                    <img src="Recursos/Biografias/M.MercedesTunubala.webp" alt="Miniatura de Mercedes Tunubala Velasco" />
-                </button>
-                <button class="thumbnail visible" data-index="1" aria-label="Mostrar diapositiva 2: Felipe Calambás">
-                    <img src="Recursos/Biografias/T.LuisFelipeC.webp" alt="Miniatura de Luis Felipe Calambás" />
-                </button>
-                <button class="thumbnail visible" data-index="2" aria-label="Mostrar diapositiva 3:Alvaro Morales ">
-                    <img src="Recursos/Biografias/T.AlvaroMorales.webp" alt="Miniatura Alvaro Morales Tombé" />
-                </button>
-                <button class="thumbnail" data-index="3" aria-label="Mostrar diapositiva 4:Avelino Dagua">
-                    <img src="Recursos/Biografias/T. Avelino Dagua.webp" alt="Miniatura de Avelino Dagua" />
-                </button>
-            </div>
-            <button class="thumb-btn next-btn" aria-label="Diapositiva siguiente">&gt;</button>
+             <%--Miniaturas con flechas--%> 
+    <div class="thumbnail-slider">
+        <button class="thumb-btn prev-btn" aria-label="Diapositiva anterior">&lt;</button>
+        <div class="thumbnail-wrapper" id="thumbnailWrapper">
+            <button class="thumbnail visible active-thumb" data-index="0" aria-label="Mostrar diapositiva 1: Mercedes Tunubala">
+                <img src="Recursos/Biografias/M.MercedesTunubala.webp" alt="Miniatura de Mercedes Tunubala Velasco" />
+            </button>
+            <button class="thumbnail visible" data-index="1" aria-label="Mostrar diapositiva 2: Felipe Calambás">
+                <img src="Recursos/Biografias/T.LuisFelipeC.webp" alt="Miniatura de Luis Felipe Calambás" />
+            </button>
+            <button class="thumbnail visible" data-index="2" aria-label="Mostrar diapositiva 3:Alvaro Morales ">
+                <img src="Recursos/Biografias/T.AlvaroMorales.webp" alt="Miniatura Alvaro Morales Tombé" />
+            </button>
+            <button class="thumbnail" data-index="3" aria-label="Mostrar diapositiva 4:Avelino Dagua">
+                <img src="Recursos/Biografias/T. Avelino Dagua.webp" alt="Miniatura de Avelino Dagua" />
+            </button>
         </div>
+        <button class="thumb-btn next-btn" aria-label="Diapositiva siguiente">&gt;</button>
     </div>
+</div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -495,7 +495,5 @@
             resetUserActivity();
             handleVisibility();
         });
-
-        </script>
-
+    </script>
 </asp:Content>
