@@ -15,24 +15,6 @@ namespace Presentation
     {
 
         /// <summary>
-        /// Control TBSearch.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TBSearch;
-
-        /// <summary>
-        /// Control BtnSearch.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnSearch;
-
-        /// <summary>
         /// Control HFMaterialAutorID.
         /// </summary>
         /// <remarks>
@@ -69,31 +51,13 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.TextBox TBDescription;
 
         /// <summary>
-        /// Control phContenedor.
+        /// Control BtnSave.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder phContenedor;
-
-        /// <summary>
-        /// Control BtnAgregarFormulario.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnAgregarFormulario;
-
-        /// <summary>
-        /// Control BtnSaveAll.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnSaveAll;
+        protected global::System.Web.UI.WebControls.LinkButton BtnSave;
 
         /// <summary>
         /// Control BtnUpdate.
@@ -102,7 +66,7 @@ namespace Presentation
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnUpdate;
+        protected global::System.Web.UI.WebControls.LinkButton BtnUpdate;
 
         /// <summary>
         /// Control BtnDelete.
@@ -111,7 +75,16 @@ namespace Presentation
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnDelete;
+        protected global::System.Web.UI.WebControls.LinkButton BtnDelete;
+
+        /// <summary>
+        /// Control BtnIrAPresentacion.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton BtnIrAPresentacion;
 
         /// <summary>
         /// Control LblMessage.
@@ -123,6 +96,33 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.Label LblMessage;
 
         /// <summary>
+        /// Control TBSearch.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TBSearch;
+
+        /// <summary>
+        /// Control BtnSearch.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button BtnSearch;
+
+        /// <summary>
+        /// Control phContenedor.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.PlaceHolder phContenedor;
+
+        /// <summary>
         /// Control GVMaterialAutor.
         /// </summary>
         /// <remarks>
@@ -130,5 +130,14 @@ namespace Presentation
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView GVMaterialAutor;
+
+        /// <summary>
+        /// Control LblSearchResult.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblSearchResult;
     }
 }

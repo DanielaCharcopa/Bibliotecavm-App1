@@ -1,5 +1,6 @@
 ﻿using Logic;
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Data;
 using System.Web;
@@ -24,6 +25,9 @@ namespace Presentation
         AuthorsLog objAut = new AuthorsLog();
 
         public static List<Datosformulario> datosformularios = new List<Datosformulario>();
+        private int id;
+        private bool executed;
+
         private int FormularioCount
         {
             get => ViewState["FormularioCount"] != null ? (int)ViewState["FormularioCount"] : 0;
@@ -49,6 +53,12 @@ namespace Presentation
             }
         }
 
+        // Evento para manejar el cambio de página del GridView
+        protected void GVMaterialAutor_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            GVMaterialAutor.PageIndex = e.NewPageIndex;
+            showMaterialAutor(); // Recarga los datos para la nueva página
+        }
 
         private void CargarDDLEstaticos()
         {
@@ -78,7 +88,6 @@ namespace Presentation
 
             Session["FormularioCount"] = FormularioCount; // ← ¡IMPORTANTE!
         }
-
 
         private void AgregarFormularioDinamico(int index)
         {
@@ -129,12 +138,7 @@ namespace Presentation
 
         }
 
-
-
-
-
-
-        protected void BtnSaveAll_Click(object sender, EventArgs e)
+        protected void BtnSave_Click(object sender, EventArgs e)
         {
             try
             {
@@ -236,113 +240,103 @@ namespace Presentation
             }
         }
 
-
         protected void BtnSearch_Click(object sender, EventArgs e)
         {
             string searchText = TBSearch.Text.Trim().ToLower();
-            DataSet ds = objMat.showMaterialAutor();
+            DataSet ds = objMat.showMaterialAutor(); // o el método que uses para traer los datos
 
             if (ds != null && ds.Tables.Count > 0)
             {
-                DataView dv = ds.Tables[0].DefaultView;
+                DataTable dt = ds.Tables[0];
+                DataView dv = dt.DefaultView;
+
                 if (!string.IsNullOrEmpty(searchText))
                 {
-                    dv.RowFilter = $"material_titulo LIKE '%{searchText}%' OR nombre_autor LIKE '%{searchText}%'";
+                    searchText = searchText.Replace("'", "''"); // Evitar errores con comillas
+                    dv.RowFilter = $"material_titulo LIKE '%{searchText}%' OR nombre_autor LIKE '%{searchText}%' OR descripcion LIKE '%{searchText}%'";
                 }
+
                 GVMaterialAutor.DataSource = dv;
                 GVMaterialAutor.DataBind();
+
+                if (dv.Count > 0)
+                {
+                    LblSearchResult.Text = $"Resultados encontrados: {dv.Count}";
+                    LblSearchResult.ForeColor = System.Drawing.Color.Green;
+                }
+                else
+                {
+                    LblSearchResult.Text = "No se encontraron resultados.";
+                    LblSearchResult.ForeColor = System.Drawing.Color.Red;
+                }
+            }
+            else
+            {
+                GVMaterialAutor.DataSource = null;
+                GVMaterialAutor.DataBind();
+                LblSearchResult.Text = "No se encontraron registros.";
+                LblSearchResult.ForeColor = System.Drawing.Color.Red;
             }
         }
+
 
         protected void GVMaterialAutor_SelectedIndexChanged(object sender, EventArgs e)
         {
+
             int rowIndex = GVMaterialAutor.SelectedIndex;
+
             if (rowIndex >= 0)
             {
-                string matTitulo = HttpUtility.HtmlDecode(GVMaterialAutor.SelectedRow.Cells[1].Text.Trim());
-                string autorNombre = HttpUtility.HtmlDecode(GVMaterialAutor.SelectedRow.Cells[2].Text.Trim());
-
-                DDLMatEdu.SelectedIndex = DDLMatEdu.Items.IndexOf(DDLMatEdu.Items.FindByText(matTitulo)) != -1
-                    ? DDLMatEdu.Items.IndexOf(DDLMatEdu.Items.FindByText(matTitulo)) : 0;
-
-                DDLAutor.SelectedIndex = DDLAutor.Items.IndexOf(DDLAutor.Items.FindByText(autorNombre)) != -1
-                    ? DDLAutor.Items.IndexOf(DDLAutor.Items.FindByText(autorNombre)) : 0;
-
-                TBDescription.Text = GVMaterialAutor.Rows[rowIndex].Cells[3].Text;
-                HFMaterialAutorID.Value = GVMaterialAutor.DataKeys[rowIndex].Value.ToString();
-            }
-        }
-
-        protected void BtnUpdate_Click(object sender, EventArgs e)
-        {
-            if (int.TryParse(HFMaterialAutorID.Value, out int idMaterial))
-            {
-                bool allUpdated = true;
-
-                // 1. Eliminar registros actuales del material educativo
-                bool deleted = objMat.deleteMaterialAutor(idMaterial);
-                if (!deleted)
+                try
                 {
-                    LblMessage.Text = "Error al limpiar registros anteriores.";
-                    LblMessage.ForeColor = System.Drawing.Color.Red;
-                    return;
-                }
+                    // Material
+                    string MaterialSeleccionado = HttpUtility.HtmlDecode(GVMaterialAutor.SelectedRow.Cells[1].Text.Trim());
+                    Console.WriteLine("MaterialSeleccionado: " + MaterialSeleccionado); // Depuración
 
-                // 2. Guardar el formulario estático
-                int autEstatico = int.Parse(DDLAutor.SelectedValue);
-                string descEstatico = TBDescription.Text;
-                if (autEstatico > 0)
-                {
-                    if (string.IsNullOrWhiteSpace(descEstatico)) descEstatico = "N/A";
-                    allUpdated &= objMat.saveMaterialAutor(idMaterial, autEstatico, descEstatico);
-                }
-
-                // 3. Guardar los formularios dinámicos
-                for (int i = 1; i <= FormularioCount; i++)
-                {
-                    DropDownList ddlAut = (DropDownList)phContenedor.FindControl($"DDLAutor_{i}");
-                    TextBox tbDesc = (TextBox)phContenedor.FindControl($"TBDescripcion_{i}");
-
-                    if (ddlAut != null && tbDesc != null)
+                    bool MaterialEncontrado = false;
+                    foreach (ListItem item in DDLMatEdu.Items)
                     {
-                        int aut = int.Parse(ddlAut.SelectedValue);
-                        string desc = tbDesc.Text;
-
-                        if (aut > 0)
+                        Console.WriteLine("DDLMatEdu Item Text: " + item.Text.Trim() + ", Value: " + item.Value); // Depuración
+                        if (item.Text.Trim().Equals(MaterialSeleccionado, StringComparison.OrdinalIgnoreCase))
                         {
-                            if (string.IsNullOrWhiteSpace(desc)) desc = "N/A";
-                            allUpdated &= objMat.saveMaterialAutor(idMaterial, aut, desc);
+                            DDLMatEdu.SelectedValue = item.Value;
+                            MaterialEncontrado = true;
+                            break;
                         }
                     }
+                    if (!MaterialEncontrado)
+                    {
+                        DDLMatEdu.SelectedIndex = 0;
+                    }
+
+                    // Autor
+                    string AutorSeleccionado = HttpUtility.HtmlDecode(GVMaterialAutor.SelectedRow.Cells[2].Text.Trim());
+                    Console.WriteLine("AutorSeleccionado: " + AutorSeleccionado); // Depuración
+
+                    bool AutorEncontrado = false;
+                    foreach (ListItem item in DDLAutor.Items)
+                    {
+                        Console.WriteLine("DDLAutor Item Text: " + item.Text.Trim() + ", Value: " + item.Value); // Depuración
+                        if (item.Text.Trim().Equals(AutorSeleccionado, StringComparison.OrdinalIgnoreCase))
+                        {
+                            DDLAutor.SelectedValue = item.Value;
+                            AutorEncontrado = true;
+                            break;
+                        }
+                    }
+                    if (!AutorEncontrado)
+                    {
+                        DDLAutor.SelectedIndex = 0;
+                    }
+
+                    TBDescription.Text = GVMaterialAutor.Rows[rowIndex].Cells[3].Text;
+                    LblMessage.Text = "Material Autor seleccionado correctamente. Puedes actualizar o eliminar.";
+                    LblMessage.ForeColor = System.Drawing.Color.Green;
                 }
-
-                // 4. Mostrar resultado
-                LblMessage.Text = allUpdated ? "¡Actualizado correctamente!" : "Error al actualizar uno o más registros.";
-                LblMessage.ForeColor = allUpdated ? System.Drawing.Color.Green : System.Drawing.Color.Red;
-
-                if (allUpdated)
+                catch (Exception ex)
                 {
-                    clear();
-                    showMaterialAutor();
-                }
-            }
-        }
-
-
-
-       
-
-        protected void BtnDelete_Click(object sender, EventArgs e)
-        {
-            if (int.TryParse(HFMaterialAutorID.Value, out int id))
-            {
-                bool deleted = objMat.deleteMaterialAutor(id);
-                LblMessage.Text = deleted ? "¡Eliminado correctamente!" : "Error al eliminar.";
-                LblMessage.ForeColor = deleted ? System.Drawing.Color.Green : System.Drawing.Color.Red;
-                if (deleted)
-                {
-                    clear();
-                    showMaterialAutor();
+                    // Manejar la excepción (mostrar un mensaje de error, registrar, etc.)
+                    Console.WriteLine("Error al seleccionar: " + ex.Message);
                 }
             }
         }
@@ -354,5 +348,72 @@ namespace Presentation
             DDLAutor.SelectedIndex = 0;
             TBDescription.Text = "";
         }
+        protected void BtnUpdate_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(HFMaterialAutorID.Value) && int.TryParse(HFMaterialAutorID.Value, out int id))
+            {
+
+                int Material = Convert.ToInt32(DDLMatEdu.SelectedValue);
+                int Autor = Convert.ToInt32(DDLAutor.SelectedValue);
+                string description = TBDescription.Text;
+
+                bool executed = objMat.updateMaterialAutor(id, Material, Autor, description);
+                if (executed)
+                {
+                    LblMessage.Text = "¡Material Autor actualizado exitosamente!";
+                    clear();
+                    showMaterialAutor();
+                }
+                else
+                {
+                    LblMessage.Text = "Error al actualizar el Material Autor.";
+                }
+            }
+            else
+            {
+                LblMessage.Text = "Error: No se ha seleccionado un Material Autor válido para actualizar.";
+            }
+        }
+        protected void BtnDelete_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(HFMaterialAutorID.Value))
+            {
+                LblMessage.Text = "No se seleccionó un Material Autor para eliminar.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+
+            }
+
+             id = Convert.ToInt32(HFMaterialAutorID.Value);
+
+            bool executed = objMat.deleteMaterialAutor(id);
+            
+                 
+
+                    if (executed)
+                    {
+                        LblMessage.Text = "¡Material-Autor eliminado exitosamente!";
+                        LblMessage.ForeColor = System.Drawing.Color.Red;
+                        clear();
+                        showMaterialAutor();
+                    }
+                    else
+                    {
+                        LblMessage.Text = "Error al eliminar el Material-Autor.";
+                        LblMessage.ForeColor = System.Drawing.Color.Red;
+             
+        
+                    }
+               
+        }
+
+        protected void BtnIrAPresentacion_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("WFPresentationMatAutor.aspx");
+        }
+
+
     }
+
 }
+
