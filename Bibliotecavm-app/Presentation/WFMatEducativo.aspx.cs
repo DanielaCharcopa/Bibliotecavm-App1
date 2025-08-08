@@ -5,11 +5,13 @@ using System.Security.Policy;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Globalization;
+using System.Text;
+
 
 namespace Presentation
 
 {
-
     public partial class WFMatEducativo : System.Web.UI.Page
     {
         // Instancias de clases para interactuar con la lógica de negocio.
@@ -141,7 +143,6 @@ namespace Presentation
             }
         }
 
-
         // Actualizar un material educativo existente
         protected void BtnUpdate_Click(object sender, EventArgs e)
         {
@@ -259,7 +260,8 @@ namespace Presentation
                     DDLEditorial.SelectedIndex = 0; // Selecciona el valor por defecto si no se encuentra
                 }
 
-                // Categoría
+                // Categoria 
+
                 string categoriaSeleccionada = GVMaterial.SelectedRow.Cells[8].Text.Trim(); // Nombre de la categoría
                 bool categoriaEncontrada = false;
                 foreach (ListItem item in DDLCategories.Items)
@@ -277,44 +279,62 @@ namespace Presentation
                 }
 
                 // Mostrar mensaje de éxito
-                LblMsj.Text = "Material seleccionado correctamente.";
+                LblMsj.Text = "Material Educativo seleccionado correctamente. Puedes actualizar o eliminar.";
                 LblMsj.ForeColor = System.Drawing.Color.Green;
             }
         }
 
-        // Evento para buscar materiales
+
+        // Evento para paginación
+        protected void GVMaterial_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            GVMaterial.PageIndex = e.NewPageIndex;
+            showMaterialEdu(); // este método debe volver a cargar los datos
+        }
+
+        // Evento para buscar Editoriales
         protected void BtnSearch_Click(object sender, EventArgs e)
         {
-            // Obtener el texto de búsqueda y convertirlo a minúsculas
             string searchText = TBSearch.Text.Trim().ToLower();
 
-            // Obtener todos los materiales desde la lógica de negocio
             DataSet ds = objMatEdu.showMaterialEdu();
 
-            // Verificar si el DataSet tiene datos
             if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
-                // Crear un DataView para aplicar el filtro
-                DataView dv = ds.Tables[0].DefaultView;
+                DataTable dt = ds.Tables[0];
+                DataView dv = dt.DefaultView;
 
-                // Aplicar el filtro si hay texto de búsqueda
                 if (!string.IsNullOrEmpty(searchText))
                 {
-                    dv.RowFilter = $"mat_titulo LIKE '%{searchText}%' OR mat_keywords LIKE '%{searchText}%'";
-                    dv.RowFilter = $"mat_formato LIKE '%{searchText}%' OR mat_keywords LIKE '%{searchText}%'";
+                    // Escapar comillas simples para evitar errores
+                    searchText = searchText.Replace("'", "''");
+                    dv.RowFilter = $"mat_titulo LIKE '%{searchText}%' OR mat_formato LIKE '%{searchText}%'";
+
                 }
 
-                // Enlazar el DataView al GridView
                 GVMaterial.DataSource = dv;
+                GVMaterial.DataBind();
+
+                if (dv.Count > 0)
+                {
+                    LblSearchResult.Text = $"Registros Encontrados: {dv.Count}";
+                    LblSearchResult.ForeColor = System.Drawing.Color.Green;
+                }
+                else
+                {
+                    LblSearchResult.Text = "No Se Encontraron Materiales Educativos Registrados.";
+                    LblSearchResult.ForeColor = System.Drawing.Color.Red;
+                }
             }
             else
             {
-                // Si no hay datos, enlazar un DataSet vacío al GridView
-                GVMaterial.DataSource = ds;
+                GVMaterial.DataSource = null;
+                GVMaterial.DataBind();
+                LblSearchResult.Text = "No Se Encontraron Materiales Educativos Registrados.";
+                LblSearchResult.ForeColor = System.Drawing.Color.Red;
             }
-
-            // Actualizar el GridView
-            GVMaterial.DataBind();
         }
+
+
     }
 }
