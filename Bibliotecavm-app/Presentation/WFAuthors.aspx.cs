@@ -14,12 +14,14 @@ namespace Presentation
 
         protected void Page_Load(object sender, EventArgs e)
         {
+
             if (!IsPostBack)
             {
                 showAuthors();  // Carga los autores en la GridView
             }
         }
 
+        // Evento para mostrar un autor
         private void showAuthors()
         {
             try
@@ -35,28 +37,81 @@ namespace Presentation
                 {
                     GVAuthors.DataSource = null;
                     GVAuthors.DataBind();
-                    LblMsj.Text = "No hay autores registrados.";
-                    LblMsj.ForeColor = System.Drawing.Color.Red;
+                    LblMessage.Text = "No hay autores registrados.";
+                    LblMessage.ForeColor = System.Drawing.Color.Red;
                 }
             }
             catch (Exception ex)
             {
-                LblMsj.Text = "Error al cargar autores: " + ex.Message;
-                LblMsj.ForeColor = System.Drawing.Color.Red;
+                LblMessage.Text = "Error al cargar autores: " + ex.Message;
+                LblMessage.ForeColor = System.Drawing.Color.Red;
             }
         }
 
+        // Evento para seleccionar un autor
         protected void GVAuthors_SelectedIndexChanged(object sender, EventArgs e)
         {
-            GridViewRow row = GVAuthors.SelectedRow;
+            try
+            {
+                GridViewRow row = GVAuthors.SelectedRow;
 
-            HFAuthorsId.Value = row.Cells[0].Text;
-            TBNombre.Text = HttpUtility.HtmlDecode(row.Cells[1].Text.Trim());
-            TBApellido.Text = HttpUtility.HtmlDecode(row.Cells[2].Text.Trim());
-            TBMunicipio.Text = HttpUtility.HtmlDecode(row.Cells[3].Text.Trim());
+                // Depuración: mostrar valores seleccionados en consola
+                Console.WriteLine("ID Autor: " + row.Cells[0].Text);
+                Console.WriteLine("Nombre: " + row.Cells[1].Text);
+                Console.WriteLine("Apellido: " + row.Cells[2].Text);
+                Console.WriteLine("Municipio: " + row.Cells[3].Text);
 
-       }
+                // Asignar valores a los campos del formulario
+                HFAuthorsId.Value = row.Cells[0].Text;
+                TBNombre.Text = HttpUtility.HtmlDecode(row.Cells[1].Text.Trim());
+                TBApellido.Text = HttpUtility.HtmlDecode(row.Cells[2].Text.Trim());
+                TBMunicipio.Text = HttpUtility.HtmlDecode(row.Cells[3].Text.Trim());
 
+                // Mostrar mensaje de éxito
+                LblMessage.Text = "Autor seleccionado correctamente. Puedes actualizar o eliminar.";
+                LblMessage.ForeColor = System.Drawing.Color.Green;
+                LblMessage.Visible = true;
+
+                // Ejecutar script para ocultar mensaje después de un tiempo
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "HideMessage", "hideMessageAfterDelay();", true);
+            }
+            catch (Exception ex)
+            {
+                // Manejar y mostrar errores de forma segura
+                Console.WriteLine("Error al seleccionar autor: " + ex.Message);
+                LblMessage.Text = "Error al seleccionar el autor. Por favor, intente de nuevo.";
+                LblMessage.ForeColor = System.Drawing.Color.Red;
+                LblMessage.Visible = true;
+            }
+        }
+
+        // Evento para paginación 
+        protected void GVAuthors_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            GVAuthors.PageIndex = e.NewPageIndex;
+
+            // Si hay texto de búsqueda, aplicar el filtro
+            string searchText = TBSearch.Text.Trim().ToLower();
+            DataSet ds = objAut.showAuthors();
+
+            if (ds != null && ds.Tables.Count > 0)
+            {
+                DataTable dt = ds.Tables[0];
+                dt.Columns.Add("nombreCompleto", typeof(string), "au_nombre + ' ' + au_apellido");
+
+                DataView dv = dt.DefaultView;
+
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    dv.RowFilter = $"nombreCompleto LIKE '%{searchText}%'";
+                }
+
+                GVAuthors.DataSource = dv;
+                GVAuthors.DataBind();
+            }
+        }
+
+        // Evento para limpiar formularios
         private void clear()
         {
             HFAuthorsId.Value = string.Empty;
@@ -65,6 +120,7 @@ namespace Presentation
             TBMunicipio.Text = "";
         }
 
+        // Evento para guardar un autor
         protected void BtnSave_Click(object sender, EventArgs e)
         {
             try
@@ -75,8 +131,8 @@ namespace Presentation
 
                 if (string.IsNullOrEmpty(nombre) || string.IsNullOrEmpty(apellido) || string.IsNullOrEmpty(municipio))
                 {
-                    LblMsj.Text = "Por favor, complete todos los campos.";
-                    LblMsj.ForeColor = System.Drawing.Color.Red;
+                    LblMessage.Text = "Por favor, complete todos los campos.";
+                    LblMessage.ForeColor = System.Drawing.Color.Red;
                     return;
                 }
 
@@ -84,23 +140,25 @@ namespace Presentation
 
                 if (executed)
                 {
-                    LblMsj.Text = "El autor se guardó exitosamente!";
-                    LblMsj.ForeColor = System.Drawing.Color.Green;
+                    LblMessage.Text = "El autor se guardó exitosamente!";
+                    LblMessage.ForeColor = System.Drawing.Color.Green;
                     showAuthors();
                     clear();
                 }
                 else
                 {
-                    LblMsj.Text = "Error al guardar el autor.";
-                    LblMsj.ForeColor = System.Drawing.Color.Red;
+                    LblMessage.Text = "Error al guardar el autor.";
+                    LblMessage.ForeColor = System.Drawing.Color.Red;
                 }
             }
             catch (Exception ex)
             {
-                LblMsj.Text = "Error inesperado: " + ex.Message;
-                LblMsj.ForeColor = System.Drawing.Color.Red;
+                LblMessage.Text = "Error inesperado: " + ex.Message;
+                LblMessage.ForeColor = System.Drawing.Color.Red;
             }
         }
+
+        // Evento para actualizar un autor 
         protected void BtnUpdate_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(HFAuthorsId.Value) && int.TryParse(HFAuthorsId.Value, out int id))
@@ -129,6 +187,7 @@ namespace Presentation
 
         }
 
+        // Evento para eliminar un autor
         protected void BtnDelete_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(HFAuthorsId.Value) && int.TryParse(HFAuthorsId.Value, out int id))
@@ -152,7 +211,49 @@ namespace Presentation
             }
         }
 
-    }
+        // Evento para buscar materiales
+        protected void BtnSearch_Click(object sender, EventArgs e)
+        {
+            string searchText = TBSearch.Text.Trim().ToLower();
+
+            DataSet ds = objAut.showAuthors();
+
+            if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            {
+                DataTable dt = ds.Tables[0];
+                dt.Columns.Add("nombreCompleto", typeof(string), "au_nombre + ' ' + au_apellido");
+
+                DataView dv = dt.DefaultView;
+
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    dv.RowFilter = $"nombreCompleto LIKE '%{searchText}%'";
+                }
+
+                GVAuthors.DataSource = dv;
+                GVAuthors.DataBind();
+
+                if (dv.Count > 0)
+                {
+                    LblSearchResult.Text = $"Registros encontrados: {dv.Count}";
+                    LblSearchResult.ForeColor = System.Drawing.Color.Green;
+                }
+                else
+                {
+                    LblSearchResult.Text = "No se encontraron autores registrados.";
+                    LblSearchResult.ForeColor = System.Drawing.Color.Red;
+                }
+            }
+            else
+            {
+                GVAuthors.DataSource = null;
+                GVAuthors.DataBind();
+                LblSearchResult.Text = "No se encontraron autores registrados.";
+                LblSearchResult.ForeColor = System.Drawing.Color.Red;
+            }
+        }
+  }
+
 }
 
 
