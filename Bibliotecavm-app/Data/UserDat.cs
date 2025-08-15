@@ -367,5 +367,22 @@ namespace Data
 
             return executed;
         }
+
+        // Obtener el número celular
+        public string GetUserPhone(int userId)
+        {
+            MySqlCommand objCmd = new MySqlCommand();
+            objCmd.Connection = objPer.openConnection();
+            objCmd.CommandText = "procGetUserPhone";
+            objCmd.CommandType = CommandType.StoredProcedure;
+            objCmd.Parameters.AddWithValue("v_user_id", userId);
+
+            object result = objCmd.ExecuteScalar();
+            objPer.closeConnection();
+
+            return result?.ToString() ?? string.Empty;
+        }
+
     }
+
 }
