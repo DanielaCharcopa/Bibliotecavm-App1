@@ -15,15 +15,6 @@ namespace Presentation
     {
 
         /// <summary>
-        /// Control LblMsj.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LblMsj;
-
-        /// <summary>
         /// Control HFPurchaId.
         /// </summary>
         /// <remarks>
@@ -69,22 +60,13 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.TextBox TBFecha;
 
         /// <summary>
-        /// Control LblFecha.
+        /// Control LblMsj.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LblFecha;
-
-        /// <summary>
-        /// Control LblFechaMostrar.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LblFechaMostrar;
+        protected global::System.Web.UI.WebControls.Label LblMsj;
 
         /// <summary>
         /// Control LblMaterial.
@@ -123,24 +105,6 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.LinkButton BtnBuscarMaterial;
 
         /// <summary>
-        /// Control LblQuantity.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LblQuantity;
-
-        /// <summary>
-        /// Control TBQuantity.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TBQuantity;
-
-        /// <summary>
         /// Control LblUnitPrice.
         /// </summary>
         /// <remarks>
@@ -157,6 +121,42 @@ namespace Presentation
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox TBUnitPrice;
+
+        /// <summary>
+        /// Control LblFecha.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblFecha;
+
+        /// <summary>
+        /// Control LblFechaMostrar.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblFechaMostrar;
+
+        /// <summary>
+        /// Control LblQuantity.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LblQuantity;
+
+        /// <summary>
+        /// Control TBQuantity.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TBQuantity;
 
         /// <summary>
         /// Control LblTotal.
