@@ -672,7 +672,7 @@
                     <asp:BoundField 
                         DataField="vis_fecha_ingreso" 
                         HeaderText="Fecha Visita"
-                        DataFormatString="{0:dd/MM/yyyy HH:mm}"
+                        DataFormatString="{0:dd/MM/yyyy}"
                         HeaderStyle-CssClass="table-dark align-middle"
                         ItemStyle-CssClass="align-middle" />
                     <asp:BoundField 
