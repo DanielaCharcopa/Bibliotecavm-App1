@@ -19,12 +19,12 @@ namespace Logic
         {
             try
             {
-                // Asegúrate que VisitsDat.saveVisits ahora devuelva el ID
                 return new VisitsDat().saveVisits(fechaIngreso, duracion, usuId, matId);
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al guardar visita: " + ex.Message);
+                System.Diagnostics.Debug.WriteLine($"Error en saveVisits: {ex.Message}");
+                return 0; // Retorna 0 si hay error
             }
         }
 
@@ -123,5 +123,20 @@ namespace Logic
                 throw new Exception("Error al buscar visitas: " + ex.Message);
             }
         }
+
+
+        // Añade este método a tu clase VisitsLog
+        public int ObtenerUltimaVisitaId(int usuId, int matId)
+        {
+            try
+            {
+                return objVis.ObtenerUltimaVisitaId(usuId, matId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener última visita: " + ex.Message);
+            }
+        }
+
     }
 }

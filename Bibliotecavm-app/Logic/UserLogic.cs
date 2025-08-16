@@ -3,6 +3,7 @@ using Model;
 using System;
 using System.Data;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace Logic
 {
@@ -222,5 +223,25 @@ namespace Logic
 
             return long.TryParse(celular, out _);
         }
+
+        // 
+        public string GetUserFormattedPhone(int userId)
+        {
+            if (userId <= 0)
+                throw new ArgumentException("ID de usuario inválido");
+
+            string rawPhone = objUserDat.GetUserPhone(userId);
+
+            if (string.IsNullOrWhiteSpace(rawPhone))
+                return string.Empty;
+
+            // Validar formato colombiano (3 seguido de 9 dígitos)
+            if (!Regex.IsMatch(rawPhone, @"^3\d{9}$"))
+                throw new ArgumentException("Formato de teléfono no válido");
+
+            // Formatear a internacional (57 + número)
+            return "57" + rawPhone;
+        }
+
     }
 }
