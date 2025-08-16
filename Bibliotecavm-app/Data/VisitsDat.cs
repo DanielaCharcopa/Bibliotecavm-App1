@@ -44,7 +44,6 @@ namespace Data
 
                 cmd.ExecuteNonQuery();
 
-                // Luego obtén el ID (versión mejorada para MySQL)
                 cmd.CommandText = "SELECT LAST_INSERT_ID()";
                 object result = cmd.ExecuteScalar();
 
@@ -53,7 +52,7 @@ namespace Data
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error en saveVisits: {ex.ToString()}");
-                return 0; // Retorna 0 si hay error
+                return 0;
             }
             finally
             {
@@ -283,7 +282,6 @@ namespace Data
             return ds;
         }
 
-        // Obtiene la última visita
         public int ObtenerUltimaVisitaId(int usuId, int matId)
         {
             MySqlCommand cmd = new MySqlCommand();
@@ -301,7 +299,6 @@ namespace Data
             return visitaId;
         }
 
-        //Actualiza la duración de la visita
         public bool ActualizarDuracionVisita(int visitaId, string duracion)
         {
             using (MySqlCommand cmd = new MySqlCommand())
@@ -311,11 +308,23 @@ namespace Data
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.Parameters.AddWithValue("v_visita_id", visitaId);
-                cmd.Parameters.AddWithValue("v_duracion", duracion); // Formato "HH:mm:ss"
+
+                // Asegurar formato HH:MM:SS para MySQL
+                if (TimeSpan.TryParse(duracion, out TimeSpan tiempo))
+                {
+                    string mysqlTimeFormat = $"{tiempo.Hours:00}:{tiempo.Minutes:00}:{tiempo.Seconds:00}";
+                    cmd.Parameters.AddWithValue("v_duracion", mysqlTimeFormat);
+                }
+                else
+                {
+                    // Formato por defecto si la conversión falla
+                    cmd.Parameters.AddWithValue("v_duracion", "00:00:00");
+                }
 
                 try
                 {
-                    return cmd.ExecuteNonQuery() > 0;
+                    int affectedRows = cmd.ExecuteNonQuery();
+                    return affectedRows > 0;
                 }
                 finally
                 {
