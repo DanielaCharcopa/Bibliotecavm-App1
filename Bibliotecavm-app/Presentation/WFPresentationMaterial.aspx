@@ -1,4 +1,7 @@
-﻿<%@ Page Title="Materiales Educativos" Language="C#" MasterPageFile="~/MainUsuario.Master" AutoEventWireup="true" CodeBehind="WFPresentationMaterial.aspx.cs" Inherits="Presentation.WFPresentationMaterial" %>
+﻿<%@ Page Title="Materiales" Language="C#" MasterPageFile="~/MainUsuario.Master" 
+    AutoEventWireup="true" CodeBehind="WFPresentationMaterial.aspx.cs" 
+    Inherits="Presentation.WFPresentationMaterial" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -55,6 +58,7 @@
                 EmptyDataText="No se encontraron materiales educativos con los criterios de búsqueda." OnRowCommand="GVMateriales_RowCommand" DataKeyNames="mat_id">
                 <Columns>
                     <asp:BoundField DataField="mat_titulo" HeaderText="Título" />
+                    <asp:BoundField DataField="mat_id" HeaderText="ID" Visible="false" />
                     <asp:BoundField DataField="mat_ano_publicacion" HeaderText="Año de Publicación" />
                     <asp:BoundField DataField="mat_precio" HeaderText="Precio" DataFormatString="{0:C}" HtmlEncode="false" />
                     <asp:BoundField DataField="mat_formato" HeaderText="Formato" />
@@ -64,12 +68,10 @@
                     <asp:TemplateField HeaderText="Acciones" ItemStyle-CssClass="text-center">
                         <ItemTemplate>
                             <div class="btn-group" role="group">
-                                <%-- Botón para abrir el material en una nueva ventana y registrar la visita --%>
-                                <asp:Button ID="btnVer" runat="server" Text="Ver" CommandName="Ver"
-                                    CommandArgument='<%# Eval("mat_id") %>' CssClass="btn btn-primary btn-sm"
-                                    OnClientClick='<%# "ManejarClicVer(" + Eval("mat_id") + "); return false;" %>' />
-
-                                <%-- Botón para comprar --%>
+                                <asp:Button ID="btnVer" runat="server" Text="Ver" CommandName="VerMaterial" 
+                                    CommandArgument='<%# Eval("mat_id") + "|" + Eval("mat_url_descarga") + "|" + Eval("mat_titulo") %>' 
+                                    CssClass="btn btn-primary btn-sm" />
+                                
                                 <asp:Button ID="btnComprar" runat="server" Text="Comprar" CommandName="Comprar"
                                     CommandArgument='<%# Eval("mat_id") %>' CssClass="btn btn-success btn-sm"
                                     OnClientClick="return confirm('¿Confirmar compra de este material?');" />
@@ -81,6 +83,19 @@
             </asp:GridView>
         </div>
     </div>
+
+    <!-- Modal ASP.NET -->
+    <asp:Panel ID="pnlModal" runat="server" Visible="false" style="position:fixed; top:50px; left:50px; width:80%; height:80%; background:white; z-index:1000; padding:20px;">
+        <h2><asp:Label ID="lblTituloModal" runat="server" /></h2>
+        <iframe runat="server" id="frameMaterial" style="width:100%; height:80%; border:none;"></iframe>
+        
+        <!-- Botón de finalización -->
+        <asp:Button ID="btnFinalizarVisita" runat="server" Text="Finalizar Visita" OnClick="btnFinalizarVisita_Click" CssClass="btn btn-primary" />
+        <asp:Label ID="Label1" runat="server" style="display:block; margin-top:10px;"></asp:Label>
+        
+        <!-- Contador de tiempo (opcional) -->
+        <asp:Label ID="lblTiempoTranscurrido" runat="server" style="display:block; font-weight:bold;"></asp:Label>
+    </asp:Panel>
 
     <style>
         .search-panel {
@@ -99,138 +114,19 @@
     </style>
     
     <script type="text/javascript">
-        // Función unificada para manejar el clic en "Ver"
-        function ManejarClicVer(materialId) {
-            // 1. Prevenir el postback
-            event.preventDefault();
+        function actualizarContador() {
+            var inicio = new Date('<%= ViewState["HoraInicio"] != null ? ((DateTime)ViewState["HoraInicio"]).ToString("yyyy-MM-ddTHH:mm:ss") : DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss") %>');
+            var ahora = new Date();
+            var diferencia = new Date(ahora - inicio);
 
-            // 2. Registrar la visita y obtener datos
-            $.ajax({
-                type: "POST",
-                url: "WFPresentationMaterial.aspx/RegistrarVisitaInicial",
-                data: JSON.stringify({ materialId: materialId }),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (response) {
-                    var result = response.d;
-                    if (result.success) {
-                        // 3. Iniciar seguimiento
-                        IniciarSeguimientoVisita(
-                            result.visitaId,
-                            result.urlMaterial,
-                            new Date(result.timestamp)
-                        );
-                    } else {
-                        console.error("Error al registrar visita:", result.error);
-                        // Fallback: abrir sin seguimiento
-                        window.open('Materiales/' + materialId, '_blank');
-                    }
-                },
-                error: function (error) {
-                    console.error("Error en la solicitud:", error);
-                    // Fallback: abrir sin seguimiento
-                    window.open('Materiales/' + materialId, '_blank');
-                }
-            });
-        }
+            var horas = diferencia.getUTCHours().toString().padStart(2, '0');
+            var minutos = diferencia.getUTCMinutes().toString().padStart(2, '0');
+            var segundos = diferencia.getUTCSeconds().toString().padStart(2, '0');
 
-        // Función mejorada para seguimiento
-        function IniciarSeguimientoVisita(visitaId, urlMaterial, fechaInicio) {
-            console.log("Iniciando seguimiento para visita:", visitaId);
+            document.getElementById('<%= lblTiempoTranscurrido.ClientID %>').innerText =
+                'Tiempo transcurrido: ' + horas + ':' + minutos + ':' + segundos;
 
-            // Almacenar en sessionStorage (más seguro para pestañas)
-            sessionStorage.setItem('visita_' + visitaId + '_inicio', fechaInicio.getTime());
-
-            // Abrir ventana del material
-            var ventanaMaterial = window.open(urlMaterial, '_blank', 'width=1024,height=768');
-
-            // Configurar intervalo de verificación
-            var intervalo = setInterval(function () {
-                try {
-                    if (ventanaMaterial.closed) {
-                        clearInterval(intervalo);
-                        FinalizarYRegistrarVisita(visitaId);
-                    }
-                } catch (e) {
-                    clearInterval(intervalo);
-                    FinalizarYRegistrarVisita(visitaId);
-                }
-            }, 1000);
-
-            // Manejar cierre de la pestaña principal
-            window.addEventListener('beforeunload', function () {
-                if (ventanaMaterial && !ventanaMaterial.closed) {
-                    FinalizarYRegistrarVisita(visitaId);
-                    ventanaMaterial.close();
-                }
-            });
-        }
-
-        // Función para registrar la duración final
-        function FinalizarYRegistrarVisita(visitaId) {
-            var inicio = sessionStorage.getItem('visita_' + visitaId + '_inicio');
-            if (!inicio) return;
-
-            var duracionMs = new Date() - new Date(parseInt(inicio));
-            var duracionFormateada = formatarDuracion(duracionMs);
-
-            // Debug esencial (quitar en producción)
-            console.log("Duración calculada:", {
-                visitaId: visitaId,
-                inicio: new Date(parseInt(inicio)),
-                fin: new Date(),
-                duracion: duracionFormateada
-            });
-
-            $.ajax({
-                type: "POST",
-                url: "WFPresentationMaterial.aspx/ActualizarDuracionVisita",
-                data: JSON.stringify({ visitaId: visitaId, duracion: duracionFormateada }),
-                contentType: "application/json"
-            });
-        }
-
-        function formatarDuracion(ms) {
-            var segundos = Math.floor(ms / 1000);
-            var horas = Math.floor(segundos / 3600);
-            segundos %= 3600;
-            var minutos = Math.floor(segundos / 60);
-            segundos %= 60;
-
-            return [
-                horas.toString().padStart(2, '0'),
-                minutos.toString().padStart(2, '0'),
-                segundos.toString().padStart(2, '0')
-            ].join(':');
-        }
-
-        function enviarDuracionAlServidor(visitaId, duracion) {
-            console.log("Enviando duración:", duracion, "para visita:", visitaId);
-
-            $.ajax({
-                type: "POST",
-                url: "WFPresentationMaterial.aspx/ActualizarDuracionVisita",
-                data: JSON.stringify({
-                    visitaId: visitaId,
-                    duracion: duracion
-                }),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (response) {
-                    console.log("Respuesta del servidor:", response.d);
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error en AJAX:", error);
-                    // Reintentar con fetch
-                    fetch('WFPresentationMaterial.aspx/ActualizarDuracionVisita', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ visitaId: visitaId, duracion: duracion }),
-                        keepalive: true
-                    }).then(r => console.log("Respuesta fetch:", r))
-                        .catch(e => console.error("Error fetch:", e));
-                }
-            });
+            setTimeout(actualizarContador, 1000);
         }
     </script>
 </asp:Content>
