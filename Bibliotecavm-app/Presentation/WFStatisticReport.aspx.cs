@@ -339,7 +339,7 @@ namespace Presentation
             {
                 DataField = "vis_fecha_ingreso",
                 HeaderText = "Fecha Visita",
-                DataFormatString = "{0:dd/MM/yyyy HH:mm}",
+                DataFormatString = "{0:dd/MM/yyyy}",
                 HtmlEncode = false
             });
 
