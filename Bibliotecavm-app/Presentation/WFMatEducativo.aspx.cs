@@ -262,7 +262,7 @@ namespace Presentation
 
                 // Categoria 
 
-                string categoriaSeleccionada = GVMaterial.SelectedRow.Cells[8].Text.Trim(); // Nombre de la categoría
+                string categoriaSeleccionada = HttpUtility.HtmlDecode(GVMaterial.SelectedRow.Cells[8].Text.Trim()); // Nombre de la categoría
                 bool categoriaEncontrada = false;
                 foreach (ListItem item in DDLCategories.Items)
                 {
@@ -281,6 +281,12 @@ namespace Presentation
                 // Mostrar mensaje de éxito
                 LblMsj.Text = "Material Educativo seleccionado correctamente. Puedes actualizar o eliminar.";
                 LblMsj.ForeColor = System.Drawing.Color.Green;
+
+
+
+
+            
+
             }
         }
 
