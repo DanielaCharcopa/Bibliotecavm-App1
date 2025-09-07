@@ -15,10 +15,15 @@ namespace Logic
         {
             return objMat.showMaterialAutor();  //  nombre del método
         }
+        public DataSet showMaterialAutorReport()
+        {
+            return objMat.showMaterialAutorReport();  //  nombre del método
+        }
         public DataSet showMaterialAutorDDL()
         {
             return objMat.showMaterialAutorDDL();  //  nombre del método
         }
+
 
         public bool saveMaterialAutor(int _idmaterial_edu, int id_autores, string _descripcion)
         {
