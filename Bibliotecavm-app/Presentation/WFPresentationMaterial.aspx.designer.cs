@@ -114,15 +114,6 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.Label lblTituloModal;
 
         /// <summary>
-        /// Control frameMaterial.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlIframe frameMaterial;
-
-        /// <summary>
         /// Control btnFinalizarVisita.
         /// </summary>
         /// <remarks>
@@ -132,13 +123,13 @@ namespace Presentation
         protected global::System.Web.UI.WebControls.Button btnFinalizarVisita;
 
         /// <summary>
-        /// Control Label1.
+        /// Control frameMaterial.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label1;
+        protected global::System.Web.UI.HtmlControls.HtmlIframe frameMaterial;
 
         /// <summary>
         /// Control lblTiempoTranscurrido.
@@ -148,5 +139,14 @@ namespace Presentation
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblTiempoTranscurrido;
+
+        /// <summary>
+        /// Control Label1.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label1;
     }
 }
