@@ -282,21 +282,20 @@ namespace Presentation
 
         protected void GVMaterialAutor_SelectedIndexChanged(object sender, EventArgs e)
         {
-
             int rowIndex = GVMaterialAutor.SelectedIndex;
 
             if (rowIndex >= 0)
             {
                 try
                 {
+                    // 🔹 Guardar el ID en el HiddenField
+                    HFMaterialAutorID.Value = GVMaterialAutor.DataKeys[rowIndex].Value.ToString();
+
                     // Material
                     string MaterialSeleccionado = HttpUtility.HtmlDecode(GVMaterialAutor.SelectedRow.Cells[1].Text.Trim());
-                    Console.WriteLine("MaterialSeleccionado: " + MaterialSeleccionado); // Depuración
-
                     bool MaterialEncontrado = false;
                     foreach (ListItem item in DDLMatEdu.Items)
                     {
-                        Console.WriteLine("DDLMatEdu Item Text: " + item.Text.Trim() + ", Value: " + item.Value); // Depuración
                         if (item.Text.Trim().Equals(MaterialSeleccionado, StringComparison.OrdinalIgnoreCase))
                         {
                             DDLMatEdu.SelectedValue = item.Value;
@@ -304,19 +303,13 @@ namespace Presentation
                             break;
                         }
                     }
-                    if (!MaterialEncontrado)
-                    {
-                        DDLMatEdu.SelectedIndex = 0;
-                    }
+                    if (!MaterialEncontrado) DDLMatEdu.SelectedIndex = 0;
 
                     // Autor
                     string AutorSeleccionado = HttpUtility.HtmlDecode(GVMaterialAutor.SelectedRow.Cells[2].Text.Trim());
-                    Console.WriteLine("AutorSeleccionado: " + AutorSeleccionado); // Depuración
-
                     bool AutorEncontrado = false;
                     foreach (ListItem item in DDLAutor.Items)
                     {
-                        Console.WriteLine("DDLAutor Item Text: " + item.Text.Trim() + ", Value: " + item.Value); // Depuración
                         if (item.Text.Trim().Equals(AutorSeleccionado, StringComparison.OrdinalIgnoreCase))
                         {
                             DDLAutor.SelectedValue = item.Value;
@@ -324,10 +317,7 @@ namespace Presentation
                             break;
                         }
                     }
-                    if (!AutorEncontrado)
-                    {
-                        DDLAutor.SelectedIndex = 0;
-                    }
+                    if (!AutorEncontrado) DDLAutor.SelectedIndex = 0;
 
                     TBDescription.Text = GVMaterialAutor.Rows[rowIndex].Cells[3].Text;
                     LblMessage.Text = "Material Autor seleccionado correctamente. Puedes actualizar o eliminar.";
@@ -335,11 +325,11 @@ namespace Presentation
                 }
                 catch (Exception ex)
                 {
-                    // Manejar la excepción (mostrar un mensaje de error, registrar, etc.)
                     Console.WriteLine("Error al seleccionar: " + ex.Message);
                 }
             }
         }
+
 
         private void clear()
         {
