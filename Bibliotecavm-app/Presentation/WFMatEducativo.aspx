@@ -156,7 +156,7 @@
 
                                       <!-- Campo de búsqueda y botón -->
 <div class="d-flex align-items-center mb-4">
-    <asp:TextBox ID="TBSearch" runat="server" CssClass="form-control me-2 w-80" placeholder="Buscar Autores" />
+    <asp:TextBox ID="TBSearch" runat="server" CssClass="form-control me-2 w-80" placeholder="Buscar Material Educativo" />
    <asp:Button ID="BtnSearch" runat="server" Text="Buscar" OnClick="BtnSearch_Click" CssClass="btn btn-primary" ValidationGroup="SearchGroup" />
 <br />
     <asp:Label ID="LblSearchResult" runat="server" CssClass="text-info fw-bold mb-3" />
