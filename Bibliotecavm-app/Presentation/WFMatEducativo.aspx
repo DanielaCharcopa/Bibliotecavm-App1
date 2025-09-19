@@ -146,7 +146,7 @@
     <asp:LinkButton ID="BtnUpdate" runat="server" OnClick="BtnUpdate_Click" CssClass="btn btn-primary btn-hidden" OnClientClick="return confirm('¿Confirmar actualización?');">
         <i class="fas fa-sync-alt"></i> Actualizar
     </asp:LinkButton>
-    <asp:LinkButton ID="BtnDelete" runat="server" OnClick="BtnDelete_Click" CssClass="btn btn-danger btn-hidden" OnClientClick="return confirm('¿Eliminar esta solicitud?');">
+    <asp:LinkButton ID="BtnDelete" runat="server" OnClick="BtnDelete_Click" CssClass="btn btn-danger btn-hidden" OnClientClick="return confirm('¿Eliminar esta solicitud?');" Visible="false">
         <i class="fas fa-trash-alt"></i> Eliminar
     </asp:LinkButton>
 </div>
